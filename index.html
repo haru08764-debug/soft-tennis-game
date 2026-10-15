@@ -97,6 +97,10 @@ body.lh #jz{left:auto;right:0}body.lh #jb{left:auto;right:calc(28px + env(safe-a
 @media(orientation:landscape) and (max-height:520px){.dlg{padding:16px;gap:8px}#ov h1{font-size:20px}.hl{font-size:12px}}
 
 .ver{margin:0;color:#667085;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:center}
+#serveAim{display:none;position:fixed;right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(198px + env(safe-area-inset-bottom,0px));z-index:7;gap:6px;padding:6px;background:rgba(255,255,255,.96);border:1px solid var(--d-line);border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+#serveAim button{min-height:42px;padding:6px 12px;border:2px solid var(--d-blue);border-radius:7px;background:#fff;color:var(--d-blue);font-size:14px;font-weight:700;touch-action:manipulation}
+#serveAim button[aria-pressed=true]{background:var(--d-blue);color:#fff}
+@media(orientation:landscape) and (max-height:520px){#serveAim{bottom:calc(176px + env(safe-area-inset-bottom,0px));gap:4px;padding:4px}#serveAim button{min-height:34px;padding:4px 8px;font-size:12px}}
 </style></head><body>
 <div id="app"></div>
 <div id="sb" role="group" aria-label="スコア"><div class="h" id="hh"><span>ゲーム　　　ポイント</span></div>
@@ -104,6 +108,7 @@ body.lh #jz{left:auto;right:0}body.lh #jb{left:auto;right:calc(28px + env(safe-a
 <div class="r"><i id="s1"></i><span>CPU</span><b id="g1">0</b><b id="p1">0</b></div></div>
 <button id="pz" data-a="pause" aria-label="一時停止">Ⅱ</button>
 <button id="mt" data-a="mute" aria-label="効果音をミュート" aria-pressed="false">🔊</button><div id="edit" role="region" aria-label="ボタン位置の調整" hidden><p id="ed1" role="status">ボタンをドラッグして動かします。キーボードでは、ボタンを選んで矢印キーで動かせます。</p><div class="act"><button class="bt" data-a="streset">もとに戻す</button><button class="bt go" data-a="stdone">完了</button></div></div><div id="msg" role="status" aria-live="polite"></div><div id="hint" role="status" aria-live="polite"></div><div id="ov"></div>
+<div id="serveAim" role="group" aria-label="サーブコース"><button type="button" data-course="wide" aria-pressed="false">ワイド</button><button type="button" data-course="center" aria-pressed="false">センター</button><button type="button" data-course="auto" aria-pressed="true">おまかせ</button></div>
 <div id="tc"><div id="jz"></div><div id="jb"><div id="jk"></div></div>
 <div id="btns"><button class="b" id="b1" data-k="shot">SHOT</button><button class="b" id="b2" data-k="lob">LOB</button><button class="b" id="b3" data-k="sp">SMASH</button><button class="b" id="b4" data-k="sl">SLICE</button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -252,11 +257,12 @@ const fin=()=>games[0]===GM-1&&games[1]===GM-1;
 function hud(){const th=fin()?6:3,l=i=>{const a=pts[i],b=pts[1-i];return a>=th&&b>=th?(a===b?'DEUCE':a>b?'ADV':'-'):a};$('sb').querySelectorAll('.r span')[1].textContent=MP.role?'相手':'CPU';$('pz').style.display=MP.role?'none':'';$('hh').textContent=(MP.role?'対人戦 ':'')+(GM*2-1)+'ゲームマッチ'+(fin()?' FINAL':'')+' | '+(server==='p'?'あなた':MP.role?'相手':'CPU')+'サーブ '+(serveNo>1?'2nd':'1st');
  for(let i=0;i<2;i++){$('g'+i).textContent=games[i];$('p'+i).textContent=l(i)}$('s0').className=server==='p'?'on':'';$('s1').className=server==='c'?'on':''}
 function msg(t,d=1.8){if(MP.role==='host')MP.evq.push({m:t,d});const m=$('msg');m.textContent=MP.role==='host'?t.replace(/CPU/g,'相手'):t;m.style.opacity=1;msgT=d}
-function hint(t){t=MP.role==='host'?t.replace(/CPU/g,'相手'):t;$('hint').textContent=t;$('hint').style.display=t?'block':'none'}
+function hint(t){t=MP.role==='host'?t.replace(/CPU/g,'相手'):t;$('hint').textContent=t;$('hint').style.display=t?'block':'none';$('serveAim').style.display=state==='toss'&&server==='p'?'flex':'none'}
+let serveCourse='auto';
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
 function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.1</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.2</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
@@ -267,11 +273,11 @@ addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-d],[data-g
 function startMatch(){pts=[0,0];games=[0,0];gi=0;over=false;after=null;pend=null;hitCool=0;cpuT=0;restT=0;fx=0;msgT=0;cpuLet=false;netT=false;lastHit=null;bn=0;timer=0;$('msg').style.opacity=0;ov('');P.x=0;P.z=HL+.9;C.x=0;C.z=-HL-.9;P.vx=P.vz=C.vx=C.vz=0;P.sw=C.sw=-1;nextPoint()}
 function nextPoint(){const n=pts[0]+pts[1],f=gi%2?'c':'p';server=(n>>1)%2?(f==='p'?'c':'p'):f;sx=n%2?-1:1;serveNo=1;hud();setupServe()}
 function carry(){const s=server==='p'?P:C;ball.x=s.x+s.hs*1.2;ball.z=s.z+s.fw*.4;ball.y=1.05}
-function setupServe(){hud();pend=null;ball.cut=0;ball.sl=false;const ps=server==='p',sv=ps?P:C,rc=ps?C:P,x=ps?sx*1.6:-sx*1.6;tsx=-Math.sign(x);
+function setupServe(){hud();pend=null;serveCourse='auto';document.querySelectorAll('[data-course]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.course==='auto')));$('serveAim').style.display='none';ball.cut=0;ball.sl=false;const ps=server==='p',sv=ps?P:C,rc=ps?C:P,x=ps?sx*1.6:-sx*1.6;tsx=-Math.sign(x);
  sv.x=x;sv.z=ps?HL+.9:-HL-.9;rc.x=tsx*1.8;rc.z=ps?-HL-.4:HL+.4;sv.sw=rc.sw=-1;
  state='ready';timer=1.3;isServe=true;lastHit=null;bn=0;netT=false;ball.vx=ball.vy=ball.vz=0;carry();th.forEach(h=>{h.x=ball.x;h.y=ball.y;h.z=ball.z});
  hint(ps?`SHOTでトス → もう一度SHOTでサーブ(${serveNo}本目・ベースライン後方から)`:`CPUのサーブ(${serveNo}本目)`);if(serveNo===1)msg(ps?'あなたのサーブ':'CPUのサーブ',1.3)}
-function toss(){if(state!=='ready'||server!=='p')return;pend=null;SFX.toss();state='toss';ball.vy=6.3;hint('SHOTで通常サーブ / SLICEでカットサーブ｜左右入力：外側＝ワイド・中央側＝センター')}
+function toss(){if(state!=='ready'||server!=='p')return;pend=null;SFX.toss();state='toss';ball.vy=6.3;hint('コースを選択 → SHOTで通常サーブ / SLICEでカットサーブ')}
 function fault(w){if(state!=='rally'&&state!=='toss')return;serveNo++;if(serveNo>2){endPoint(server==='p'?'c':'p','ダブルフォルト');return}
  state='wait';timer=1.6;after=setupServe;SFX.fault();msg('FAULT '+(w||''),1.4);hint('')}
 function endPoint(w,why){if(state!=='rally'&&state!=='toss')return;const i=w==='p'?0:1;pts[i]++;let t=(w==='p'?'あなたのポイント! ':'CPUのポイント ')+(why||'');
@@ -294,7 +300,7 @@ function canHit(w){const me=w===P?'p':'c';
  if(me==='p'?ball.z<.5:ball.z>-.5)return false;return ball.y>.12&&ball.y<3.1&&hd(w)<rch(w)}
 function doHit(w){if(state==='toss'&&(Math.abs(w.z)<HL-.05||w.x*(w===P?sx:-sx)<0||Math.abs(w.x)>HW)){fault('フットフォルト');return}const me=w===P?'p':'c',sg=me==='p'?-1:1,A=me==='p'?{type:w.type,ax:mv.x,dp:mv.z}:{type:w.type,ax:w.aim.ax,dp:w.aim.dp},d=Math.min(1,hd(w)/rch(w)),serve=state==='toss';
  let tx,tz,t,E=me==='p'?.4:D[diff].E;
- if(serve){const cut=A.type==='sl',q=clamp(1-Math.abs(ball.y-2.7)/1.5,0,1);E=E*(w===C?.45:.7)+(1-q)*(w===C?.8:1.4)+.1;const course=w===P?(A.ax*tsx>.35?'wide':A.ax*tsx<-.35?'center':'auto'):'auto';const base=course==='wide'?tsx*3.15:course==='center'?tsx*1.05:tsx*2.35;const b=base+A.ax*.25+(cut?-tsx*1.25:0);tx=tsx>0?clamp(b,.5,3.8):clamp(b,-3.8,-.5);tz=sg*((cut?3.8:4.6)+A.dp*.8);t=(serveNo===1?.85:1.05)+(cut?.12:0)}
+ if(serve){const cut=A.type==='sl',q=clamp(1-Math.abs(ball.y-2.7)/1.5,0,1);E=E*(w===C?.45:.7)+(1-q)*(w===C?.8:1.4)+.1;const course=w===P?serveCourse:'auto';const base=course==='wide'?tsx*3.15:course==='center'?tsx*1.05:tsx*2.35;const b=base+(cut?-tsx*1.25:0);tx=tsx>0?clamp(b,.5,3.8):clamp(b,-3.8,-.5);tz=sg*((cut?3.8:4.6)+A.dp*.8);t=(serveNo===1?.85:1.05)+(cut?.12:0)}
  else{const lob=A.type==='lob',hi=ball.y>2.1&&!lob&&A.type!=='sl',dn=Math.abs(w.z),sp=hi?(dn>9?21:dn>6?26:32):A.type==='sp'?(dn>9?24:29):A.type==='sl'?16:bn===0?25:21;
   tx=clamp(A.ax*3.5,-3.6,3.6);tz=sg*(lob?10+A.dp*.7:A.type==='sl'?6.6+A.dp*1.4:9.2+A.dp*1.6);E+=d*.55+(A.type==='sp'?.35:A.type==='sl'?-.15:0);
   const dist=Math.hypot(tx-ball.x,tz-ball.z);t=lob?1.7+dist*.018:clamp(dist/sp,.5,1.4)}
@@ -487,6 +493,7 @@ addEventListener('keyup',e=>{keys[km[e.code]||e.code]=0});addEventListener('blur
 addEventListener('contextmenu',e=>e.preventDefault());
 ren.domElement.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')pend=e.button===2?'lob':'shot'});
 document.querySelectorAll('.b').forEach(b=>{b.addEventListener('pointerdown',e=>{if(EDIT)return;e.preventDefault();pend=b.dataset.k});b.addEventListener('click',e=>{if(!EDIT&&e.detail===0)pend=b.dataset.k})});
+document.querySelectorAll('[data-course]').forEach(b=>{const choose=e=>{e.preventDefault();if(state!=='toss'||server!=='p')return;serveCourse=b.dataset.course;document.querySelectorAll('[data-course]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));hint('サーブコース：'+({wide:'ワイド',center:'センター',auto:'おまかせ'}[serveCourse])+'｜SHOTで通常サーブ / SLICEでカットサーブ')};b.addEventListener('pointerdown',choose);b.addEventListener('click',e=>{if(e.detail===0)choose(e)})});
 addEventListener('change',e=>{const t=e.target;if(t.name==='diff')diff=+t.value;else if(t.name==='gm')GM=+t.value;else if(t.name==='hand'){LAY.hand=t.value;LAY.off={};applyLayout();saveLay()}else if(t.name==='bsz'){LAY.size=+t.value;applyLayout();saveLay()}});
 $('ov').addEventListener('keydown',e=>{if(e.key!=='Tab')return;const f=[...$('ov').querySelectorAll('button,input,summary')].filter(x=>x.offsetParent!==null);if(!f.length)return;const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}});
 let jid=null,jc,joy={x:0,y:0};const jz=$('jz'),jb=$('jb'),jk=$('jk');
