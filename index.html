@@ -267,7 +267,7 @@ let serveCourse='auto';
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
 function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.6</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.7</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
@@ -414,9 +414,9 @@ document.addEventListener('dblclick',e=>e.preventDefault());
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false})}
 /* ===== 対人戦(PeerJS: 自前サーバー不要。ホストが試合を計算し、ゲストは入力を送って映像を受け取る) ===== */
 Object.keys(SFX).forEach(k=>{const f=SFX[k];SFX[k]=(...a)=>{if(MP.role==='host')MP.evq.push({s:k,a});return f(...a)}});
-const PK='softtennis3d-';
-function mpClose(){try{MP.conn&&MP.conn.close()}catch(e){}try{MP.peer&&MP.peer.destroy()}catch(e){}MP.role=null;MP.conn=MP.peer=null;MP.evq=[];MP.shown=0;hud()}
-function mpErr(t){ov(`<h1>接続できませんでした</h1><p>${t}</p><div class="act"><button class="bt go" data-a="mp">もどる</button></div>`)}
+const PK='softtennis3d-';let mpJoinTimer=null;
+function mpClose(){if(mpJoinTimer!==null){clearTimeout(mpJoinTimer);mpJoinTimer=null}try{MP.conn&&MP.conn.close()}catch(e){}try{MP.peer&&MP.peer.destroy()}catch(e){}MP.role=null;MP.conn=MP.peer=null;MP.evq=[];MP.shown=0;hud()}
+function mpErr(t){mpClose();state='menu';ov(`<h1>接続できませんでした</h1><p>${t}</p><div class="act"><button class="bt go" data-a="mp">もう一度試す</button><button class="bt txt" data-a="title">タイトルへ戻る</button></div>`)}
 function mpLost(){if(!MP.role)return;mpClose();state='menu';hint('');ov('<h1>接続が切れました</h1><p>相手との通信が途切れました。</p><div class="act"><button class="bt go" data-a="title">タイトルへ戻る</button></div>')}
 function mpMenu(){mpClose();state='menu';ov(`<h1>対人戦(オンライン)</h1><p>片方が「部屋を作る」でコードを作り、LINEなどで相手に伝えます。もう片方は、そのコードを入力して参加します。部屋を作った側がホストで、試合の形式を決めます。</p><div class="act"><button class="bt go" data-a="mphost">部屋を作る</button></div><div class="fld"><label for="cd">コードで参加する</label><div class="row"><input id="cd" maxlength="4" autocapitalize="characters" autocomplete="off" aria-describedby="cdh"><button class="bt" data-a="mpjoin">参加する</button></div><p id="cdh" role="status">相手から聞いた4文字のコードを入力してください。</p></div><div class="act"><button class="bt txt" data-a="title">タイトルへ戻る</button></div>`)}
 function mpHost(){if(!window.Peer)return mpErr('通信ライブラリを読み込めませんでした。ネットワークを確認してください。');mpClose();
@@ -424,14 +424,17 @@ function mpHost(){if(!window.Peer)return mpErr('通信ライブラリを読み�
  const pe=new Peer(PK+code);MP.peer=pe;
  ov(`<h1>相手を待っています</h1><p>このコードを相手に伝えてください。</p><p class="code" aria-label="コード">${code}</p><div class="act"><button class="bt" data-a="mpcopy" data-code="${code}">コードをコピー</button><button class="bt" data-a="mpshare" data-code="${code}">共有する</button></div><p id="mps" role="status">準備しています…</p><div class="act"><button class="bt txt" data-a="mp">キャンセル</button></div>`);
  pe.on('open',()=>{const e=$('mps');if(e)e.textContent='相手の参加を待っています…'});
- pe.on('error',e=>{if(e.type==='unavailable-id')mpHost();else mpErr('通信サーバーに接続できません('+e.type+')。この環境では対人戦が使えない場合があります。')});
+ pe.on('error',e=>{if(e.type==='unavailable-id')mpHost();else mpErr('通信サーバーに接続できません('+e.type+')。通信環境を確認して、もう一度試してください。')});
  pe.on('connection',c=>{if(MP.conn){c.close();return}MP.conn=c;c.on('open',()=>{MP.role='host';c.on('data',mpOnHost);c.on('close',mpLost);c.send({t:'hello',gm:GM});startMatch()})})}
 function mpJoin(){const code=($('cd').value||'').trim().toUpperCase();if(code.length!==4){$('cdh').textContent='4文字のコードを入力してください。';$('cd').focus();return}
  if(!window.Peer)return mpErr('通信ライブラリを読み込めませんでした。ネットワークを確認してください。');mpClose();
- const pe=new Peer();MP.peer=pe;ov(`<h1>接続しています</h1><p role="status">コード ${code} の部屋を探しています…</p><div class="act"><button class="bt txt" data-a="mp">キャンセル</button></div>`);
- pe.on('open',()=>{const c=pe.connect(PK+code,{reliable:true});MP.conn=c;const to=setTimeout(()=>{if(MP.role!=='guest')mpErr('部屋が見つかりませんでした。コードを確認してください。')},12000);
-  c.on('open',()=>{clearTimeout(to);MP.role='guest';MP.shown=0;c.on('data',mpOnGuest);c.on('close',mpLost)})});
- pe.on('error',e=>mpErr(e.type==='peer-unavailable'?'その部屋は見つかりませんでした。コードを確認してください。':'接続エラー('+e.type+')'))}
+ const pe=new Peer();MP.peer=pe;ov(`<h1>接続しています</h1><p role="status">コード ${code} の部屋を探しています…</p><p class="hl">接続には数秒かかる場合があります。うまくいかない場合は、両方の端末でページを開き直して再試行してください。</p><div class="act"><button class="bt txt" data-a="mp">キャンセル</button></div>`);
+ mpJoinTimer=setTimeout(()=>{if(MP.role!=='guest')mpErr('接続がタイムアウトしました。コードが正しいか、両方の端末がインターネットに接続しているか確認してください。')},15000);
+ pe.on('open',()=>{if(MP.peer!==pe)return;const c=pe.connect(PK+code,{reliable:true});MP.conn=c;
+  c.on('open',()=>{if(MP.peer!==pe)return;if(mpJoinTimer!==null){clearTimeout(mpJoinTimer);mpJoinTimer=null}MP.role='guest';MP.shown=0;c.on('data',mpOnGuest);c.on('close',mpLost);ov('')});
+  c.on('error',e=>{if(MP.peer===pe)mpErr('接続エラー('+e.type+')。コードと通信環境を確認してください。')});
+ });
+ pe.on('error',e=>{if(MP.peer!==pe)return;mpErr(e.type==='peer-unavailable'?'その部屋は見つかりませんでした。コードを確認してください。':'接続エラー('+e.type+')')})}
 function mpShare(a,code){const t='ソフトテニス3Dで対戦しよう!コード: '+code,e=$('mps');
  if(a==='mpshare'&&navigator.share){navigator.share({title:'ソフトテニス3D',text:t}).catch(()=>{});return}
  if(navigator.clipboard)navigator.clipboard.writeText(code).then(()=>{if(e)e.textContent='コードをコピーしました。'},()=>{if(e)e.textContent='コピーできませんでした。コードを直接伝えてください。'})}
