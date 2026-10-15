@@ -256,7 +256,7 @@ function hint(t){t=MP.role==='host'?t.replace(/CPU/g,'相手'):t;$('hint').textC
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
 function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.0</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.1</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
@@ -490,10 +490,14 @@ document.querySelectorAll('.b').forEach(b=>{b.addEventListener('pointerdown',e=>
 addEventListener('change',e=>{const t=e.target;if(t.name==='diff')diff=+t.value;else if(t.name==='gm')GM=+t.value;else if(t.name==='hand'){LAY.hand=t.value;LAY.off={};applyLayout();saveLay()}else if(t.name==='bsz'){LAY.size=+t.value;applyLayout();saveLay()}});
 $('ov').addEventListener('keydown',e=>{if(e.key!=='Tab')return;const f=[...$('ov').querySelectorAll('button,input,summary')].filter(x=>x.offsetParent!==null);if(!f.length)return;const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}});
 let jid=null,jc,joy={x:0,y:0};const jz=$('jz'),jb=$('jb'),jk=$('jk');
-const jrest=()=>{jid=null;joy.x=joy.y=0;jb.style.cssText='';jk.style.transform=''};
-jz.addEventListener('pointerdown',e=>{if(jid!==null)return;e.preventDefault();jid=e.pointerId;jz.setPointerCapture(jid);jc={x:e.clientX,y:e.clientY};jb.style.left=jc.x-55+'px';jb.style.top=jc.y-55+'px';jb.style.bottom='auto';jb.style.opacity=1});
+const jrest=()=>{jid=null;joy.x=joy.y=0;mv.x=mv.z=0;jb.style.cssText='';jk.style.transform=''};
+jz.addEventListener('pointerdown',e=>{if(jid!==null)return;e.preventDefault();jid=e.pointerId;jc={x:e.clientX,y:e.clientY};try{jz.setPointerCapture(jid)}catch(_){}jb.style.left=jc.x-55+'px';jb.style.top=jc.y-55+'px';jb.style.bottom='auto';jb.style.opacity=1});
 jz.addEventListener('pointermove',e=>{if(e.pointerId!==jid)return;let dx=e.clientX-jc.x,dy=e.clientY-jc.y;const m=Math.hypot(dx,dy),r=Math.min(1,m/50);if(m>0){dx/=m;dy/=m}joy.x=dx*r;joy.y=dy*r;jk.style.transform=`translate(${joy.x*40}px,${joy.y*40}px)`});
-['pointerup','pointercancel'].forEach(t=>jz.addEventListener(t,e=>{if(e.pointerId===jid)jrest()}));
+const jend=e=>{if(e&&e.pointerId!==undefined&&e.pointerId!==jid)return;jrest()};
+['pointerup','pointercancel','lostpointercapture'].forEach(t=>window.addEventListener(t,jend,{passive:true}));
+window.addEventListener('blur',()=>jrest());
+document.addEventListener('visibilitychange',()=>{if(document.hidden)jrest()});
+window.addEventListener('pagehide',()=>jrest());
 if(matchMedia('(pointer:coarse)').matches||'ontouchstart' in window)$('tc').style.display='block';
 function move(dt){let ix=(keys.KeyD?1:0)-(keys.KeyA?1:0)+joy.x,iz=(keys.KeyS?1:0)-(keys.KeyW?1:0)+joy.y;const m=Math.hypot(ix,iz);if(m>1){ix/=m;iz/=m}
  mv.x=ix;mv.z=iz;const dsh=keys.ShiftLeft||keys.ShiftRight||(jid!==null&&m>.92),s=dsh?8.4:5.5;mv.d=dsh;if(MP.role==='guest')return;P.vx=ix*s;P.vz=iz*s;P.x=clamp(P.x+P.vx*dt,-7,7);P.z=clamp(P.z+P.vz*dt,-1.2,16)}
