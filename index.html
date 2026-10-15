@@ -29,7 +29,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
 #jz{position:fixed;left:0;bottom:0;width:46%;height:75%;z-index:5;touch-action:none}
 #jb{position:fixed;left:28px;bottom:28px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.35);opacity:.5;pointer-events:none;z-index:5}
 #jk{position:absolute;left:30px;top:30px;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.6)}
-#btns{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));width:220px;height:180px;z-index:5}
+#btns{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));width:220px;height:240px;z-index:5}
 .b{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.65);background:rgba(255,255,255,.2);color:#fff;font-weight:800;touch-action:none;font-size:14px}
 #b1{width:100px;height:100px;right:0;bottom:0;background:rgba(255,216,74,.35)}#b2{width:76px;height:76px;right:108px;bottom:6px}#b3{width:76px;height:76px;right:46px;bottom:106px}
 #sb,#pz,#hint{background:rgba(10,24,48,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);box-shadow:0 4px 16px rgba(0,0,0,.25)}
@@ -472,7 +472,7 @@ const PAUSE_HTML='<h1>一時停止中</h1><p>Pキー、またはEscキーでも�
 let EDIT=0,drg=null;const LAY={hand:'r',size:1,off:{}};
 try{Object.assign(LAY,JSON.parse(localStorage.getItem('st3d.layout')||'{}'));if(!LAY.off)LAY.off={}}catch(e){}
 const saveLay=()=>{try{localStorage.setItem('st3d.layout',JSON.stringify(LAY))}catch(e){}};
-const LB={l:{b1:[0,0,100],b2:[108,6,76],b3:[46,106,76],b4:[130,90,76]},p:{b1:[0,0,88],b2:[96,6,64],b3:[40,94,64],b4:[112,78,64]}};
+const LB={l:{b1:[0,0,100],b2:[108,6,76],b3:[46,106,76],b4:[130,90,76],b5:[130,170,64]},p:{b1:[0,0,88],b2:[96,6,64],b3:[40,94,64],b4:[112,78,64],b5:[112,144,58]}};
 const kk=k=>(innerHeight>innerWidth?'p':'l')+k,inView=el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.top>=0&&r.right<=innerWidth&&r.bottom<=innerHeight};
 function applyLayout(){const B=LB[innerHeight>innerWidth?'p':'l'],L=LAY.hand==='l',z=LAY.size;document.body.classList.toggle('lh',L);
  for(const k in B){const el=$(k),[x,y,s]=B[k],o=LAY.off[kk(k)]||[0,0];el.style.width=el.style.height=s*z+'px';
