@@ -107,6 +107,10 @@ body.lh #jz{left:auto;right:0}body.lh #jb{left:auto;right:calc(28px + env(safe-a
 @media(orientation:landscape){#hint.serving{top:calc(110px + env(safe-area-inset-top,0px));left:50%;max-width:min(72vw,560px)}}
 @media(orientation:landscape) and (max-height:520px){#hint.serving{top:calc(96px + env(safe-area-inset-top,0px));font-size:12px;padding:4px 8px}}
 @media(orientation:portrait){#hint.serving{top:calc(166px + env(safe-area-inset-top,0px));max-width:90vw;font-size:12px}}
+
+/* TOPボタンの背景が透明に見える問題を最終CSSで上書き */
+#btns button#b5{background:#20a878 !important;background-image:linear-gradient(145deg,#35d9a0,#087b55) !important;border:2px solid #b9ffe3 !important;color:#fff !important;opacity:1 !important;box-shadow:0 2px 10px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.28) !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important}
+#btns button#b5:active{background:#087b55 !important}
 </style></head><body>
 <div id="app"></div>
 <div id="sb" role="group" aria-label="スコア"><div class="h" id="hh"><span>ゲーム　　　ポイント</span></div>
@@ -268,11 +272,11 @@ let serveCourse='auto';
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
 function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.4.0</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.4.1</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
-<details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / R トップスピン / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → SHOTで通常サーブ / SLICEでカットサーブ(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details>`)}
+<details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / R トップスピン / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → SHOTで通常サーブ / SLICEでカットサーブ(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details><details class="hl"><summary>パッチノート</summary><b>v1.4.1</b><br>・TOPボタンが透明に見える問題を修正。背景色を不透明に固定<br><b>v1.4.0</b><br>・トップスピンボタンの見た目を調整<br><b>v1.3.9</b><br>・スイング時の体のひねりとフォロースルーを調整<br><b>v1.3.8</b><br>・トップスピンショットを追加<br><b>v1.3.7</b><br>・対人戦の接続タイムアウト処理と再接続案内を改善</details>`) }
 function pause(){if(MP.role)return;pend=null;if(state==='paused'){state=pst;ov('')}else if(['ready','toss','rally','wait'].includes(state)){pst=state;state='paused';ov(PAUSE_HTML)}}
 addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-d],[data-g]');if(!t)return;if(t.dataset.d!==undefined){diff=+t.dataset.d;menu();return}if(t.dataset.g!==undefined){GM=+t.dataset.g;menu();return}
  const a=t.dataset.a;if(a==='start'||a==='again')startMatch();else if(a==='title')menu();else if(a==='test')selfTest();else if(a==='mute'){muted=!muted;$('mt').textContent=muted?'🔇':'🔊';$('mt').setAttribute('aria-pressed',muted)}else if(a==='set')stDlg();else if(a==='stedit')stEdit();else if(a==='streset')stReset();else if(a==='stdone')stDone();else if(a==='stback')stBack();else if(a==='mp')mpMenu();else if(a==='mphost')mpHost();else if(a==='mpjoin')mpJoin();else if(a==='mpcopy'||a==='mpshare')mpShare(a,t.dataset.code);else pause()});
