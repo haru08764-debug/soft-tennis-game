@@ -380,7 +380,7 @@ function canHit(w){const me=w===P?'p':'c';
  if(me==='p'?ball.z<.5:ball.z>-.5)return false;return ball.y>.12&&ball.y<3.1&&hd(w)<rch(w)}
 function doHit(w){if(state==='toss'&&(Math.abs(w.z)<HL-.05||w.x*(w===P?sx:-sx)<0||Math.abs(w.x)>HW)){fault('フットフォルト');return}const me=w===P?'p':'c',sg=me==='p'?-1:1,A=me==='p'?{type:w.type,ax:mv.x,dp:mv.z}:{type:w.type,ax:w.aim.ax,dp:w.aim.dp},d=Math.min(1,hd(w)/rch(w)),serve=state==='toss';
  let tx,tz,t,E=me==='p'?.4:D[diff].E;
- if(serve){const cut=A.type==='sl',q=clamp(1-Math.abs(ball.y-(cut?CUT_SERVE.impactY:2.7))/1.5,0,1);E=E*(w===C?.45:.7)+(1-q)*(w===C?.8:1.4)+.1;const course=w===P?serveCourse:'auto';const base=course==='wide'?tsx*3.15:course==='center'?tsx*1.05:tsx*2.35;const b=base+(cut?tsx*.15:0);tx=cut?clamp(ball.x+tsx*1.15,-3.5,3.5):(tsx>0?clamp(b,.5,3.8):clamp(b,-3.8,-.5));tz=sg*((cut?8.0:4.6)+A.dp*.8);t=cut?CUT_SERVE.flightTime:(serveNo===1?.98:1.12)}
+ if(serve){const cut=A.type==='sl',q=clamp(1-Math.abs(ball.y-(cut?CUT_SERVE.impactY:2.7))/1.5,0,1);E=E*(w===C?.45:.7)+(1-q)*(w===C?.8:1.4)+.1;const course=w===P?serveCourse:'auto';const base=course==='wide'?tsx*3.15:course==='center'?tsx*1.05:tsx*2.35;const b=base+(cut?tsx*.15:0);tx=cut?clamp(ball.x+tsx*1.15,-3.5,3.5):(tsx>0?clamp(b,.5,3.8):clamp(b,-3.8,-.5));tz=sg*((cut?8.0:4.6)+A.dp*.8);t=cut?CUT_SERVE.flightTime:(serveNo===1?.72:.78)}
  else{const lob=A.type==='lob',hi=ball.y>2.1&&!lob&&A.type!=='sl'&&A.type!=='top',dn=Math.abs(w.z),sp=hi?(dn>9?21:dn>6?26:32):A.type==='sp'?(dn>9?24:29):A.type==='sl'?16:A.type==='top'?19:bn===0?25:21;
   tx=clamp(A.ax*3.5,-3.6,3.6);tz=sg*(lob?10+A.dp*.7:A.type==='sl'?6.6+A.dp*1.4:A.type==='top'?8.8+A.dp*1.5:9.2+A.dp*1.6);E+=d*.55+(A.type==='sp'?.35:A.type==='sl'?-.15:A.type==='top'?.05:0);
   const dist=Math.hypot(tx-ball.x,tz-ball.z);t=lob?1.7+dist*.018:clamp(dist/sp,.5,1.4)}
@@ -395,7 +395,7 @@ function doHit(w){if(state==='toss'&&(Math.abs(w.z)<HL-.05||w.x*(w===P?sx:-sx)<0
   ball.cut=0;ball.cutServe=false;ball.sl=false;
  }
  const tn=-ball.z/ball.vz;if(tn>0&&tn<t){const yn=ball.y+ball.vy*tn-.5*G*tn*tn,need=NH+.3;if(yn<need)ball.vy+=(need-yn)/tn}
- ball.vy=Math.min(ball.vy,13);ball.sl=A.type==='sl';ball.top=!serve&&A.type==='top';ball.cut=serve&&A.type==='sl'?(tsx>0?CUT_SERVE.spinX:-CUT_SERVE.spinX):0;ball.cutServe=serve&&A.type==='sl';ball.ty=serve?'sv':A.type==='lob'?'lob':A.type==='sl'?'sl':A.type==='top'?'top':ball.y>2.1?'sm':'fl';lastHit=me;bn=0;hitCool=.3;netT=false;isServe=serve;if(serve){state='rally';hint('')}
+ ball.vy=Math.min(ball.vy,13);ball.sl=A.type==='sl'||(serve&&A.type==='shot');ball.top=!serve&&A.type==='top';ball.cut=serve?(tsx>0?(A.type==='sl'?CUT_SERVE.spinX:2.65):-(A.type==='sl'?CUT_SERVE.spinX:2.65)):0;ball.cutServe=serve&&A.type==='sl';ball.ty=serve?'sv':A.type==='lob'?'lob':A.type==='sl'?'sl':A.type==='top'?'top':ball.y>2.1?'sm':'fl';lastHit=me;bn=0;hitCool=.3;netT=false;isServe=serve;if(serve){state='rally';hint('')}
  SFX.hit(Math.hypot(ball.vx,ball.vy,ball.vz),ball.sl,ball.ty);dopaFX('hit');(me==='p'?C:P).ss=0;fx=1;ring.position.set(ball.x,ball.y,ball.z);if(me==='p'){cpuErr={x:rnd()*D[diff].er,z:rnd()*D[diff].er*.8};cpuSmP=Math.random()<[.4,.7,.95][diff];cpuT=0}}
 const ez=t=>t*t*(3-2*t),c01=t=>clamp(t,0,1);const wr=d=>Math.atan2(Math.sin(d),Math.cos(d));
 function startSwing(w,type,aim){if(w.sw>=0)return;w.sw=0;SFX.swing();w.hit=false;w.type=type;if(aim)w.aim=aim;
