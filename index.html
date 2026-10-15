@@ -283,6 +283,8 @@ function updatePrediction(){
 
 let MP={role:null,evq:[],last:0,lastIn:0,at:0,shown:0,gin:{x:0,z:0,d:0,p:null}},GM=4,cpuLet=false,cpuSm=false,cpuSmP=false,state='menu',pst,diff=1,pts=[0,0],games=[0,0],gi=0,server='p',sx=1,tsx=-1,serveNo=1,timer=0,after=null,lastHit=null,bn=0,isServe=true,hitCool=0,netT=false,cpuT=0,cpuTg={x:0,z:-12},cpuErr={x:0,z:0},fx=0,msgT=0,pend=null,restT=0,over=false;const mv={x:0,z:0};
 let servePick='shot';
+// カットサーブ調整値：上投げせず胸〜腰の高さから落とし、落下に合わせて振り下ろす
+const CUT_SERVE={releaseY:1.92,impactY:1.08,dropVy:0,flightTime:0.82,spinX:3.15,bounceSide:2.65,bounceRestitution:.38};
 function syncButtonMode(){const serving=server==='p'&&(state==='ready'||state==='toss');const wrap=$('btns');if(!wrap)return;wrap.classList.toggle('serve-mode',serving);$('b1').textContent=serving?'上から':'SHOT';$('b4').textContent=serving?'カット':'SLICE';}
 const D=[{sp:4.2,rt:.45,er:2.4,E:1},{sp:5.6,rt:.22,er:1.1,E:.6},{sp:7.2,rt:.1,er:.5,E:.32}];
 const rch=w=>w===P||MP.role?2:[1.45,1.75,2.05][diff],hd=w=>Math.hypot(ball.x-(w.x+w.hs),ball.z-(w.z+w.fw*.9));
@@ -306,11 +308,11 @@ function settings(){
  '<div class="act"><button class="bt" data-a="set">操作の詳細設定</button><button class="bt go" data-a="settingsback">完了</button></div>');
 }
 function menu(){stopCourtAmbience();mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.7.4</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.7.8</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="settings">設定</button><button class="bt go" data-a="start">試合開始</button></div>
-<details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / R トップスピン / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → SHOTで通常サーブ / SLICEでカットサーブ(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details><details class="hl"><summary>パッチノート</summary><b>v1.7.7</b><br>・サーブ動作をテイクバック→後ろ足荷重→踏み込み→インパクト→着地の連続動作に改善<br>・腰の回旋と両脚の荷重移動、左脇方向への振り抜きを強調<br><b>v1.7.6</b><br>・説明されたカットサーブのフォームに合わせ、半身の構え・後ろ足荷重・低めのトスを調整<br>・ラケットを肩より高く引き、斜め下への擦り振りと左脇方向へのフォロースルーを強調<br>・トス側の腕の動きも調整<br><b>v1.7.5</b><br>・参考動画をもとにサーブのテイクバック、上体の回転、打点後の振り抜きを改善<br>・トス側の腕の動きも調整<br><b>v1.7.4</b><br>・弱くなりすぎたカットサーブの横変化を中間の強さに調整<br>・低い弾道とネットとの距離は維持<br><b>v1.7.3</b><br>・カットサーブの横変化が強すぎる問題を調整し、バウンド後の変化量を抑制<br><b>v1.7.2</b><br>・カットサーブを低く速い軌道に変更し、ネット付近を通るよう調整<br>・飛行中の横曲がりを抑え、バウンド時に強い横変化が出るよう変更<br><b>v1.7.1</b><br>・参考動画に合わせてカットサーブの横変化を強め、バウンド後に外へ逃げる軌道へ調整<br><b>v1.7.0</b><br>・ボール本体をソフトテニスらしい白に戻し、通常時の残像も白系に変更<br>・コートの青を自然な明るさに調整し、周囲の緑や照明との色の差を改善<br><b>v1.6.9</b><br>・ベースライン後方へさらに移動可能にし、追従カメラの範囲も拡張<br><b>v1.6.8</b><br>・白飛びを抑え、露出・照明・空と霧の色を調整<br><b>v1.6.7</b><br>・高解像度描画、ACESトーンマッピング、影・照明・テクスチャの品質を強化<br><b>v1.6.6</b><br>・カットサーブ専用フォームを追加し、横回転とバウンド後の横変化を調整<br><b>v1.6.5</b><br>・サーブ中は「上から」「カット」の2ボタンだけに切り替え、サーブ後は通常操作ボタンへ復帰<br><b>v1.6.4</b><br>・一人称視点のカメラを少し高くし、目線の低さを改善<br><b>v1.6.3</b><br>・一人称視点で胴体や頭は隠し、両腕とラケットを表示するよう調整<br><b>v1.6.2</b><br>・一人称視点では自キャラを非表示にし、頭や胴体がカメラにめり込む問題を改善<br><b>v1.6.1</b><br>・三人称視点でカメラがボールを自然に追うよう、注視点をなめらかに調整<br><b>v1.6.0</b><br>・メインメニューに設定画面を追加。視野角・視点・効果音・CPU難易度・試合形式・操作設定を一括変更可能に変更<br><b>v1.5.9</b><br>・FOVスライダーで視野角を40〜110度に調整可能に変更<br><b>v1.5.8</b><br>・視点切り替えで一人称・三人称を選択可能に変更<br>・拍手の合成音を取りやめ、従来の得点効果音に復帰<br><b>v1.5.5</b><br>・CPUがトスを開始できずサーブしない不具合を修正<br><b>v1.5.4</b><br>・予測軌道の色をボール残像と同じ打球タイプ別カラーに連動<br><b>v1.5.3</b><br>・CPU戦でも打球タイプに応じて残像の色が切り替わるよう修正<br><b>v1.5.2</b><br>・ボール残像の透明度と大きさを適度に強調し、色を見やすく調整<br><b>v1.5.1</b><br>・打球タイプごとにボールの残像色を変更（スマッシュ・スライス・トップスピン・ロブ）<br><b>v1.5.0</b><br>・飛行中のボールの予測軌道を表示<br>・最初の着地点をリングで表示し、コート内外を色分け<br><b>v1.4.8</b><br>・残っていたTOPボタン専用の緑色CSSを削除し、共通スタイルを適用<br><b>v1.4.7</b><br>・TOPボタン固有の色指定を削除し、他の操作ボタンと共通の色スタイルを適用<br><b>v1.4.6</b><br>・TOPボタンを白背景・青枠線・青文字に統一<br><b>v1.4.5</b><br>・TOPボタンの枠線と文字色を他のボタンと統一<br><b>v1.4.4</b><br>・TOPボタンを白色に変更<br><b>v1.4.3</b><br>・TOPボタンの色指定を調整<br><b>v1.4.2</b><br>・TOPボタンを明るい緑の単色に変更し、透明化するスタイルを無効化<br><b>v1.4.1</b><br>・TOPボタンの背景色を不透明に固定<br><b>v1.4.0</b><br>・トップスピンボタンの見た目を調整<br><b>v1.3.9</b><br>・スイング時の体のひねりとフォロースルーを調整<br><b>v1.3.8</b><br>・トップスピンショットを追加<br><b>v1.3.7</b><br>・対人戦の接続タイムアウト処理と再接続案内を改善</details>`) }
+<details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / R トップスピン / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → SHOTで通常サーブ / SLICEでカットサーブ(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details><details class="hl"><summary>パッチノート</summary><b>v1.7.8</b><br>・カットサーブを上投げから低い位置で落とす方式に変更し、落下に同期して振り下ろすよう調整<br>・カットサーブの打点、低いバウンド、横への逃げを専用定数で調整<br><b>v1.7.7</b><br>・サーブ動作をテイクバック→後ろ足荷重→踏み込み→インパクト→着地の連続動作に改善<br>・腰の回旋と両脚の荷重移動、左脇方向への振り抜きを強調<br><b>v1.7.6</b><br>・説明されたカットサーブのフォームに合わせ、半身の構え・後ろ足荷重・低めのトスを調整<br>・ラケットを肩より高く引き、斜め下への擦り振りと左脇方向へのフォロースルーを強調<br>・トス側の腕の動きも調整<br><b>v1.7.5</b><br>・参考動画をもとにサーブのテイクバック、上体の回転、打点後の振り抜きを改善<br>・トス側の腕の動きも調整<br><b>v1.7.4</b><br>・弱くなりすぎたカットサーブの横変化を中間の強さに調整<br>・低い弾道とネットとの距離は維持<br><b>v1.7.3</b><br>・カットサーブの横変化が強すぎる問題を調整し、バウンド後の変化量を抑制<br><b>v1.7.2</b><br>・カットサーブを低く速い軌道に変更し、ネット付近を通るよう調整<br>・飛行中の横曲がりを抑え、バウンド時に強い横変化が出るよう変更<br><b>v1.7.1</b><br>・参考動画に合わせてカットサーブの横変化を強め、バウンド後に外へ逃げる軌道へ調整<br><b>v1.7.0</b><br>・ボール本体をソフトテニスらしい白に戻し、通常時の残像も白系に変更<br>・コートの青を自然な明るさに調整し、周囲の緑や照明との色の差を改善<br><b>v1.6.9</b><br>・ベースライン後方へさらに移動可能にし、追従カメラの範囲も拡張<br><b>v1.6.8</b><br>・白飛びを抑え、露出・照明・空と霧の色を調整<br><b>v1.6.7</b><br>・高解像度描画、ACESトーンマッピング、影・照明・テクスチャの品質を強化<br><b>v1.6.6</b><br>・カットサーブ専用フォームを追加し、横回転とバウンド後の横変化を調整<br><b>v1.6.5</b><br>・サーブ中は「上から」「カット」の2ボタンだけに切り替え、サーブ後は通常操作ボタンへ復帰<br><b>v1.6.4</b><br>・一人称視点のカメラを少し高くし、目線の低さを改善<br><b>v1.6.3</b><br>・一人称視点で胴体や頭は隠し、両腕とラケットを表示するよう調整<br><b>v1.6.2</b><br>・一人称視点では自キャラを非表示にし、頭や胴体がカメラにめり込む問題を改善<br><b>v1.6.1</b><br>・三人称視点でカメラがボールを自然に追うよう、注視点をなめらかに調整<br><b>v1.6.0</b><br>・メインメニューに設定画面を追加。視野角・視点・効果音・CPU難易度・試合形式・操作設定を一括変更可能に変更<br><b>v1.5.9</b><br>・FOVスライダーで視野角を40〜110度に調整可能に変更<br><b>v1.5.8</b><br>・視点切り替えで一人称・三人称を選択可能に変更<br>・拍手の合成音を取りやめ、従来の得点効果音に復帰<br><b>v1.5.5</b><br>・CPUがトスを開始できずサーブしない不具合を修正<br><b>v1.5.4</b><br>・予測軌道の色をボール残像と同じ打球タイプ別カラーに連動<br><b>v1.5.3</b><br>・CPU戦でも打球タイプに応じて残像の色が切り替わるよう修正<br><b>v1.5.2</b><br>・ボール残像の透明度と大きさを適度に強調し、色を見やすく調整<br><b>v1.5.1</b><br>・打球タイプごとにボールの残像色を変更（スマッシュ・スライス・トップスピン・ロブ）<br><b>v1.5.0</b><br>・飛行中のボールの予測軌道を表示<br>・最初の着地点をリングで表示し、コート内外を色分け<br><b>v1.4.8</b><br>・残っていたTOPボタン専用の緑色CSSを削除し、共通スタイルを適用<br><b>v1.4.7</b><br>・TOPボタン固有の色指定を削除し、他の操作ボタンと共通の色スタイルを適用<br><b>v1.4.6</b><br>・TOPボタンを白背景・青枠線・青文字に統一<br><b>v1.4.5</b><br>・TOPボタンの枠線と文字色を他のボタンと統一<br><b>v1.4.4</b><br>・TOPボタンを白色に変更<br><b>v1.4.3</b><br>・TOPボタンの色指定を調整<br><b>v1.4.2</b><br>・TOPボタンを明るい緑の単色に変更し、透明化するスタイルを無効化<br><b>v1.4.1</b><br>・TOPボタンの背景色を不透明に固定<br><b>v1.4.0</b><br>・トップスピンボタンの見た目を調整<br><b>v1.3.9</b><br>・スイング時の体のひねりとフォロースルーを調整<br><b>v1.3.8</b><br>・トップスピンショットを追加<br><b>v1.3.7</b><br>・対人戦の接続タイムアウト処理と再接続案内を改善</details>`) }
 function pause(){if(MP.role)return;pend=null;if(state==='paused'){state=pst;ov('')}else if(['ready','toss','rally','wait'].includes(state)){pst=state;state='paused';ov(PAUSE_HTML)}}
 addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-d],[data-g]');if(!t)return;if(t.dataset.d!==undefined){diff=+t.dataset.d;menu();return}if(t.dataset.g!==undefined){GM=+t.dataset.g;menu();return}
  const a=t.dataset.a;if(a==='start'||a==='again')startMatch();else if(a==='title')menu();else if(a==='test')selfTest();else if(a==='mute'){muted=!muted;$('mt').textContent=muted?'🔇':'🔊';$('mt').setAttribute('aria-pressed',muted);if(ambGain&&ac)ambGain.gain.setTargetAtTime(muted?0:.018,ac.currentTime,.12);if(!muted&&state!=='menu'&&state!=='over'&&state!=='paused')startCourtAmbience()}else if(a==='camera'){firstPerson=!firstPerson;$('viewBtn').textContent=firstPerson?'1P':'3P';$('viewBtn').setAttribute('aria-pressed',String(firstPerson))}else if(a==='settings')settings();else if(a==='settingsback')menu();else if(a==='set')stDlg();else if(a==='stedit')stEdit();else if(a==='streset')stReset();else if(a==='stdone')stDone();else if(a==='stback')stBack();else if(a==='mp')mpMenu();else if(a==='mphost')mpHost();else if(a==='mpjoin')mpJoin();else if(a==='mpcopy'||a==='mpshare')mpShare(a,t.dataset.code);else pause()});
@@ -321,15 +323,17 @@ function setupServe(){hud();pend=null;serveCourse='auto';document.querySelectorA
  sv.x=x;sv.z=ps?HL+.9:-HL-.9;rc.x=tsx*1.8;rc.z=ps?-HL-.4:HL+.4;sv.sw=rc.sw=-1;
  state='ready';timer=1.3;isServe=true;lastHit=null;bn=0;netT=false;ball.top=false;ball.vx=ball.vy=ball.vz=0;carry();th.forEach(h=>{h.x=ball.x;h.y=ball.y;h.z=ball.z});
  hint(ps?`SHOTでトス → もう一度SHOTでサーブ(${serveNo}本目・ベースライン後方から)`:`CPUのサーブ(${serveNo}本目)`);if(serveNo===1)msg(ps?'あなたのサーブ':'CPUのサーブ',1.3)}
-function toss(){if(state!=='ready')return;pend=null;SFX.toss();state='toss';ball.vy=5.5;hint(server==='p'?'コースを確認 → SHOTで通常サーブ / SLICEでカットサーブ':'CPUがサーブしています')}
+function toss(){if(state!=='ready')return;pend=null;SFX.toss();state='toss';
+ const cut=servePick==='sl';if(cut){ball.y=CUT_SERVE.releaseY;ball.vy=CUT_SERVE.dropVy;ball.vx=ball.vz=0;ball.ty='sv'}else ball.vy=5.5;
+ hint(server==='p'?(cut?'ボールを落としてカットサーブ':'コースを確認 → SHOTで通常サーブ / SLICEでカットサーブ'):'CPUがサーブしています')}
 function fault(w){if(state!=='rally'&&state!=='toss')return;serveNo++;if(serveNo>2){endPoint(server==='p'?'c':'p','ダブルフォルト');return}
  state='wait';timer=1.6;after=setupServe;SFX.fault();msg('FAULT '+(w||''),1.4);hint('')}
 function endPoint(w,why){if(state!=='rally'&&state!=='toss')return;const i=w==='p'?0:1;pts[i]++;let t=(w==='p'?'あなたのポイント! ':'CPUのポイント ')+(why||''),gameWon=false;
  if(pts[i]>=(fin()?7:4)&&pts[i]-pts[1-i]>=2){games[i]++;pts=[0,0];gi++;gameWon=true;t=(w==='p'?'あなたがゲーム獲得! ':'CPUがゲーム獲得 ')+(why||'');if(games[i]>=GM)over=true}
  hud();msg(t,2.2);if(over)SFX.match(w==='p');else if(gameWon)SFX.game(w==='p');else SFX[w==='p'?'win':'lose']();hint('');state='wait';timer=2.4;after=over?result:nextPoint}
 function result(){stopCourtAmbience();state='over';const w=games[0]>games[1];ov(`<h1>${w?'勝利しました':'敗北しました'}</h1><p class="res">あなた ${games[0]} - ${games[1]} ${MP.role?'相手':'CPU'}</p><div class="act"><button class="bt" data-a="title">タイトルへ戻る</button><button class="bt go" data-a="again">もう一度対戦する</button></div>`)}
-function integ(b,dt){if(b.cut)b.vx+=b.cut*0.18*dt;if(b.top)b.vy-=2.2*dt;b.vy-=G*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.z+=b.vz*dt;const d=1-.06*dt;b.vx*=d;b.vz*=d;
- if(b.y<R&&b.vy<0){const iv=-b.vy;b.y=R;b.vy=iv>1.2?iv*(b.sl?.5:.74):0;b.vx*=b.sl?.95:.87;b.vz*=b.sl?.95:(b.top?1.12:.87);if(b.cut){b.vx+=b.cut*2.0;b.cut=0}b.top=false;return iv>1.2}return false}
+function integ(b,dt){if(b.cut)b.vx+=b.cut*0.18*dt;if(b.top)b.vy-=2.2*dt;b.vy-=G*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;const d=1-.06*dt;b.vx*=d;b.vz*=d;
+ if(b.y<R&&b.vy<0){const iv=-b.vy;b.y=R;b.vy=iv>1.2?iv*(b.sl?(b.cutServe?CUT_SERVE.bounceRestitution:.5):.74):0;b.vx*=b.sl?.95:.87;b.vz*=b.sl?(b.cutServe?.78:.95):(b.top?1.12:.87);if(b.cut){b.vx+=b.cut*(b.cutServe?CUT_SERVE.bounceSide:2.0);b.cut=0}b.top=false;b.cutServe=false;return iv>1.2}return false}
 function judge(){if(state==='toss'){fault('トスミス');return}if(state!=='rally')return;bn++;
  const h=lastHit,o=h==='p'?'c':'p',side=ball.z<0?'c':'p',inB=Math.abs(ball.x)<=HW+R+.04&&Math.abs(ball.z)<=HL+R+.04;
  if(bn===1){if(isServe){if(side===o&&inB&&Math.abs(ball.z)<=6.44+R&&ball.x*tsx>=-R-.04){if(netT){state='wait';timer=1.4;after=setupServe;msg('LET(やり直し)',1.2);hint('');return}isServe=false}else fault(netT?'NET':'')}
@@ -350,8 +354,9 @@ function doHit(w){if(state==='toss'&&(Math.abs(w.z)<HL-.05||w.x*(w===P?sx:-sx)<0
   const dist=Math.hypot(tx-ball.x,tz-ball.z);t=lob?1.7+dist*.018:clamp(dist/sp,.5,1.4)}
  tx+=rnd()*E;tz+=rnd()*E*.8;
  ball.vx=(tx-ball.x)/t*1.03;ball.vz=(tz-ball.z)/t*1.03;ball.vy=(R-ball.y+.5*G*t*t)/t;
+ if(serve&&A.type==='sl'){ball.vy=Math.min(ball.vy,5.6);ball.vz*=1.04;}
  const tn=-ball.z/ball.vz;if(tn>0&&tn<t){const yn=ball.y+ball.vy*tn-.5*G*tn*tn,need=NH+.3;if(yn<need)ball.vy+=(need-yn)/tn}
- ball.vy=Math.min(ball.vy,13);ball.sl=A.type==='sl';ball.top=!serve&&A.type==='top';ball.cut=serve&&A.type==='sl'?(tsx>0?2.8:-2.8):0;ball.ty=serve?'sv':A.type==='lob'?'lob':A.type==='sl'?'sl':A.type==='top'?'top':ball.y>2.1?'sm':'fl';lastHit=me;bn=0;hitCool=.3;netT=false;isServe=serve;if(serve){state='rally';hint('')}
+ ball.vy=Math.min(ball.vy,13);ball.sl=A.type==='sl';ball.top=!serve&&A.type==='top';ball.cut=serve&&A.type==='sl'?(tsx>0?CUT_SERVE.spinX:-CUT_SERVE.spinX):0;ball.cutServe=serve&&A.type==='sl';ball.ty=serve?'sv':A.type==='lob'?'lob':A.type==='sl'?'sl':A.type==='top'?'top':ball.y>2.1?'sm':'fl';lastHit=me;bn=0;hitCool=.3;netT=false;isServe=serve;if(serve){state='rally';hint('')}
  SFX.hit(Math.hypot(ball.vx,ball.vy,ball.vz),ball.sl,ball.ty);(me==='p'?C:P).ss=0;fx=1;ring.position.set(ball.x,ball.y,ball.z);if(me==='p'){cpuErr={x:rnd()*D[diff].er,z:rnd()*D[diff].er*.8};cpuSmP=Math.random()<[.4,.7,.95][diff];cpuT=0}}
 const ez=t=>t*t*(3-2*t),c01=t=>clamp(t,0,1);const wr=d=>Math.atan2(Math.sin(d),Math.cos(d));
 function startSwing(w,type,aim){if(w.sw>=0)return;w.sw=0;SFX.swing();w.hit=false;w.type=type;if(aim)w.aim=aim;
@@ -380,7 +385,7 @@ function pose(w,dt){
  const ext=(t,n)=>.44*Math.cos(t)+.44*Math.cos(t+n),jump=srv?Math.max(0,Math.sin(c01((s-.38)/.4)*Math.PI))*.14:0;
  const gy=Math.max(ext(thL,kL),ext(thR,kR))-.88+jump+hop;w.gy=(w.gy||0)+(gy-(w.gy||0))*Math.min(1,k*1.5);
  const lz=.08+(sP>.5?.12:0)+sr*m*(.25+.25*Math.max(0,a)),rz=-(.08+(sP>.5?.12:0)+sr*m*(.25+.25*Math.max(0,-a)));
- const cutSrv=srv&&w.type==='sl';const torx=cutSrv?.18-.32*ld+.62*hit-.75*fol:srv?.2-.55*ld+.82*hit-.48*fol:.12+.1*m+(vf>0?.12*m:0)+(sw?.1*hit:0);
+ const cutSrv=srv&&w.type==='sl';const torx=cutSrv?.12-.22*ld+.78*hit-.88*fol:srv?.2-.55*ld+.82*hit-.48*fol:.12+.1*m+(vf>0?.12*m:0)+(sw?.1*hit:0);
  const tory=!sw?0:cutSrv?-.95*ld+1.2*hit-1.05*fol:srv?-.72*ld+1.0*hit-.85*fol:bh?(1.05*ld-1.75*hit-.3*fol)*amp:(-1.05*ld+1.85*hit+.32*fol)*amp;
  // 半身で溜め、インパクトで回旋し、左脇方向へ低く抜く
  // 動画参考のサーブ動作：横向きに構え、ラケットを背中側へ引き、上体を回して高い打点から振り抜く。カットサーブは横振りを少し加える。
@@ -390,7 +395,7 @@ function pose(w,dt){
  const torz=clamp(-vl*.02,-.12,.12)+(sw&&!srv?Math.sin(Math.PI*c01(s))*(bh?-.12:.12):0);
  // 右腕(ラケット)
  const cx=-.45-.6*clamp(w.hy||1,.2,2.2);let ax=-.8+a*.15*m,ay=0,ez_=-1.1;
- if(sw){if(srv){if(cutSrv){ax=-.15-1.45*ld+.7*hit+1.55*fol;ay=.45*ld-.8*hit+.45*fol;ez_=-.72-.5*ld+1.15*hit-.15*fol}else{ax=-.35-2.05*ld-.75*hit+2.0*fol;ay=.12*ld-.2*hit+.25*fol;ez_=-.95-.75*ld+1.85*hit-.1*fol}}
+ if(sw){if(srv){if(cutSrv){ax=-.42-1.05*ld+.9*hit+1.35*fol;ay=.18*ld-.55*hit+.25*fol;ez_=-.62-.62*ld+1.22*hit-.08*fol}else{ax=-.35-2.05*ld-.75*hit+2.0*fol;ay=.12*ld-.2*hit+.25*fol;ez_=-.95-.75*ld+1.85*hit-.1*fol}}
   else{ax=-.8+(cx+.8)*ld+(w.type==='lob'?-.8*fol:w.type==='top'?-.35*fol:.1*fol);
    if(bh){ay=(1*ld-2.1*hit-.3*fol)*amp;ez_=-1-.2*ld+.9*hit-.4*fol}else{ay=(-1.3*ld+2*hit+.5*fol)*amp;ez_=-1.15-.15*ld+1.1*hit-.5*fol}}}
  // 左腕(バランス/トス)
@@ -412,8 +417,8 @@ function pose(w,dt){
  w.hd.rotation.y+=(hy-w.hd.rotation.y)*k2;w.hd.rotation.x+=(hp-w.hd.rotation.x)*k2;   // 頭をボールへ向ける
  w.g.position.set(w.x,w.gy,w.z);w.sh.position.set(w.x,.13,w.z)}
 function cpuAI(dt){const d=D[diff];
- if(state==='ready'&&server==='c'){timer-=dt;if(timer<=0)toss()}
- if(state==='toss'&&server==='c'&&C.sw<0&&ball.vy<0&&ball.y<2.9)startSwing(C,'shot',{ax:rnd()*.6,dp:rnd()*.5});
+ if(state==='ready'&&server==='c'){timer-=dt;if(timer<=0){servePick=diff===0?'shot':(Math.random()<[0,.22,.38][diff]?'sl':'shot');toss()}}
+ if(state==='toss'&&server==='c'&&C.sw<0&&ball.vy<0&&ball.y<(servePick==='sl'?CUT_SERVE.impactY:2.9))startSwing(C,servePick==='sl'?'sl':'shot',{ax:rnd()*.6,dp:rnd()*.5});
  if(state!=='rally'){C.vx=C.vz=0;return}
  const mine=lastHit==='p'&&state==='rally';let g={x:-P.x*.25,z:-11.8};
  if(mine){cpuT-=dt;if(cpuT<=0){cpuT=d.rt;
@@ -575,7 +580,7 @@ function move(dt){let ix=(keys.KeyD?1:0)-(keys.KeyA?1:0)+joy.x,iz=(keys.KeyS?1:0
 function tick(dt){syncButtonMode();if(state==='paused'||state==='menu'||state==='over')return;const live=state==='ready'||state==='toss'||state==='rally';hitCool-=dt;if(msgT>0&&(msgT-=dt)<=0)$('msg').style.opacity=0;
  if(live){move(dt);if(state==='rally'&&P.z<.35)endPoint('c',P.z<0?'相手コート侵入':'タッチネット');if(pend){if(state==='ready'){if(server==='p'&&(pend==='shot'||pend==='sl')){servePick=pend;toss()}}else if(state==='toss'&&server==='p'&&P.sw<0){servePick=pend;startSwing(P,pend)}else if(state==='rally'&&P.sw<0)startSwing(P,pend);pend=null}(MP.role==='host'?mpCtl(dt):cpuAI(dt))}else{pend=null;P.vx=P.vz=C.vx=C.vz=0}
  if(state==='ready')carry();
- if(state==='toss'&&server==='p'&&P.sw<0&&ball.vy<0&&ball.y<1.7)startSwing(P,servePick);
+ if(state==='toss'&&server==='p'&&P.sw<0&&ball.vy<0&&ball.y<(servePick==='sl'?CUT_SERVE.impactY:1.7))startSwing(P,servePick);
  if(state==='toss'||state==='rally'||state==='wait')for(let i=0;i<2;i++)stepBall(dt/2);
  if(state==='rally'&&ball.y<R+.02&&Math.hypot(ball.vx,ball.vz)<.7){restT+=dt;if(restT>.8)endPoint(bn>0?lastHit:(lastHit==='p'?'c':'p'),'')}else restT=0;
  upd(P,dt);upd(C,dt);
