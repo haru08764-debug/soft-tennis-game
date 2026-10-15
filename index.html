@@ -257,6 +257,25 @@ const ball={x:0,y:1,z:0,vx:0,vy:0,vz:0},bm=mesh(new THREE.SphereGeometry(R,24,16
 const tr=[],th=[],sg=new THREE.SphereGeometry(R*.9,6,5);
 for(let i=0;i<14;i++){const m=new THREE.Mesh(sg,new THREE.MeshBasicMaterial({color:0xfff6b0,transparent:true,opacity:.5*(1-i/14),depthWrite:false}));m.scale.setScalar(1-i/16);sc.add(m);tr.push(m);th.push({x:0,y:1,z:0})}
 const ring=new THREE.Mesh(new THREE.RingGeometry(.18,.26,24),new THREE.MeshBasicMaterial({color:0xffe066,transparent:true,opacity:0,side:2,depthWrite:false}));ring.visible=false;sc.add(ring);
+// 予測軌道と着地点ガイド
+const predCount=22,predGeom=new THREE.BufferGeometry();
+predGeom.setAttribute('position',new THREE.BufferAttribute(new Float32Array(predCount*3),3));
+const predLine=new THREE.Line(predGeom,new THREE.LineBasicMaterial({color:0x36d9ff,transparent:true,opacity:.78,depthWrite:false}));
+predLine.frustumCulled=false;predLine.visible=false;sc.add(predLine);
+const landMark=new THREE.Mesh(new THREE.RingGeometry(.28,.43,32),new THREE.MeshBasicMaterial({color:0x36d9ff,transparent:true,opacity:.9,side:THREE.DoubleSide,depthWrite:false}));
+landMark.rotation.x=-Math.PI/2;landMark.position.y=.035;landMark.visible=false;sc.add(landMark);
+function updatePrediction(){
+ const active=(state==='rally'||state==='toss')&&Math.hypot(ball.vx,ball.vy,ball.vz)>.5&&ball.y>R;
+ if(!active){predLine.visible=false;landMark.visible=false;return}
+ const disc=ball.vy*ball.vy+2*G*(ball.y-R),tLand=(ball.vy+Math.sqrt(Math.max(0,disc)))/G;
+ if(!Number.isFinite(tLand)||tLand<=.04||tLand>3.5){predLine.visible=false;landMark.visible=false;return}
+ const tMax=Math.min(tLand,2.2),pos=predGeom.attributes.position.array;
+ for(let i=0;i<predCount;i++){const t=tMax*i/(predCount-1),drag=Math.max(0,1-.06*t),x=ball.x+ball.vx*t*drag,z=ball.z+ball.vz*t*drag,y=Math.max(R,ball.y+ball.vy*t-.5*G*t*t);pos[i*3]=x;pos[i*3+1]=y;pos[i*3+2]=z}
+ predGeom.attributes.position.needsUpdate=true;predGeom.computeBoundingSphere();predLine.visible=true;
+ const drag=Math.max(0,1-.06*tLand);landMark.position.x=ball.x+ball.vx*tLand*drag;landMark.position.z=ball.z+ball.vz*tLand*drag;
+ const inside=Math.abs(landMark.position.x)<HW&&Math.abs(landMark.position.z)<HL;
+ landMark.material.color.setHex(inside?0x36d9ff:0xff5a65);landMark.visible=true;
+}
 
 let MP={role:null,evq:[],last:0,lastIn:0,at:0,shown:0,gin:{x:0,z:0,d:0,p:null}},GM=4,cpuLet=false,cpuSm=false,cpuSmP=false,state='menu',pst,diff=1,pts=[0,0],games=[0,0],gi=0,server='p',sx=1,tsx=-1,serveNo=1,timer=0,after=null,lastHit=null,bn=0,isServe=true,hitCool=0,netT=false,cpuT=0,cpuTg={x:0,z:-12},cpuErr={x:0,z:0},fx=0,msgT=0,pend=null,restT=0,over=false;const mv={x:0,z:0};
 const D=[{sp:4.2,rt:.45,er:2.4,E:1},{sp:5.6,rt:.22,er:1.1,E:.6},{sp:7.2,rt:.1,er:.5,E:.32}];
@@ -270,11 +289,11 @@ let serveCourse='auto';
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
 function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.4.8</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.5.0</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
-<details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / R トップスピン / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → SHOTで通常サーブ / SLICEでカットサーブ(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details><details class="hl"><summary>パッチノート</summary><b>v1.4.8</b><br>・残っていたTOPボタン専用の緑色CSSを削除し、共通スタイルを適用<br><b>v1.4.7</b><br>・TOPボタン固有の色指定を削除し、他の操作ボタンと共通の色スタイルを適用<br><b>v1.4.6</b><br>・TOPボタンを白背景・青枠線・青文字に統一<br><b>v1.4.5</b><br>・TOPボタンの枠線と文字色を他のボタンと統一<br><b>v1.4.4</b><br>・TOPボタンを白色に変更<br><b>v1.4.3</b><br>・TOPボタンの色指定を調整<br><b>v1.4.2</b><br>・TOPボタンを明るい緑の単色に変更し、透明化するスタイルを無効化<br><b>v1.4.1</b><br>・TOPボタンの背景色を不透明に固定<br><b>v1.4.0</b><br>・トップスピンボタンの見た目を調整<br><b>v1.3.9</b><br>・スイング時の体のひねりとフォロースルーを調整<br><b>v1.3.8</b><br>・トップスピンショットを追加<br><b>v1.3.7</b><br>・対人戦の接続タイムアウト処理と再接続案内を改善</details>`) }
+<details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / R トップスピン / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → SHOTで通常サーブ / SLICEでカットサーブ(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details><details class="hl"><summary>パッチノート</summary><b>v1.5.0</b><br>・飛行中のボールの予測軌道を表示<br>・最初の着地点をリングで表示し、コート内外を色分け<br><b>v1.4.8</b><br>・残っていたTOPボタン専用の緑色CSSを削除し、共通スタイルを適用<br><b>v1.4.7</b><br>・TOPボタン固有の色指定を削除し、他の操作ボタンと共通の色スタイルを適用<br><b>v1.4.6</b><br>・TOPボタンを白背景・青枠線・青文字に統一<br><b>v1.4.5</b><br>・TOPボタンの枠線と文字色を他のボタンと統一<br><b>v1.4.4</b><br>・TOPボタンを白色に変更<br><b>v1.4.3</b><br>・TOPボタンの色指定を調整<br><b>v1.4.2</b><br>・TOPボタンを明るい緑の単色に変更し、透明化するスタイルを無効化<br><b>v1.4.1</b><br>・TOPボタンの背景色を不透明に固定<br><b>v1.4.0</b><br>・トップスピンボタンの見た目を調整<br><b>v1.3.9</b><br>・スイング時の体のひねりとフォロースルーを調整<br><b>v1.3.8</b><br>・トップスピンショットを追加<br><b>v1.3.7</b><br>・対人戦の接続タイムアウト処理と再接続案内を改善</details>`) }
 function pause(){if(MP.role)return;pend=null;if(state==='paused'){state=pst;ov('')}else if(['ready','toss','rally','wait'].includes(state)){pst=state;state='paused';ov(PAUSE_HTML)}}
 addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-d],[data-g]');if(!t)return;if(t.dataset.d!==undefined){diff=+t.dataset.d;menu();return}if(t.dataset.g!==undefined){GM=+t.dataset.g;menu();return}
  const a=t.dataset.a;if(a==='start'||a==='again')startMatch();else if(a==='title')menu();else if(a==='test')selfTest();else if(a==='mute'){muted=!muted;$('mt').textContent=muted?'🔇':'🔊';$('mt').setAttribute('aria-pressed',muted)}else if(a==='set')stDlg();else if(a==='stedit')stEdit();else if(a==='streset')stReset();else if(a==='stdone')stDone();else if(a==='stback')stBack();else if(a==='mp')mpMenu();else if(a==='mphost')mpHost();else if(a==='mpjoin')mpJoin();else if(a==='mpcopy'||a==='mpshare')mpShare(a,t.dataset.code);else pause()});
@@ -539,7 +558,7 @@ addEventListener('resize',rs);addEventListener('orientationchange',()=>setTimeou
 let last=performance.now();
 (function lp(n){requestAnimationFrame(lp);const dt=Math.min(.033,(n-last)/1000);last=n;
  if(MP.role==='guest')gtick(dt);else if(state!=='menu'&&state!=='paused'&&state!=='over')tick(dt);if(MP.role==='host')mpSend(n);
- bm.position.set(ball.x,ball.y,ball.z);bs.position.set(ball.x,.13,ball.z);bs.scale.setScalar(Math.max(.4,1-ball.y*.08));
+ bm.position.set(ball.x,ball.y,ball.z);bs.position.set(ball.x,.13,ball.z);bs.scale.setScalar(Math.max(.4,1-ball.y*.08));updatePrediction();
  fx=Math.max(0,fx-dt*3.5);ring.visible=fx>0;if(fx>0){ring.material.opacity=fx;ring.scale.setScalar(1+(1-fx)*3);ring.lookAt(cam.position)}
  camUpd(dt);ren.render(sc,cam)})(last);
 </script></body></html>
