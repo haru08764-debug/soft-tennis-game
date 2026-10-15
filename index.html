@@ -96,6 +96,7 @@ body.lh #jz{left:auto;right:0}body.lh #jb{left:auto;right:calc(28px + env(safe-a
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(orientation:landscape) and (max-height:520px){.dlg{padding:16px;gap:8px}#ov h1{font-size:20px}.hl{font-size:12px}}
 
+.ver{margin:0;color:#667085;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:center}
 </style></head><body>
 <div id="app"></div>
 <div id="sb" role="group" aria-label="スコア"><div class="h" id="hh"><span>ゲーム　　　ポイント</span></div>
@@ -254,7 +255,7 @@ function hint(t){t=MP.role==='host'?t.replace(/CPU/g,'相手'):t;$('hint').textC
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
 function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.1.0</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
