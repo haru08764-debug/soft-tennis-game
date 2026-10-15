@@ -73,6 +73,10 @@ fieldset{border:0;margin:0;padding:0;min-width:0}legend{font-weight:700;padding:
 .hl{color:var(--d-sub);font-size:14px;line-height:1.8;max-width:none;text-align:left}
 .hl summary{cursor:pointer;color:var(--d-blue);font-weight:700;min-height:44px;display:flex;align-items:center}
 .res{font-size:24px;font-weight:700}
+#btns{left:0;right:0;width:auto;height:0;transform:none!important;pointer-events:none}.b{pointer-events:auto}
+body.lh #jz{left:auto;right:0}body.lh #jb{left:auto;right:calc(28px + env(safe-area-inset-right,0px))}
+#edit{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:#fff;color:var(--d-text);border:1px solid var(--d-line);border-radius:8px;padding:10px 12px;z-index:12;width:max-content;max-width:94vw;box-shadow:0 4px 16px rgba(0,0,0,.35);font-size:14px}
+#edit[hidden]{display:none}#edit p{margin:0 0 8px}#edit .bt{min-height:44px;padding:6px 16px}
 .fld label{display:block;font-weight:700;margin-bottom:4px}.row{display:flex;gap:8px;align-items:stretch}
 .fld input{flex:1;min-width:0;min-height:48px;padding:8px 12px;border:2px solid var(--d-line);border-radius:8px;font-size:24px;letter-spacing:.2em;text-transform:uppercase;text-align:center;background:#fff;color:var(--d-text)}
 .dlg .code{font-size:48px;font-weight:700;letter-spacing:.25em;text-align:center;color:var(--d-blue);margin:0;-webkit-user-select:all;user-select:all}.tl{margin:0;padding-left:0;list-style:none;font-size:14px}
@@ -98,7 +102,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}legend{font-weight:700;padding:
 <div class="r"><i id="s0"></i><span>あなた</span><b id="g0">0</b><b id="p0">0</b></div>
 <div class="r"><i id="s1"></i><span>CPU</span><b id="g1">0</b><b id="p1">0</b></div></div>
 <button id="pz" data-a="pause" aria-label="一時停止">Ⅱ</button>
-<button id="mt" data-a="mute" aria-label="効果音をミュート" aria-pressed="false">🔊</button><div id="msg" role="status" aria-live="polite"></div><div id="hint" role="status" aria-live="polite"></div><div id="ov"></div>
+<button id="mt" data-a="mute" aria-label="効果音をミュート" aria-pressed="false">🔊</button><div id="edit" role="region" aria-label="ボタン位置の調整" hidden><p id="ed1" role="status">ボタンをドラッグして動かします。キーボードでは、ボタンを選んで矢印キーで動かせます。</p><div class="act"><button class="bt" data-a="streset">もとに戻す</button><button class="bt go" data-a="stdone">完了</button></div></div><div id="msg" role="status" aria-live="polite"></div><div id="hint" role="status" aria-live="polite"></div><div id="ov"></div>
 <div id="tc"><div id="jz"></div><div id="jb"><div id="jk"></div></div>
 <div id="btns"><button class="b" id="b1" data-k="shot">SHOT</button><button class="b" id="b2" data-k="lob">LOB</button><button class="b" id="b3" data-k="sp">SMASH</button><button class="b" id="b4" data-k="sl">SLICE</button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -253,11 +257,11 @@ function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const r
  ov(`<h1>ソフトテニス3D</h1><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
-<div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt go" data-a="start">試合開始</button></div>
+<div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
 <details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → もう一度SHOT(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details>`)}
-function pause(){if(MP.role)return;pend=null;if(state==='paused'){state=pst;ov('')}else if(['ready','toss','rally','wait'].includes(state)){pst=state;state='paused';ov('<h1>一時停止中</h1><p>Pキー、またはEscキーでも再開できます。</p><div class="act"><button class="bt" data-a="title">タイトルへ戻る</button><button class="bt go" data-a="resume">再開</button></div>')}}
+function pause(){if(MP.role)return;pend=null;if(state==='paused'){state=pst;ov('')}else if(['ready','toss','rally','wait'].includes(state)){pst=state;state='paused';ov(PAUSE_HTML)}}
 addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-d],[data-g]');if(!t)return;if(t.dataset.d!==undefined){diff=+t.dataset.d;menu();return}if(t.dataset.g!==undefined){GM=+t.dataset.g;menu();return}
- const a=t.dataset.a;if(a==='start'||a==='again')startMatch();else if(a==='title')menu();else if(a==='test')selfTest();else if(a==='mute'){muted=!muted;$('mt').textContent=muted?'🔇':'🔊';$('mt').setAttribute('aria-pressed',muted)}else if(a==='mp')mpMenu();else if(a==='mphost')mpHost();else if(a==='mpjoin')mpJoin();else if(a==='mpcopy'||a==='mpshare')mpShare(a,t.dataset.code);else pause()});
+ const a=t.dataset.a;if(a==='start'||a==='again')startMatch();else if(a==='title')menu();else if(a==='test')selfTest();else if(a==='mute'){muted=!muted;$('mt').textContent=muted?'🔇':'🔊';$('mt').setAttribute('aria-pressed',muted)}else if(a==='set')stDlg();else if(a==='stedit')stEdit();else if(a==='streset')stReset();else if(a==='stdone')stDone();else if(a==='stback')stBack();else if(a==='mp')mpMenu();else if(a==='mphost')mpHost();else if(a==='mpjoin')mpJoin();else if(a==='mpcopy'||a==='mpshare')mpShare(a,t.dataset.code);else pause()});
 function startMatch(){pts=[0,0];games=[0,0];gi=0;over=false;after=null;pend=null;hitCool=0;cpuT=0;restT=0;fx=0;msgT=0;cpuLet=false;netT=false;lastHit=null;bn=0;timer=0;$('msg').style.opacity=0;ov('');P.x=0;P.z=HL+.9;C.x=0;C.z=-HL-.9;P.vx=P.vz=C.vx=C.vz=0;P.sw=C.sw=-1;nextPoint()}
 function nextPoint(){const n=pts[0]+pts[1],f=gi%2?'c':'p';server=(n>>1)%2?(f==='p'?'c':'p'):f;sx=n%2?-1:1;serveNo=1;hud();setupServe()}
 function carry(){const s=server==='p'?P:C;ball.x=s.x+s.hs*1.2;ball.z=s.z+s.fw*.4;ball.y=1.05}
@@ -447,13 +451,41 @@ function gtick(dt){const now=performance.now(),age=Math.min(.15,(now-MP.at)/1000
  if(state==='toss'||state==='rally'||state==='wait')integ(ball,dt);
  pose(P,dt);pose(C,dt);
  const o=th.pop();o.x=ball.x;o.y=ball.y;o.z=ball.z;th.unshift(o);const fast=Math.hypot(ball.vx,ball.vy,ball.vz)>6;tr.forEach((m,i)=>{m.visible=fast;m.position.set(th[i].x,th[i].y,th[i].z)})}
+/* ===== 操作の設定(持ち手・大きさ・ボタン位置) ===== */
+const PAUSE_HTML='<h1>一時停止中</h1><p>Pキー、またはEscキーでも再開できます。</p><div class="act"><button class="bt txt" data-a="set">操作の設定</button><button class="bt" data-a="title">タイトルへ戻る</button><button class="bt go" data-a="resume">再開</button></div>';
+let EDIT=0,drg=null;const LAY={hand:'r',size:1,off:{}};
+try{Object.assign(LAY,JSON.parse(localStorage.getItem('st3d.layout')||'{}'));if(!LAY.off)LAY.off={}}catch(e){}
+const saveLay=()=>{try{localStorage.setItem('st3d.layout',JSON.stringify(LAY))}catch(e){}};
+const LB={l:{b1:[0,0,100],b2:[108,6,76],b3:[46,106,76],b4:[130,90,76]},p:{b1:[0,0,88],b2:[96,6,64],b3:[40,94,64],b4:[112,78,64]}};
+const kk=k=>(innerHeight>innerWidth?'p':'l')+k,inView=el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.top>=0&&r.right<=innerWidth&&r.bottom<=innerHeight};
+function applyLayout(){const B=LB[innerHeight>innerWidth?'p':'l'],L=LAY.hand==='l',z=LAY.size;document.body.classList.toggle('lh',L);
+ for(const k in B){const el=$(k),[x,y,s]=B[k],o=LAY.off[kk(k)]||[0,0];el.style.width=el.style.height=s*z+'px';
+  el.style[L?'left':'right']='calc('+(x*z+(L?o[0]:-o[0]))+'px + env(safe-area-inset-'+(L?'left':'right')+',0px) + 14px)';el.style[L?'right':'left']='auto';el.style.bottom=(y*z-o[1])+'px'}}
+function overlap(){const r=Object.keys(LB.l).map(k=>$(k).getBoundingClientRect());for(let i=0;i<r.length;i++)for(let j=i+1;j<r.length;j++){const a=r[i],b=r[j];if(a.left<b.right&&b.left<a.right&&a.top<b.bottom&&b.top<a.bottom)return true}return false}
+function chk(){$('ed1').textContent=overlap()?'ボタンが重なっています。離して配置してください。':'ボタンをドラッグして動かします。キーボードでは、ボタンを選んで矢印キーで動かせます。'}
+function nudge(el,dx,dy){const k=kk(el.id),prev=LAY.off[k]||[0,0];LAY.off[k]=[prev[0]+dx,prev[1]+dy];applyLayout();if(!inView(el)){LAY.off[k]=prev;applyLayout()}}
+document.querySelectorAll('.b').forEach(b=>{
+ b.addEventListener('pointerdown',e=>{if(!EDIT)return;e.preventDefault();b.setPointerCapture(e.pointerId);const o=LAY.off[kk(b.id)]||[0,0];drg={b,sx:e.clientX,sy:e.clientY,ox:o[0],oy:o[1]}});
+ b.addEventListener('pointermove',e=>{if(!EDIT||!drg||drg.b!==b)return;const k=kk(b.id),prev=LAY.off[k]||[0,0];LAY.off[k]=[drg.ox+e.clientX-drg.sx,drg.oy+e.clientY-drg.sy];applyLayout();if(!inView(b)){LAY.off[k]=prev;applyLayout()}chk()});
+ b.addEventListener('pointerup',()=>{if(drg){drg=null;saveLay()}});
+ b.addEventListener('keydown',e=>{if(!EDIT)return;const d={ArrowLeft:[-8,0],ArrowRight:[8,0],ArrowUp:[0,-8],ArrowDown:[0,8]}[e.key];if(!d)return;e.preventDefault();nudge(b,d[0],d[1]);saveLay();chk()})});
+function stDlg(){const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
+ ov(`<h1>操作の設定</h1><p>スマホの操作ボタンとスティックの配置を変えられます。設定はこの端末に保存されます。</p>
+<fieldset><legend>持ち手(ボタンとスティックの左右)</legend><div class="rds">${rd('hand','r','右手でボタン(標準)',LAY.hand==='r')}${rd('hand','l','左手でボタン',LAY.hand==='l')}</div></fieldset>
+<fieldset><legend>ボタンの大きさ</legend><div class="rds">${[[.85,'小'],[1,'標準'],[1.2,'大']].map(([v,l])=>rd('bsz',v,l,LAY.size===v)).join('')}</div></fieldset>
+<div class="act"><button class="bt" data-a="streset">位置をもとに戻す</button><button class="bt" data-a="stedit">ボタンの位置を調整する</button></div>
+<div class="act"><button class="bt go" data-a="stback">完了</button></div>`)}
+function stBack(){if(state==='paused')ov(PAUSE_HTML);else menu()}
+function stReset(){LAY.off={};applyLayout();saveLay();if(EDIT)chk()}
+function stEdit(){EDIT=1;ov('');$('tc').style.display='block';$('jz').style.pointerEvents='none';$('jb').style.display='none';$('edit').hidden=false;applyLayout();chk();$('b1').focus()}
+function stDone(){EDIT=0;drg=null;$('edit').hidden=true;$('tc').style.display=(matchMedia('(pointer:coarse)').matches||'ontouchstart' in window)?'block':'none';$('jz').style.pointerEvents='';$('jb').style.display='';stDlg()}
 const keys={},km={ArrowLeft:'KeyA',ArrowRight:'KeyD',ArrowUp:'KeyW',ArrowDown:'KeyS'};
 addEventListener('keydown',e=>{const c=km[e.code]||e.code;keys[c]=1;if(!$('ov').contains(e.target)){if(e.code==='Space'){pend='sp';e.preventDefault()}if(e.code==='KeyE')pend='sl'}if((c==='KeyP'||e.code==='Escape')&&!e.repeat)pause()});
 addEventListener('keyup',e=>{keys[km[e.code]||e.code]=0});addEventListener('blur',()=>{for(const k in keys)keys[k]=0});
 addEventListener('contextmenu',e=>e.preventDefault());
 ren.domElement.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')pend=e.button===2?'lob':'shot'});
-document.querySelectorAll('.b').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();pend=b.dataset.k});b.addEventListener('click',e=>{if(e.detail===0)pend=b.dataset.k})});
-addEventListener('change',e=>{const t=e.target;if(t.name==='diff')diff=+t.value;else if(t.name==='gm')GM=+t.value});
+document.querySelectorAll('.b').forEach(b=>{b.addEventListener('pointerdown',e=>{if(EDIT)return;e.preventDefault();pend=b.dataset.k});b.addEventListener('click',e=>{if(!EDIT&&e.detail===0)pend=b.dataset.k})});
+addEventListener('change',e=>{const t=e.target;if(t.name==='diff')diff=+t.value;else if(t.name==='gm')GM=+t.value;else if(t.name==='hand'){LAY.hand=t.value;LAY.off={};applyLayout();saveLay()}else if(t.name==='bsz'){LAY.size=+t.value;applyLayout();saveLay()}});
 $('ov').addEventListener('keydown',e=>{if(e.key!=='Tab')return;const f=[...$('ov').querySelectorAll('button,input,summary')].filter(x=>x.offsetParent!==null);if(!f.length)return;const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}});
 let jid=null,jc,joy={x:0,y:0};const jz=$('jz'),jb=$('jb'),jk=$('jk');
 const jrest=()=>{jid=null;joy.x=joy.y=0;jb.style.cssText='';jk.style.transform=''};
@@ -477,7 +509,7 @@ const lk=new THREE.Vector3(0,0,0),cp=new THREE.Vector3(0,8,24);
 function camUpd(dt){if(state==='menu'){const t=performance.now()/5000;cam.position.set(Math.sin(t)*24,9,Math.cos(t)*24);cam.lookAt(0,.5,0);return}
  const k=1-Math.exp(-3.5*dt),pt=cam.aspect<1,tx=P.x*.5,ty=pt?9.5:7.4,tz=clamp(P.z,4,16)+(pt?15:10.5),lx=lerp(P.x,ball.x,.5)*.8,lz=lerp(P.z,ball.z,.5)-3;
  cp.x+=(tx-cp.x)*k;cp.y+=(ty-cp.y)*k;cp.z+=(tz-cp.z)*k;lk.x+=(lx-lk.x)*k;lk.z+=(lz-lk.z)*k;cam.position.copy(cp);cam.lookAt(lk)}
-function rs(){const w=innerWidth,h=innerHeight;ren.setSize(w,h,false);cam.aspect=w/h;cam.fov=w/h<1?72:w/h<1.3?62:52;cam.updateProjectionMatrix()}
+function rs(){const w=innerWidth,h=innerHeight;ren.setSize(w,h,false);cam.aspect=w/h;cam.fov=w/h<1?72:w/h<1.3?62:52;cam.updateProjectionMatrix();applyLayout()}
 addEventListener('resize',rs);addEventListener('orientationchange',()=>setTimeout(rs,300));if(window.visualViewport)visualViewport.addEventListener('resize',rs);rs();P.x=0;P.z=HL+.9;C.x=0;C.z=-HL-.9;upd(P,0);upd(C,0);menu();
 let last=performance.now();
 (function lp(n){requestAnimationFrame(lp);const dt=Math.min(.033,(n-last)/1000);last=n;
