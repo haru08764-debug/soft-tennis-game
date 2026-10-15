@@ -284,7 +284,7 @@ function updatePrediction(){
 let MP={role:null,evq:[],last:0,lastIn:0,at:0,shown:0,gin:{x:0,z:0,d:0,p:null}},GM=4,cpuLet=false,cpuSm=false,cpuSmP=false,state='menu',pst,diff=1,pts=[0,0],games=[0,0],gi=0,server='p',sx=1,tsx=-1,serveNo=1,timer=0,after=null,lastHit=null,bn=0,isServe=true,hitCool=0,netT=false,cpuT=0,cpuTg={x:0,z:-12},cpuErr={x:0,z:0},fx=0,msgT=0,pend=null,restT=0,over=false;const mv={x:0,z:0};
 let servePick='shot';
 // カットサーブ調整値：上投げせず胸〜腰の高さから落とし、落下に合わせて振り下ろす
-const CUT_SERVE={releaseY:1.92,swingStartY:1.5,impactY:1.08,dropVy:0,flightTime:0.82,spinX:3.15,bounceSide:2.65,bounceRestitution:.38};
+const CUT_SERVE={releaseY:1.92,swingStartY:1.5,impactY:1.08,dropVy:-1.6,flightTime:0.82,spinX:3.15,bounceSide:2.65,bounceRestitution:.38};
 function syncButtonMode(){const serving=server==='p'&&(state==='ready'||state==='toss');const wrap=$('btns');if(!wrap)return;wrap.classList.toggle('serve-mode',serving);$('b1').textContent=serving?'上から':'SHOT';$('b4').textContent=serving?'カット':'SLICE';}
 const D=[{sp:4.2,rt:.45,er:2.4,E:1},{sp:5.6,rt:.22,er:1.1,E:.6},{sp:7.2,rt:.1,er:.5,E:.32}];
 const rch=w=>w===P||MP.role?2:[1.45,1.75,2.05][diff],hd=w=>Math.hypot(ball.x-(w.x+w.hs),ball.z-(w.z+w.fw*.9));
@@ -422,7 +422,7 @@ function pose(w,dt){
  w.g.position.set(w.x,w.gy,w.z);w.sh.position.set(w.x,.13,w.z)}
 function cpuAI(dt){const d=D[diff];
  if(state==='ready'&&server==='c'){timer-=dt;if(timer<=0){servePick=diff===0?'shot':(Math.random()<[0,.22,.38][diff]?'sl':'shot');toss()}}
- if(state==='toss'&&server==='c'&&C.sw<0&&ball.vy<0&&ball.y<(servePick==='sl'?CUT_SERVE.impactY:2.9))startSwing(C,servePick==='sl'?'sl':'shot',{ax:rnd()*.6,dp:rnd()*.5});
+ if(state==='toss'&&server==='c'&&C.sw<0&&ball.vy<0&&ball.y<(servePick==='sl'?CUT_SERVE.swingStartY:2.9))startSwing(C,servePick==='sl'?'sl':'shot',{ax:rnd()*.6,dp:rnd()*.5});
  if(state!=='rally'){C.vx=C.vz=0;return}
  const mine=lastHit==='p'&&state==='rally';let g={x:-P.x*.25,z:-11.8};
  if(mine){cpuT-=dt;if(cpuT<=0){cpuT=d.rt;
