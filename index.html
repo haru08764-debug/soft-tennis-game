@@ -101,6 +101,11 @@ body.lh #jz{left:auto;right:0}body.lh #jb{left:auto;right:calc(28px + env(safe-a
 #serveAim button{min-height:42px;padding:6px 12px;border:2px solid var(--d-blue);border-radius:7px;background:#fff;color:var(--d-blue);font-size:14px;font-weight:700;touch-action:manipulation}
 #serveAim button[aria-pressed=true]{background:var(--d-blue);color:#fff}
 @media(orientation:landscape) and (max-height:520px){#serveAim{bottom:calc(176px + env(safe-area-inset-bottom,0px));gap:4px;padding:4px}#serveAim button{min-height:34px;padding:4px 8px;font-size:12px}}
+/* サーブ中は操作ガイドをコース選択ボタンから分離して配置 */
+#hint.serving{top:calc(104px + env(safe-area-inset-top,0px));bottom:auto;left:50%;right:auto;transform:translateX(-50%);max-width:min(92vw,560px);white-space:normal;text-align:center;line-height:1.45}
+@media(orientation:landscape){#hint.serving{top:calc(48px + env(safe-area-inset-top,0px));left:50%;max-width:min(72vw,560px)}}
+@media(orientation:landscape) and (max-height:520px){#hint.serving{top:calc(42px + env(safe-area-inset-top,0px));font-size:12px;padding:4px 8px}}
+@media(orientation:portrait){#hint.serving{top:calc(108px + env(safe-area-inset-top,0px));max-width:90vw;font-size:12px}}
 </style></head><body>
 <div id="app"></div>
 <div id="sb" role="group" aria-label="スコア"><div class="h" id="hh"><span>ゲーム　　　ポイント</span></div>
@@ -257,12 +262,12 @@ const fin=()=>games[0]===GM-1&&games[1]===GM-1;
 function hud(){const th=fin()?6:3,l=i=>{const a=pts[i],b=pts[1-i];return a>=th&&b>=th?(a===b?'DEUCE':a>b?'ADV':'-'):a};$('sb').querySelectorAll('.r span')[1].textContent=MP.role?'相手':'CPU';$('pz').style.display=MP.role?'none':'';$('hh').textContent=(MP.role?'対人戦 ':'')+(GM*2-1)+'ゲームマッチ'+(fin()?' FINAL':'')+' | '+(server==='p'?'あなた':MP.role?'相手':'CPU')+'サーブ '+(serveNo>1?'2nd':'1st');
  for(let i=0;i<2;i++){$('g'+i).textContent=games[i];$('p'+i).textContent=l(i)}$('s0').className=server==='p'?'on':'';$('s1').className=server==='c'?'on':''}
 function msg(t,d=1.8){if(MP.role==='host')MP.evq.push({m:t,d});const m=$('msg');m.textContent=MP.role==='host'?t.replace(/CPU/g,'相手'):t;m.style.opacity=1;msgT=d}
-function hint(t){t=MP.role==='host'?t.replace(/CPU/g,'相手'):t;$('hint').textContent=t;$('hint').style.display=t?'block':'none';$('serveAim').style.display=(state==='ready'||state==='toss')&&server==='p'?'flex':'none'}
+function hint(t){t=MP.role==='host'?t.replace(/CPU/g,'相手'):t;const serving=(state==='ready'||state==='toss')&&server==='p';$('hint').textContent=t;$('hint').style.display=t?'block':'none';$('hint').classList.toggle('serving',!!t&&serving);$('serveAim').style.display=serving?'flex':'none'}
 let serveCourse='auto';
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
 function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.3</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.4</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
