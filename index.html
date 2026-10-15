@@ -267,7 +267,7 @@ let serveCourse='auto';
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
 function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.4</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.5</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
@@ -498,7 +498,7 @@ addEventListener('keyup',e=>{keys[km[e.code]||e.code]=0});addEventListener('blur
 addEventListener('contextmenu',e=>e.preventDefault());
 ren.domElement.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')pend=e.button===2?'lob':'shot'});
 document.querySelectorAll('.b').forEach(b=>{b.addEventListener('pointerdown',e=>{if(EDIT)return;e.preventDefault();pend=b.dataset.k});b.addEventListener('click',e=>{if(!EDIT&&e.detail===0)pend=b.dataset.k})});
-document.querySelectorAll('[data-course]').forEach(b=>{const choose=e=>{e.preventDefault();if(state!=='toss'||server!=='p')return;serveCourse=b.dataset.course;document.querySelectorAll('[data-course]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));hint('サーブコース：'+({wide:'ワイド',center:'センター',auto:'おまかせ'}[serveCourse])+'｜SHOTで通常サーブ / SLICEでカットサーブ')};b.addEventListener('pointerdown',choose);b.addEventListener('click',e=>{if(e.detail===0)choose(e)})});
+document.querySelectorAll('[data-course]').forEach(b=>{const choose=e=>{e.preventDefault();if((state!=='ready'&&state!=='toss')||server!=='p')return;serveCourse=b.dataset.course;document.querySelectorAll('[data-course]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));hint('サーブコース：'+({wide:'ワイド',center:'センター',auto:'おまかせ'}[serveCourse])+'｜SHOTで通常サーブ / SLICEでカットサーブ')};b.addEventListener('pointerdown',choose);b.addEventListener('click',e=>{if(e.detail===0)choose(e)})});
 addEventListener('change',e=>{const t=e.target;if(t.name==='diff')diff=+t.value;else if(t.name==='gm')GM=+t.value;else if(t.name==='hand'){LAY.hand=t.value;LAY.off={};applyLayout();saveLay()}else if(t.name==='bsz'){LAY.size=+t.value;applyLayout();saveLay()}});
 $('ov').addEventListener('keydown',e=>{if(e.key!=='Tab')return;const f=[...$('ov').querySelectorAll('button,input,summary')].filter(x=>x.offsetParent!==null);if(!f.length)return;const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}});
 let jid=null,jc,joy={x:0,y:0};const jz=$('jz'),jb=$('jb'),jk=$('jk');
