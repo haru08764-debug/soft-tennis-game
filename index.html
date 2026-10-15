@@ -244,7 +244,7 @@ const ball={x:0,y:1,z:0,vx:0,vy:0,vz:0},bm=mesh(new THREE.SphereGeometry(R,24,16
 const tr=[],th=[],sg=new THREE.SphereGeometry(R*.9,6,5);
 for(let i=0;i<14;i++){const m=new THREE.Mesh(sg,new THREE.MeshBasicMaterial({color:0xfff6b0,transparent:true,opacity:.5*(1-i/14),depthWrite:false}));m.scale.setScalar(1-i/16);sc.add(m);tr.push(m);th.push({x:0,y:1,z:0})}
 const ring=new THREE.Mesh(new THREE.RingGeometry(.18,.26,24),new THREE.MeshBasicMaterial({color:0xffe066,transparent:true,opacity:0,side:2,depthWrite:false}));ring.visible=false;sc.add(ring);
-let serveCourse='auto';
+
 let MP={role:null,evq:[],last:0,lastIn:0,at:0,shown:0,gin:{x:0,z:0,d:0,p:null}},GM=4,cpuLet=false,cpuSm=false,cpuSmP=false,state='menu',pst,diff=1,pts=[0,0],games=[0,0],gi=0,server='p',sx=1,tsx=-1,serveNo=1,timer=0,after=null,lastHit=null,bn=0,isServe=true,hitCool=0,netT=false,cpuT=0,cpuTg={x:0,z:-12},cpuErr={x:0,z:0},fx=0,msgT=0,pend=null,restT=0,over=false;const mv={x:0,z:0};
 const D=[{sp:4.2,rt:.45,er:2.4,E:1},{sp:5.6,rt:.22,er:1.1,E:.6},{sp:7.2,rt:.1,er:.5,E:.32}];
 const rch=w=>w===P||MP.role?2:[1.45,1.75,2.05][diff],hd=w=>Math.hypot(ball.x-(w.x+w.hs),ball.z-(w.z+w.fw*.9));
@@ -256,10 +256,9 @@ function hint(t){t=MP.role==='host'?t.replace(/CPU/g,'相手'):t;$('hint').textC
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
 function menu(){mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
- ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.2.0</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+ ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.3.0</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
 <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
 <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
-<fieldset><legend>サーブコース</legend><div class="rds">${[['auto','おまかせ'],['wide','ワイド'],['center','センター寄り']].map(([v,l])=>rd('serveCourse',v,l,serveCourse===v)).join('')}</div><p class="hl">打つ直前の左右入力で微調整できます。</p></fieldset>
 <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="set">操作の設定</button><button class="bt go" data-a="start">試合開始</button></div>
 <details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → SHOTで通常サーブ / SLICEでカットサーブ(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details>`)}
 function pause(){if(MP.role)return;pend=null;if(state==='paused'){state=pst;ov('')}else if(['ready','toss','rally','wait'].includes(state)){pst=state;state='paused';ov(PAUSE_HTML)}}
@@ -272,7 +271,7 @@ function setupServe(){hud();pend=null;ball.cut=0;ball.sl=false;const ps=server==
  sv.x=x;sv.z=ps?HL+.9:-HL-.9;rc.x=tsx*1.8;rc.z=ps?-HL-.4:HL+.4;sv.sw=rc.sw=-1;
  state='ready';timer=1.3;isServe=true;lastHit=null;bn=0;netT=false;ball.vx=ball.vy=ball.vz=0;carry();th.forEach(h=>{h.x=ball.x;h.y=ball.y;h.z=ball.z});
  hint(ps?`SHOTでトス → もう一度SHOTでサーブ(${serveNo}本目・ベースライン後方から)`:`CPUのサーブ(${serveNo}本目)`);if(serveNo===1)msg(ps?'あなたのサーブ':'CPUのサーブ',1.3)}
-function toss(){if(state!=='ready'||server!=='p')return;pend=null;SFX.toss();state='toss';ball.vy=6.3;hint('SHOTで通常サーブ / SLICEでカットサーブ')}
+function toss(){if(state!=='ready'||server!=='p')return;pend=null;SFX.toss();state='toss';ball.vy=6.3;hint('SHOTで通常サーブ / SLICEでカットサーブ｜左右入力：外側＝ワイド・中央側＝センター')}
 function fault(w){if(state!=='rally'&&state!=='toss')return;serveNo++;if(serveNo>2){endPoint(server==='p'?'c':'p','ダブルフォルト');return}
  state='wait';timer=1.6;after=setupServe;SFX.fault();msg('FAULT '+(w||''),1.4);hint('')}
 function endPoint(w,why){if(state!=='rally'&&state!=='toss')return;const i=w==='p'?0:1;pts[i]++;let t=(w==='p'?'あなたのポイント! ':'CPUのポイント ')+(why||'');
@@ -295,7 +294,7 @@ function canHit(w){const me=w===P?'p':'c';
  if(me==='p'?ball.z<.5:ball.z>-.5)return false;return ball.y>.12&&ball.y<3.1&&hd(w)<rch(w)}
 function doHit(w){if(state==='toss'&&(Math.abs(w.z)<HL-.05||w.x*(w===P?sx:-sx)<0||Math.abs(w.x)>HW)){fault('フットフォルト');return}const me=w===P?'p':'c',sg=me==='p'?-1:1,A=me==='p'?{type:w.type,ax:mv.x,dp:mv.z}:{type:w.type,ax:w.aim.ax,dp:w.aim.dp},d=Math.min(1,hd(w)/rch(w)),serve=state==='toss';
  let tx,tz,t,E=me==='p'?.4:D[diff].E;
- if(serve){const cut=A.type==='sl',q=clamp(1-Math.abs(ball.y-2.7)/1.5,0,1);E=E*(w===C?.45:.7)+(1-q)*(w===C?.8:1.4)+.1;const base=w===P&&serveCourse==='wide'?tsx*3.05:w===P&&serveCourse==='center'?tsx*.75:tsx*2.4;const b=base+A.ax*(w===P&&serveCourse!=='auto'?.65:1.5)+(cut?-tsx*1.25:0);tx=tsx>0?clamp(b,.5,3.8):clamp(b,-3.8,-.5);tz=sg*((cut?3.8:4.6)+A.dp*.8);t=(serveNo===1?.85:1.05)+(cut?.12:0)}
+ if(serve){const cut=A.type==='sl',q=clamp(1-Math.abs(ball.y-2.7)/1.5,0,1);E=E*(w===C?.45:.7)+(1-q)*(w===C?.8:1.4)+.1;const course=w===P?(A.ax*tsx>.35?'wide':A.ax*tsx<-.35?'center':'auto'):'auto';const base=course==='wide'?tsx*3.15:course==='center'?tsx*1.05:tsx*2.35;const b=base+A.ax*.25+(cut?-tsx*1.25:0);tx=tsx>0?clamp(b,.5,3.8):clamp(b,-3.8,-.5);tz=sg*((cut?3.8:4.6)+A.dp*.8);t=(serveNo===1?.85:1.05)+(cut?.12:0)}
  else{const lob=A.type==='lob',hi=ball.y>2.1&&!lob&&A.type!=='sl',dn=Math.abs(w.z),sp=hi?(dn>9?21:dn>6?26:32):A.type==='sp'?(dn>9?24:29):A.type==='sl'?16:bn===0?25:21;
   tx=clamp(A.ax*3.5,-3.6,3.6);tz=sg*(lob?10+A.dp*.7:A.type==='sl'?6.6+A.dp*1.4:9.2+A.dp*1.6);E+=d*.55+(A.type==='sp'?.35:A.type==='sl'?-.15:0);
   const dist=Math.hypot(tx-ball.x,tz-ball.z);t=lob?1.7+dist*.018:clamp(dist/sp,.5,1.4)}
@@ -488,7 +487,7 @@ addEventListener('keyup',e=>{keys[km[e.code]||e.code]=0});addEventListener('blur
 addEventListener('contextmenu',e=>e.preventDefault());
 ren.domElement.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')pend=e.button===2?'lob':'shot'});
 document.querySelectorAll('.b').forEach(b=>{b.addEventListener('pointerdown',e=>{if(EDIT)return;e.preventDefault();pend=b.dataset.k});b.addEventListener('click',e=>{if(!EDIT&&e.detail===0)pend=b.dataset.k})});
-addEventListener('change',e=>{const t=e.target;if(t.name==='diff')diff=+t.value;else if(t.name==='gm')GM=+t.value;else if(t.name==='serveCourse')serveCourse=t.value;else if(t.name==='hand'){LAY.hand=t.value;LAY.off={};applyLayout();saveLay()}else if(t.name==='bsz'){LAY.size=+t.value;applyLayout();saveLay()}});
+addEventListener('change',e=>{const t=e.target;if(t.name==='diff')diff=+t.value;else if(t.name==='gm')GM=+t.value;else if(t.name==='hand'){LAY.hand=t.value;LAY.off={};applyLayout();saveLay()}else if(t.name==='bsz'){LAY.size=+t.value;applyLayout();saveLay()}});
 $('ov').addEventListener('keydown',e=>{if(e.key!=='Tab')return;const f=[...$('ov').querySelectorAll('button,input,summary')].filter(x=>x.offsetParent!==null);if(!f.length)return;const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}});
 let jid=null,jc,joy={x:0,y:0};const jz=$('jz'),jb=$('jb'),jk=$('jk');
 const jrest=()=>{jid=null;joy.x=joy.y=0;jb.style.cssText='';jk.style.transform=''};
