@@ -110,13 +110,37 @@ body.lh #jz{left:auto;right:0}body.lh #jb{left:auto;right:calc(28px + env(safe-a
 @media(orientation:portrait){#hint.serving{top:calc(166px + env(safe-area-inset-top,0px));max-width:90vw;font-size:12px}}
 
 /* TOPボタンの背景が透明に見える問題を最終CSSで上書き */
+
+/* ドパガキモード：ネオン・虹色・過剰演出 */
+body.dopa{--d-blue:#ff00b8;--d-blue-h:#c900ff;--d-blue-a:#6500ff;--d-tint:#ffe0fb;--d-tint-a:#ffb3f1;--d-yellow:#fff000}
+body.dopa #sb{border:3px solid #ff00d4;box-shadow:0 0 12px #ff00d4,0 0 28px #8b00ff;background:rgba(20,0,45,.92);color:#fff;animation:dopaPulse .65s infinite alternate}
+body.dopa #sb .r b:last-child{background:linear-gradient(135deg,#ff00a8,#7b00ff,#00d9ff);color:#fff;text-shadow:0 0 8px #fff}
+body.dopa #pz,body.dopa #mt,body.dopa #viewBtn,body.dopa #fovBtn{border:2px solid #ff00d4;color:#ff00d4;box-shadow:0 0 12px #ff00d4}
+body.dopa .b{border:3px solid #fff000;background:linear-gradient(135deg,#ff00b8,#7b00ff,#00d9ff);color:#fff;text-shadow:0 0 8px #fff;box-shadow:0 0 10px #ff00d4,0 0 24px #7b00ff;animation:dopaButton .8s infinite alternate}
+body.dopa #b1{background:linear-gradient(135deg,#ffec00,#ff4d00,#ff00b8);border-color:#fff}
+body.dopa #hint{background:#170027;color:#fff;border:2px solid #ff00d4;box-shadow:0 0 16px #ff00d4}
+body.dopa #msg{background:linear-gradient(90deg,#ff00b8,#7b00ff,#00bfff);border:2px solid #fff000;box-shadow:0 0 18px #ff00d4,0 0 42px #7b00ff;font-size:clamp(22px,5vw,38px);animation:dopaMsg .45s infinite alternate}
+body.dopa #ov{background:radial-gradient(circle at 50% 0%,rgba(255,0,190,.45),rgba(20,0,55,.96) 65%)}
+body.dopa #ov .dlg{border:3px solid #ff00d4;box-shadow:0 0 24px #ff00d4,0 0 60px #7b00ff;background:linear-gradient(145deg,#fff,#ffe9fb)}
+body.dopa #ov h1{color:#d000a9;text-shadow:0 0 10px #ff8be8}
+body.dopa .bt.go{background:linear-gradient(90deg,#ff00b8,#7b00ff,#008cff);border-color:#fff;color:#fff;box-shadow:0 0 12px #ff00d4}
+#dopaFX{position:fixed;inset:0;z-index:30;pointer-events:none;overflow:hidden;display:none}body.dopa #dopaFX{display:block}
+.dopa-pop{position:absolute;left:var(--x);top:var(--y);font-weight:1000;font-style:italic;font-size:clamp(24px,7vw,64px);color:#fff;text-shadow:3px 3px #ff00b8,-3px -3px #00d9ff,0 0 22px #ff00d4;white-space:nowrap;animation:dopaPop .75s cubic-bezier(.15,.8,.2,1) forwards}
+.dopa-spark{position:absolute;left:var(--x);top:var(--y);font-size:clamp(18px,4vw,34px);animation:dopaSpark .8s ease-out forwards}
+body.dopa #btns .b:active{filter:brightness(1.8) saturate(1.5);transform:scale(.92)}
+@keyframes dopaPulse{to{filter:hue-rotate(70deg);box-shadow:0 0 22px #00d9ff,0 0 40px #ff00d4}}
+@keyframes dopaButton{to{filter:hue-rotate(100deg) brightness(1.25);transform:scale(1.045)}}
+@keyframes dopaMsg{to{filter:hue-rotate(75deg);transform:translateX(-50%) scale(1.05)}}
+@keyframes dopaPop{0%{transform:translate(-50%,-50%) scale(.15) rotate(-12deg);opacity:0}18%{transform:translate(-50%,-50%) scale(1.25) rotate(5deg);opacity:1}75%{transform:translate(-50%,-70%) scale(1) rotate(-3deg);opacity:1}100%{transform:translate(-50%,-115%) scale(.8);opacity:0}}
+@keyframes dopaSpark{0%{transform:translate(0,0) scale(.2) rotate(0);opacity:0}15%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.4) rotate(220deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){body.dopa *,body.dopa *::before{animation-duration:1.8s!important}}
 </style></head><body>
 <div id="app"></div>
 <div id="sb" role="group" aria-label="スコア"><div class="h" id="hh"><span>ゲーム　　　ポイント</span></div>
 <div class="r"><i id="s0"></i><span>あなた</span><b id="g0">0</b><b id="p0">0</b></div>
 <div class="r"><i id="s1"></i><span>CPU</span><b id="g1">0</b><b id="p1">0</b></div></div>
 <button id="pz" data-a="pause" aria-label="一時停止">Ⅱ</button>
-<button id="mt" data-a="mute" aria-label="効果音をミュート" aria-pressed="false">🔊</button><button id="viewBtn" data-a="camera" aria-label="視点切り替え" aria-pressed="false">3P</button><div id="edit" role="region" aria-label="ボタン位置の調整" hidden><p id="ed1" role="status">ボタンをドラッグして動かします。キーボードでは、ボタンを選んで矢印キーで動かせます。</p><div class="act"><button class="bt" data-a="streset">もとに戻す</button><button class="bt go" data-a="stdone">完了</button></div></div><div id="msg" role="status" aria-live="polite"></div><div id="hint" role="status" aria-live="polite"></div><div id="ov"></div>
+<button id="mt" data-a="mute" aria-label="効果音をミュート" aria-pressed="false">🔊</button><button id="viewBtn" data-a="camera" aria-label="視点切り替え" aria-pressed="false">3P</button><div id="edit" role="region" aria-label="ボタン位置の調整" hidden><p id="ed1" role="status">ボタンをドラッグして動かします。キーボードでは、ボタンを選んで矢印キーで動かせます。</p><div class="act"><button class="bt" data-a="streset">もとに戻す</button><button class="bt go" data-a="stdone">完了</button></div></div><div id="msg" role="status" aria-live="polite"></div><div id="dopaFX" aria-hidden="true"></div><div id="hint" role="status" aria-live="polite"></div><div id="ov"></div>
 <div id="serveAim" role="group" aria-label="サーブコース"><button type="button" data-course="wide" aria-pressed="false">ワイド</button><button type="button" data-course="center" aria-pressed="false">センター</button><button type="button" data-course="auto" aria-pressed="true">おまかせ</button></div>
 <div id="tc"><div id="jz"></div><div id="jb"><div id="jk"></div></div>
 <div id="btns"><button class="b" id="b1" data-k="shot">SHOT</button><button class="b" id="b2" data-k="lob">LOB</button><button class="b" id="b3" data-k="sp">SMASH</button><button class="b" id="b4" data-k="sl">SLICE</button><button class="b" id="b5" data-k="top">TOP</button></div></div>
@@ -296,6 +320,13 @@ function hint(t){t=MP.role==='host'?t.replace(/CPU/g,'相手'):t;const serving=(
 let serveCourse='auto';
 let lastF=null;
 function ov(h){const o=$('ov');if(h){if(o.style.display!=='flex')lastF=document.activeElement;o.innerHTML='<div class="dlg">'+h+'</div>';o.style.display='flex';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');const t=o.querySelector('h1');if(t){t.id='dlgT';t.tabIndex=-1;o.setAttribute('aria-labelledby','dlgT');t.focus()}}else{o.innerHTML='';o.style.display='none';if(lastF&&lastF.focus)lastF.focus();lastF=null}}
+let dopaMode=false;try{dopaMode=localStorage.getItem('st3d.dopa')==='1'}catch(e){}document.body.classList.toggle('dopa',dopaMode);
+function setDopa(on){dopaMode=!!on;document.body.classList.toggle('dopa',dopaMode);try{localStorage.setItem('st3d.dopa',dopaMode?'1':'0')}catch(e){}}
+function dopaFX(kind){if(!dopaMode)return;const box=$('dopaFX');if(!box)return;
+ const words=kind==='point'?['脳汁ドバドバ!!','WIN!!','アツすぎ!!!','神展開!!']:kind==='game'?['GAME GET!!','激アツ!!!','脳汁ィィ!!']:['バチィィン!!','BREAK!!','ドパァ!!','NICE SHOT!!'];
+ const pop=document.createElement('div');pop.className='dopa-pop';pop.textContent=words[Math.random()*words.length|0];pop.style.setProperty('--x',(22+Math.random()*56)+'vw');pop.style.setProperty('--y',(25+Math.random()*40)+'vh');box.appendChild(pop);setTimeout(()=>pop.remove(),900);
+ const icons=['✨','💥','⚡','🌈','🔥','💎'];for(let i=0;i<10;i++){const p=document.createElement('span');p.className='dopa-spark';p.textContent=icons[Math.random()*icons.length|0];p.style.setProperty('--x',(35+Math.random()*30)+'vw');p.style.setProperty('--y',(35+Math.random()*30)+'vh');p.style.setProperty('--dx',(Math.random()*240-120)+'px');p.style.setProperty('--dy',(Math.random()*260-130)+'px');box.appendChild(p);setTimeout(()=>p.remove(),900)}
+}
 function settings(){
  const rd=(n,v,l,c)=>'<label class="rd"><input type="radio" name="'+n+'" value="'+v+'" '+(c?'checked':'')+' >'+l+'</label>';
  if(fovValue===null)fovValue=cam.fov;
@@ -303,6 +334,7 @@ function settings(){
  '<fieldset><legend>視野角（FOV） <output id="settingsFovValue">'+fovValue+'°</output></legend><input id="settingsFovRange" aria-label="視野角" type="range" min="40" max="110" step="1" value="'+fovValue+'" style="width:100%;min-height:36px;accent-color:var(--d-blue);touch-action:pan-x"><div class="fovEnds"><span>狭い</span><span>広い</span></div></fieldset>'+
  '<fieldset><legend>視点</legend><div class="rds">'+rd('camera','third','三人称（標準）',!firstPerson)+rd('camera','first','一人称',firstPerson)+'</div></fieldset>'+
  '<fieldset><legend>効果音</legend><div class="rds">'+rd('sound','on','オン',!muted)+rd('sound','off','ミュート',muted)+'</div></fieldset>'+
+ '<fieldset><legend>ドパガキモード</legend><div class="rds">'+rd('dopa','on','ON：ネオンUI・虹色演出・脳汁エフェクト',dopaMode)+rd('dopa','off','OFF：通常表示',!dopaMode)+'</div></fieldset>'+
  '<fieldset><legend>CPUの強さ</legend><div class="rds">'+['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')+'</div></fieldset>'+
  '<fieldset><legend>試合形式</legend><div class="rds">'+[[2,'3ゲーム（短時間）'],[3,'5ゲーム'],[4,'7ゲーム（公式標準）']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')+'</div></fieldset>'+
  '<div class="act"><button class="bt" data-a="set">操作の詳細設定</button><button class="bt go" data-a="settingsback">完了</button></div>');
@@ -330,7 +362,7 @@ function fault(w){if(state!=='rally'&&state!=='toss')return;serveNo++;if(serveNo
  state='wait';timer=1.6;after=setupServe;SFX.fault();msg('FAULT '+(w||''),1.4);hint('')}
 function endPoint(w,why){if(state!=='rally'&&state!=='toss')return;const i=w==='p'?0:1;pts[i]++;let t=(w==='p'?'あなたのポイント! ':'CPUのポイント ')+(why||''),gameWon=false;
  if(pts[i]>=(fin()?7:4)&&pts[i]-pts[1-i]>=2){games[i]++;pts=[0,0];gi++;gameWon=true;t=(w==='p'?'あなたがゲーム獲得! ':'CPUがゲーム獲得 ')+(why||'');if(games[i]>=GM)over=true}
- hud();msg(t,2.2);if(over)SFX.match(w==='p');else if(gameWon)SFX.game(w==='p');else SFX[w==='p'?'win':'lose']();hint('');state='wait';timer=2.4;after=over?result:nextPoint}
+ hud();msg(t,2.2);if(dopaMode)dopaFX(over?'game':gameWon?'game':'point');if(over)SFX.match(w==='p');else if(gameWon)SFX.game(w==='p');else SFX[w==='p'?'win':'lose']();hint('');state='wait';timer=2.4;after=over?result:nextPoint}
 function result(){stopCourtAmbience();state='over';const w=games[0]>games[1];ov(`<h1>${w?'勝利しました':'敗北しました'}</h1><p class="res">あなた ${games[0]} - ${games[1]} ${MP.role?'相手':'CPU'}</p><div class="act"><button class="bt" data-a="title">タイトルへ戻る</button><button class="bt go" data-a="again">もう一度対戦する</button></div>`)}
 function integ(b,dt){if(b.cut)b.vx+=b.cut*0.18*dt;if(b.top)b.vy-=2.2*dt;b.vy-=G*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;const d=1-.06*dt;b.vx*=d;b.vz*=d;
  if(b.y<R&&b.vy<0){const iv=-b.vy;b.y=R;b.vy=iv>1.2?iv*(b.sl?(b.cutServe?CUT_SERVE.bounceRestitution:.5):.74):0;b.vx*=b.sl?.95:.87;b.vz*=b.sl?(b.cutServe?.78:.95):(b.top?1.12:.87);if(b.cut){b.vx+=b.cut*(b.cutServe?CUT_SERVE.bounceSide:2.0);b.cut=0}b.top=false;b.cutServe=false;return iv>1.2}return false}
@@ -361,7 +393,7 @@ function doHit(w){if(state==='toss'&&(Math.abs(w.z)<HL-.05||w.x*(w===P?sx:-sx)<0
  }
  const tn=-ball.z/ball.vz;if(tn>0&&tn<t){const yn=ball.y+ball.vy*tn-.5*G*tn*tn,need=NH+.3;if(yn<need)ball.vy+=(need-yn)/tn}
  ball.vy=Math.min(ball.vy,13);ball.sl=A.type==='sl';ball.top=!serve&&A.type==='top';ball.cut=serve&&A.type==='sl'?(tsx>0?CUT_SERVE.spinX:-CUT_SERVE.spinX):0;ball.cutServe=serve&&A.type==='sl';ball.ty=serve?'sv':A.type==='lob'?'lob':A.type==='sl'?'sl':A.type==='top'?'top':ball.y>2.1?'sm':'fl';lastHit=me;bn=0;hitCool=.3;netT=false;isServe=serve;if(serve){state='rally';hint('')}
- SFX.hit(Math.hypot(ball.vx,ball.vy,ball.vz),ball.sl,ball.ty);(me==='p'?C:P).ss=0;fx=1;ring.position.set(ball.x,ball.y,ball.z);if(me==='p'){cpuErr={x:rnd()*D[diff].er,z:rnd()*D[diff].er*.8};cpuSmP=Math.random()<[.4,.7,.95][diff];cpuT=0}}
+ SFX.hit(Math.hypot(ball.vx,ball.vy,ball.vz),ball.sl,ball.ty);dopaFX('hit');(me==='p'?C:P).ss=0;fx=1;ring.position.set(ball.x,ball.y,ball.z);if(me==='p'){cpuErr={x:rnd()*D[diff].er,z:rnd()*D[diff].er*.8};cpuSmP=Math.random()<[.4,.7,.95][diff];cpuT=0}}
 const ez=t=>t*t*(3-2*t),c01=t=>clamp(t,0,1);const wr=d=>Math.atan2(Math.sin(d),Math.cos(d));
 function startSwing(w,type,aim){if(w.sw>=0)return;w.sw=0;SFX.swing();w.hit=false;w.type=type;if(aim)w.aim=aim;
  w.mode=state==='toss'?'sv':(ball.y>2.2&&type!=='lob')?'sm':((ball.x-w.x)*(w.hs>0?1:-1)>=-.15?'fh':'bh');w.vol=state==='rally'&&bn===0&&!isServe;w.hy=ball.y}
@@ -566,7 +598,7 @@ addEventListener('contextmenu',e=>e.preventDefault());
 ren.domElement.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')pend=e.button===2?'lob':'shot'});
 document.querySelectorAll('.b').forEach(b=>{b.addEventListener('pointerdown',e=>{if(EDIT)return;e.preventDefault();pend=b.dataset.k});b.addEventListener('click',e=>{if(!EDIT&&e.detail===0)pend=b.dataset.k})});
 document.querySelectorAll('[data-course]').forEach(b=>{b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if((state!=='ready'&&state!=='toss')||server!=='p')return;serveCourse=b.dataset.course;document.querySelectorAll('[data-course]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));hint('サーブコース：'+({wide:'ワイド',center:'センター',auto:'おまかせ'}[serveCourse])+'｜SHOTで通常サーブ / SLICEでカットサーブ')})});
-addEventListener('change',e=>{const t=e.target;if(t.name==='diff')diff=+t.value;else if(t.name==='gm')GM=+t.value;else if(t.name==='camera'){firstPerson=t.value==='first';$('viewBtn').textContent=firstPerson?'1P':'3P';$('viewBtn').setAttribute('aria-pressed',String(firstPerson))}else if(t.name==='sound'){muted=t.value==='off';$('mt').textContent=muted?'🔇':'🔊';$('mt').setAttribute('aria-pressed',String(muted));if(ambGain&&ac)ambGain.gain.setTargetAtTime(muted?0:.018,ac.currentTime,.12);if(!muted&&state!=='menu'&&state!=='over'&&state!=='paused')startCourtAmbience()}else if(t.name==='hand'){LAY.hand=t.value;LAY.off={};applyLayout();saveLay()}else if(t.name==='bsz'){LAY.size=+t.value;applyLayout();saveLay()}});
+addEventListener('change',e=>{const t=e.target;if(t.name==='diff')diff=+t.value;else if(t.name==='gm')GM=+t.value;else if(t.name==='camera'){firstPerson=t.value==='first';$('viewBtn').textContent=firstPerson?'1P':'3P';$('viewBtn').setAttribute('aria-pressed',String(firstPerson))}else if(t.name==='dopa'){setDopa(t.value==='on')}else if(t.name==='sound'){muted=t.value==='off';$('mt').textContent=muted?'🔇':'🔊';$('mt').setAttribute('aria-pressed',String(muted));if(ambGain&&ac)ambGain.gain.setTargetAtTime(muted?0:.018,ac.currentTime,.12);if(!muted&&state!=='menu'&&state!=='over'&&state!=='paused')startCourtAmbience()}else if(t.name==='hand'){LAY.hand=t.value;LAY.off={};applyLayout();saveLay()}else if(t.name==='bsz'){LAY.size=+t.value;applyLayout();saveLay()}});
 $('ov').addEventListener('keydown',e=>{if(e.key!=='Tab')return;const f=[...$('ov').querySelectorAll('button,input,summary')].filter(x=>x.offsetParent!==null);if(!f.length)return;const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}});
 let jid=null,jc,joy={x:0,y:0};const jz=$('jz'),jb=$('jb'),jk=$('jk');
 const jrest=()=>{jid=null;joy.x=joy.y=0;mv.x=mv.z=0;jb.style.cssText='';jk.style.transform=''};
