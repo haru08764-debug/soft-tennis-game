@@ -354,7 +354,11 @@ function doHit(w){if(state==='toss'&&(Math.abs(w.z)<HL-.05||w.x*(w===P?sx:-sx)<0
   const dist=Math.hypot(tx-ball.x,tz-ball.z);t=lob?1.7+dist*.018:clamp(dist/sp,.5,1.4)}
  tx+=rnd()*E;tz+=rnd()*E*.8;
  ball.vx=(tx-ball.x)/t*1.03;ball.vz=(tz-ball.z)/t*1.03;ball.vy=(R-ball.y+.5*G*t*t)/t;
- if(serve&&A.type==='sl'){ball.vy=Math.min(ball.vy,5.6);ball.vz*=1.04;}
+ if(serve&&A.type==='sl'){
+  // カットサーブは横へ逃げず、まず相手コート方向へ確実に進ませる
+  ball.vx=tsx*0.85;ball.vz=sg*23.5;
+  ball.vy=Math.min(ball.vy,5.6);
+ }
  const tn=-ball.z/ball.vz;if(tn>0&&tn<t){const yn=ball.y+ball.vy*tn-.5*G*tn*tn,need=NH+.3;if(yn<need)ball.vy+=(need-yn)/tn}
  ball.vy=Math.min(ball.vy,13);ball.sl=A.type==='sl';ball.top=!serve&&A.type==='top';ball.cut=serve&&A.type==='sl'?(tsx>0?CUT_SERVE.spinX:-CUT_SERVE.spinX):0;ball.cutServe=serve&&A.type==='sl';ball.ty=serve?'sv':A.type==='lob'?'lob':A.type==='sl'?'sl':A.type==='top'?'top':ball.y>2.1?'sm':'fl';lastHit=me;bn=0;hitCool=.3;netT=false;isServe=serve;if(serve){state='rally';hint('')}
  SFX.hit(Math.hypot(ball.vx,ball.vy,ball.vz),ball.sl,ball.ty);(me==='p'?C:P).ss=0;fx=1;ring.position.set(ball.x,ball.y,ball.z);if(me==='p'){cpuErr={x:rnd()*D[diff].er,z:rnd()*D[diff].er*.8};cpuSmP=Math.random()<[.4,.7,.95][diff];cpuT=0}}
