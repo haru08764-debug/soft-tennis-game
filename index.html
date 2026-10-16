@@ -119,6 +119,28 @@
       @media(orientation:landscape) and (max-height:520px){#hint.serving{top:calc(96px + env(safe-area-inset-top,0px));font-size:12px;padding:4px 8px}}
       @media(orientation:portrait){#hint.serving{top:calc(166px + env(safe-area-inset-top,0px));max-width:90vw;font-size:12px}}
 
+      /* ドパガキモード：視界を塞ぎすぎず、派手な演出を重ねる */
+      #dopFx{position:fixed;inset:0;z-index:7;pointer-events:none;overflow:hidden;opacity:0}
+      #dopFx .dopFlash{position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,rgba(255,255,255,.95),rgba(255,220,0,.35) 22%,rgba(255,0,100,.16) 55%,transparent 72%);opacity:0}
+      #dopFx .dopBanner{position:absolute;left:50%;top:36%;transform:translate(-50%,-50%) scale(.45) rotate(-5deg);font-weight:1000;font-size:clamp(28px,9vw,76px);font-style:italic;letter-spacing:.04em;white-space:nowrap;color:#fff;text-shadow:0 4px 0 #f04,3px 7px 0 #401bff,0 0 22px #ffef00,-2px -2px 0 #111;opacity:0;-webkit-text-stroke:1px #111}
+      #dopFx.pop .dopFlash{animation:dopFlash .42s ease-out}#dopFx.pop .dopBanner{animation:dopBanner .7s cubic-bezier(.15,1.5,.3,1) both}#dopFx.pop{opacity:1}
+      @keyframes dopFlash{0%{opacity:0}12%{opacity:.9}100%{opacity:0}}
+      @keyframes dopBanner{0%{opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(-8deg)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(3deg)}72%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-2deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.2) rotate(0)}}
+      body.dopShake #app{animation:dopShake .22s linear}@keyframes dopShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-4px,2px)}40%{transform:translate(4px,-2px)}60%{transform:translate(-3px,-1px)}80%{transform:translate(2px,2px)}}
+      @media(prefers-reduced-motion:reduce){#dopFx.pop .dopFlash,#dopFx.pop .dopBanner,body.dopShake #app{animation:none!important}}
+      /* ドパガキMAX：UI全部が虹色で暴れるモード */
+      @keyframes dopHue{0%{filter:hue-rotate(0deg) saturate(1.5)}100%{filter:hue-rotate(360deg) saturate(2.2)}}
+      @keyframes dopRainbowBg{0%{background-position:0% 50%}100%{background-position:400% 50%}}
+      @keyframes dopWobble{0%,100%{transform:rotate(-1deg) scale(1)}25%{transform:rotate(1.2deg) scale(1.015)}50%{transform:rotate(-.8deg) scale(1.005)}75%{transform:rotate(1deg) scale(1.02)}}
+      @keyframes dopFloat{0%{transform:translateY(110vh) rotate(0deg) scale(.5);opacity:0}10%{opacity:1}100%{transform:translateY(-20vh) rotate(720deg) scale(1.4);opacity:0}}
+      body.dopRainbow #ov,body.dopRainbow #hud,body.dopRainbow #msg,body.dopRainbow .hl,body.dopRainbow .panel,body.dopRainbow .card{animation:dopHue 1.8s linear infinite,dopWobble 1.1s ease-in-out infinite!important;outline:2px solid #ff00e6;box-shadow:0 0 22px #ff00e6,0 0 44px #00fff0!important}
+      body.dopRainbow button,body.dopRainbow .bt,body.dopRainbow .rd,body.dopRainbow input,body.dopRainbow select{background-image:linear-gradient(90deg,#ff004c,#ff8a00,#fff000,#00ff73,#00d9ff,#633cff,#ff00d4,#ff004c)!important;background-size:400% 100%!important;animation:dopRainbowBg 2s linear infinite,dopHue 3s linear infinite!important;color:#fff!important;text-shadow:0 2px 3px #000!important;border:2px solid #fff!important}
+      body.dopRainbow h1,body.dopRainbow h2,body.dopRainbow legend,body.dopRainbow .ver{animation:dopHue .8s linear infinite!important;text-shadow:2px 2px 0 #ff0055,-2px -2px 0 #00eaff,0 0 18px #fff!important}
+      body.dopRainbow #dopFx .dopBanner{-webkit-text-stroke:2px #fff;text-shadow:4px 4px 0 #ff00d4,-4px -4px 0 #00eaff,0 0 25px #fff,0 0 45px #ff0}
+      #dopFx .dopEmoji{position:absolute;left:var(--x);top:110%;font-size:clamp(28px,7vw,64px);animation:dopFloat var(--dur) cubic-bezier(.2,.7,.4,1) forwards;filter:drop-shadow(0 0 8px #fff)}
+      body.dopRainbow #app{animation:dopHue 5s linear infinite}
+
+
       /* TOPボタンの背景が透明に見える問題を最終CSSで上書き */
     </style>
   
@@ -135,6 +157,7 @@
   </head>
   <body>
     <div id="app"></div>
+    <div id="dopFx" aria-hidden="true"><div class="dopFlash"></div><div class="dopBanner" id="dopBanner">脳汁全開！！</div></div>
     <div id="sb" role="group" aria-label="スコア">
       <div class="h" id="hh"><span>ゲーム　　　ポイント</span></div>
       <div class="r">
@@ -348,6 +371,10 @@
       const fin=()=>games[0]===GM-1&&games[1]===GM-1;
       function hud(){const th=fin()?6:3,l=i=>{const a=pts[i],b=pts[1-i];return a>=th&&b>=th?(a===b?'DEUCE':a>b?'ADV':'-'):a};$('sb').querySelectorAll('.r span')[1].textContent=MP.role?'相手':'CPU';$('pz').style.display=MP.role?'none':'';$('hh').textContent=(MP.role?'対人戦 ':'')+(GM*2-1)+'ゲームマッチ'+(fin()?' FINAL':'')+' | '+(server==='p'?'あなた':MP.role?'相手':'CPU')+'サーブ '+(serveNo>1?'2nd':'1st');
        for(let i=0;i<2;i++){$('g'+i).textContent=games[i];$('p'+i).textContent=l(i)}$('s0').className=server==='p'?'on':'';$('s1').className=server==='c'?'on':''}
+      let dopMode=false;try{dopMode=localStorage.getItem('st3d.dopMode')==='on'}catch(e){}if(dopMode)document.body.classList.add('dopRainbow');
+      let dopTimer=0;
+      function dopSound(power=1){if(typeof muted!=='undefined'&&muted)return;try{const a=au();if(!a)return;const t=a.currentTime;const root=[110,146.83,164.81,220,261.63,329.63,392,523.25,659.25,783.99][Math.floor(Math.random()*10)];const wave=['sawtooth','square','triangle'][Math.floor(Math.random()*3)];tone(root*2,.18,wave,.10*power,root*5);tone(root*3,.28,'sawtooth',.075*power,root*.75,.035);tone(root*4,.12,'square',.055*power,root*1.5,.08);tone(90+Math.random()*90,.32,'sawtooth',.09*power,35,.02);tone(900+Math.random()*900,.07,'square',.035*power,150,.04);tone(1400+Math.random()*1200,.045,'triangle',.025*power,300,.11);const notes=[1,1.25,1.5,2,2.5,3,4];for(let i=0;i<5;i++){const f=root*notes[Math.floor(Math.random()*notes.length)]*(Math.random()>.5?1:2);tone(f,.09+Math.random()*.12,['sawtooth','square','triangle'][Math.floor(Math.random()*3)],.045*power,f*(Math.random()>.5?1.5:.6),.13+i*.045)}if(Math.random()<.45){tone(52,.42,'sawtooth',.11*power,28,.16);tone(1760,.16,'square',.025*power,440,.2)}}catch(e){}}function dopBurst(text='脳汁全開！！',power=1){if(!dopMode)return;dopSound(power);const fxel=$('dopFx'),banner=$('dopBanner');if(!fxel||!banner)return;banner.textContent=text;fxel.querySelectorAll('.dopEmoji').forEach(n=>n.remove());const emojis=['🌈','🤑','💥','💖','🎾','🧠','🔥','✨','💸','🦄','🍣','草'];for(let i=0;i<18;i++){const n=document.createElement('span');n.className='dopEmoji';n.textContent=emojis[Math.floor(Math.random()*emojis.length)];n.style.setProperty('--x',Math.random()*100+'%');n.style.setProperty('--dur',(0.9+Math.random()*1.8)+'s');fxel.appendChild(n)}fxel.classList.remove('pop');document.body.classList.remove('dopShake');void fxel.offsetWidth;fxel.classList.add('pop');if(power>0.65)document.body.classList.add('dopShake');clearTimeout(dopTimer);dopTimer=setTimeout(()=>{fxel.classList.remove('pop');document.body.classList.remove('dopShake');fxel.querySelectorAll('.dopEmoji').forEach(n=>n.remove())},2600)}
+
       function msg(t,d=1.8){if(MP.role==='host')MP.evq.push({m:t,d});const m=$('msg');m.textContent=MP.role==='host'?t.replace(/CPU/g,'相手'):t;m.style.opacity=1;msgT=d}
       function hint(t){t=MP.role==='host'?t.replace(/CPU/g,'相手'):t;const serving=(state==='ready'||state==='toss')&&server==='p';$('hint').textContent=t;$('hint').style.display=t?'block':'none';$('hint').classList.toggle('serving',!!t&&serving);$('serveAim').style.display=serving?'flex':'none'}
       let serveCourse='auto';
@@ -360,12 +387,13 @@
        '<fieldset><legend>視野角（FOV） <output id="settingsFovValue">'+fovValue+'°</output></legend><input id="settingsFovRange" aria-label="視野角" type="range" min="40" max="110" step="1" value="'+fovValue+'" style="width:100%;min-height:36px;accent-color:var(--d-blue);touch-action:pan-x"><div class="fovEnds"><span>狭い</span><span>広い</span></div></fieldset>'+
        '<fieldset><legend>視点</legend><div class="rds">'+rd('camera','third','三人称（標準）',!firstPerson)+rd('camera','first','一人称',firstPerson)+'</div></fieldset>'+
        '<fieldset><legend>効果音</legend><div class="rds">'+rd('sound','on','オン',!muted)+rd('sound','off','ミュート',muted)+'</div></fieldset>'+
+       '<fieldset><legend>ドパガキモード（脳汁全開演出）</legend><div class="rds"><label class="rd"><input type="checkbox" id="dopToggle" '+(dopMode?'checked':'')+'>オン（虹色UI・画面揺れ・爆音風シンセSE）</label></div></fieldset>'+
        '<fieldset><legend>CPUの強さ</legend><div class="rds">'+['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')+'</div></fieldset>'+
        '<fieldset><legend>試合形式</legend><div class="rds">'+[[2,'3ゲーム（短時間）'],[3,'5ゲーム'],[4,'7ゲーム（公式標準）']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')+'</div></fieldset>'+
        '<div class="act"><button class="bt" data-a="set">操作の詳細設定</button><button class="bt go" data-a="settingsback">完了</button></div>');
       }
       function menu(){stopCourtAmbience();mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
-       ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.7.4</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
+       ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.7.5</p><p>CPUと対戦するシングルスです。設定を選んで試合を始めてください。</p>
       <fieldset><legend>CPUの強さ</legend><div class="rds">${['かんたん','ふつう','つよい'].map((n,i)=>rd('diff',i,n,i===diff)).join('')}</div></fieldset>
       <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
       <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="settings">設定</button><button class="bt go" data-a="start">試合開始</button></div>
@@ -373,6 +401,7 @@
       function pause(){if(MP.role)return;pend=null;if(state==='paused'){state=pst;ov('')}else if(['ready','toss','rally','wait'].includes(state)){pst=state;state='paused';ov(PAUSE_HTML)}}
       addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-d],[data-g]');if(!t)return;if(t.dataset.d!==undefined){diff=+t.dataset.d;menu();return}if(t.dataset.g!==undefined){GM=+t.dataset.g;menu();return}
        const a=t.dataset.a;if(a==='start'||a==='again')startMatch();else if(a==='title')menu();else if(a==='test')selfTest();else if(a==='mute'){muted=!muted;$('mt').textContent=muted?'🔇':'🔊';$('mt').setAttribute('aria-pressed',muted);if(ambGain&&ac)ambGain.gain.setTargetAtTime(muted?0:.018,ac.currentTime,.12);if(!muted&&state!=='menu'&&state!=='over'&&state!=='paused')startCourtAmbience()}else if(a==='camera'){firstPerson=!firstPerson;$('viewBtn').textContent=firstPerson?'1P':'3P';$('viewBtn').setAttribute('aria-pressed',String(firstPerson))}else if(a==='settings')settings();else if(a==='settingsback')menu();else if(a==='set')stDlg();else if(a==='stedit')stEdit();else if(a==='streset')stReset();else if(a==='stdone')stDone();else if(a==='stback')stBack();else if(a==='mp')mpMenu();else if(a==='mphost')mpHost();else if(a==='mpjoin')mpJoin();else if(a==='mpcopy'||a==='mpshare')mpShare(a,t.dataset.code);else pause()});
+      $('ov').addEventListener('change',e=>{if(e.target.id==='dopToggle'){dopMode=e.target.checked;document.body.classList.toggle('dopRainbow',dopMode);try{localStorage.setItem('st3d.dopMode',dopMode?'on':'off')}catch(_){}if(dopMode)dopBurst('🌈ドパガキ、限界突破ァァ！！！🤑',1);else{const fx=$('dopFx');fx.classList.remove('pop');fx.querySelectorAll('.dopEmoji').forEach(n=>n.remove());document.body.classList.remove('dopShake')}}});
       function startMatch(){startCourtAmbience();pts=[0,0];games=[0,0];gi=0;over=false;after=null;pend=null;hitCool=0;cpuT=0;restT=0;fx=0;msgT=0;cpuLet=false;netT=false;lastHit=null;bn=0;timer=0;$('msg').style.opacity=0;ov('');P.x=0;P.z=HL+.9;C.x=0;C.z=-HL-.9;P.vx=P.vz=C.vx=C.vz=0;P.sw=C.sw=-1;nextPoint()}
       function nextPoint(){const n=pts[0]+pts[1],f=gi%2?'c':'p';server=(n>>1)%2?(f==='p'?'c':'p'):f;sx=n%2?-1:1;serveNo=1;hud();setupServe()}
       function carry(){const s=server==='p'?P:C;ball.x=s.x+s.hs*1.2;ball.z=s.z+s.fw*.4;ball.y=1.05}
@@ -385,7 +414,7 @@
        state='wait';timer=1.6;after=setupServe;SFX.fault();msg('FAULT '+(w||''),1.4);hint('')}
       function endPoint(w,why){if(state!=='rally'&&state!=='toss')return;const i=w==='p'?0:1;pts[i]++;let t=(w==='p'?'あなたのポイント! ':'CPUのポイント ')+(why||''),gameWon=false;
        if(pts[i]>=(fin()?7:4)&&pts[i]-pts[1-i]>=2){games[i]++;pts=[0,0];gi++;gameWon=true;t=(w==='p'?'あなたがゲーム獲得! ':'CPUがゲーム獲得 ')+(why||'');if(games[i]>=GM)over=true}
-       hud();msg(t,2.2);if(over)SFX.match(w==='p');else if(gameWon)SFX.game(w==='p');else SFX[w==='p'?'win':'lose']();hint('');state='wait';timer=2.4;after=over?result:nextPoint}
+       hud();msg(t,2.2);if(w==='p')dopBurst(gameWon?(over?'完全制覇！！！':'GAME GET！！！'):'POINT GET！！！',gameWon?1:.8);if(over)SFX.match(w==='p');else if(gameWon)SFX.game(w==='p');else SFX[w==='p'?'win':'lose']();hint('');state='wait';timer=2.4;after=over?result:nextPoint}
       function result(){stopCourtAmbience();state='over';const w=games[0]>games[1];ov(`<h1>${w?'勝利しました':'敗北しました'}</h1><p class="res">あなた ${games[0]} - ${games[1]} ${MP.role?'相手':'CPU'}</p><div class="act"><button class="bt" data-a="title">タイトルへ戻る</button><button class="bt go" data-a="again">もう一度対戦する</button></div>`)}
       function integ(b,dt){if(b.cut)b.vx+=b.cut*0.18*dt;if(b.top)b.vy-=2.2*dt;b.vy-=G*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.z+=b.vz*dt;const d=1-.06*dt;b.vx*=d;b.vz*=d;
        if(b.y<R&&b.vy<0){const iv=-b.vy;b.y=R;b.vy=iv>1.2?iv*(b.sl?.5:.74):0;b.vx*=b.sl?.95:.87;b.vz*=b.sl?.95:(b.top?1.12:.87);if(b.cut){b.vx+=b.cut*2.0;b.cut=0}b.top=false;return iv>1.2}return false}
@@ -411,7 +440,7 @@
        ball.vx=(tx-ball.x)/t*1.03;ball.vz=(tz-ball.z)/t*1.03;ball.vy=(R-ball.y+.5*G*t*t)/t;
        const tn=-ball.z/ball.vz;if(tn>0&&tn<t){const yn=ball.y+ball.vy*tn-.5*G*tn*tn,need=NH+.3;if(yn<need)ball.vy+=(need-yn)/tn}
        ball.vy=Math.min(ball.vy,13);ball.sl=A.type==='sl';ball.top=!serve&&A.type==='top';ball.cut=serve&&A.type==='sl'?(tsx>0?2.8:-2.8):0;ball.ty=serve?'sv':A.type==='lob'?'lob':A.type==='sl'?'sl':A.type==='top'?'top':ball.y>2.1?'sm':'fl';lastHit=me;bn=0;hitCool=.3;netT=false;isServe=serve;if(serve){state='rally';hint('')}
-       SFX.hit(Math.hypot(ball.vx,ball.vy,ball.vz),ball.sl,ball.ty);(me==='p'?C:P).ss=0;fx=1;ring.position.set(ball.x,ball.y,ball.z);if(me==='p'){cpuErr={x:rnd()*D[diff].er,z:rnd()*D[diff].er*.8};cpuSmP=Math.random()<[.4,.7,.95][diff];cpuT=0}}
+       SFX.hit(Math.hypot(ball.vx,ball.vy,ball.vz),ball.sl,ball.ty);if(me==='p'){const speed=Math.hypot(ball.vx,ball.vy,ball.vz);dopBurst(w.type==='sp'?'ドゴォォン！！':w.type==='sl'?'ギュルルッ！！':w.type==='top'?'バキュン！！':speed>25?'超高速ショット！！':'ナイスショット！！',speed>25?1:.7)}(me==='p'?C:P).ss=0;fx=1;ring.position.set(ball.x,ball.y,ball.z);if(me==='p'){cpuErr={x:rnd()*D[diff].er,z:rnd()*D[diff].er*.8};cpuSmP=Math.random()<[.4,.7,.95][diff];cpuT=0}}
       const ez=t=>t*t*(3-2*t),c01=t=>clamp(t,0,1);const wr=d=>Math.atan2(Math.sin(d),Math.cos(d));
       function startSwing(w,type,aim){if(w.sw>=0)return;w.sw=0;SFX.swing();w.hit=false;w.type=type;if(aim)w.aim=aim;
        w.mode=state==='toss'?'sv':(ball.y>2.2&&type!=='lob')?'sm':((ball.x-w.x)*(w.hs>0?1:-1)>=-.15?'fh':'bh');w.vol=state==='rally'&&bn===0&&!isServe;w.hy=ball.y}
