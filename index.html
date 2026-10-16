@@ -501,7 +501,7 @@
       /* ===== 周辺環境 ===== */
       {const d=new THREE.Object3D(),noSh=o=>{o.castShadow=false;return o};
        const bnr=(txt,col)=>{const c=document.createElement('canvas');c.width=512;c.height=70;const g=c.getContext('2d');g.fillStyle=col;g.fillRect(0,0,512,70);g.fillStyle='#fff';g.font='bold 46px system-ui,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(txt,256,37);return new THREE.CanvasTexture(c)};
-       [['SOFT TENNIS','#0b3d91'],['3D COURT','#b3261e'],['SMASH!','#1b6b3a'],['ACE','#c98a00'],['RALLY','#0b3d91'],['COURT SIDE','#444444']].forEach(([t,c],i)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(7.4,1.04),new THREE.MeshBasicMaterial({map:bnr(t,c),color:0xdddddd}));m.position.set(-19.25+i*7.7,.55,-21.9);sc.add(m);domeHiddenObjects.push(m)});   // 広告バナー
+       // 奥の広告バナー（SOFT TENNIS / 3D COURT など）は表示しない。
        [-13.9,13.9].forEach(x=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(48,1.04),mat(0x24543d));m.material.side=2;m.rotation.y=Math.PI/2;m.position.set(x,.55,0);sc.add(m);domeHiddenObjects.push(m)});   // サイドのウィンドスクリーン
        const pm=new THREE.InstancedMesh(new THREE.CylinderGeometry(.05,.05,2.7,6),mat(0x3a3f45),40);let n=0;const pp=(x,z)=>{d.position.set(x,1.35,z);d.scale.set(1,1,1);d.updateMatrix();pm.setMatrixAt(n++,d.matrix)};
        for(let x=-22;x<=22;x+=4)pp(x,-22);for(let z=-20;z<=24;z+=4){pp(-14,z);pp(14,z)}pm.count=n;pm.castShadow=false;sc.add(pm);domeHiddenObjects.push(pm);   // フェンスの支柱
