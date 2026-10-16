@@ -121,6 +121,17 @@
 
       /* TOPボタンの背景が透明に見える問題を最終CSSで上書き */
     </style>
+  
+    <style id="st3dUpdateStyles">
+      #st3dUpdateNotice{position:fixed;z-index:100000;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(92vw,430px);box-sizing:border-box;padding:16px;border:1px solid rgba(255,255,255,.24);border-radius:18px;background:rgba(13,18,42,.96);color:#fff;box-shadow:0 12px 40px #0008;font-family:system-ui,-apple-system,sans-serif;display:none;text-align:center;backdrop-filter:blur(12px)}
+      #st3dUpdateNotice .st3d-update-title{font-weight:800;font-size:16px;margin-bottom:5px}
+      #st3dUpdateNotice .st3d-update-copy{font-size:13px;line-height:1.5;opacity:.88;margin-bottom:12px}
+      #st3dUpdateNotice .st3d-update-actions{display:flex;gap:9px}
+      #st3dUpdateNotice button{flex:1;border:0;border-radius:11px;padding:11px 10px;font-size:14px;font-weight:800;cursor:pointer}
+      #st3dUpdateNow{background:#7cf7d4;color:#052a28}
+      #st3dUpdateLater{background:#ffffff1a;color:#fff;border:1px solid #ffffff30!important}
+    </style>
+
   </head>
   <body>
     <div id="app"></div>
@@ -639,5 +650,76 @@
        fx=Math.max(0,fx-dt*3.5);ring.visible=fx>0;if(fx>0){ring.material.opacity=fx;ring.scale.setScalar(1+(1-fx)*3);ring.lookAt(cam.position)}
        camUpd(dt);ren.render(sc,cam)})(last);
     </script>
+  
+    <div id="st3dUpdateNotice" role="status" aria-live="polite">
+      <div class="st3d-update-title">🎾 アップデートがあるよ！</div>
+      <div class="st3d-update-copy">新しいバージョンが公開されたみたい。ページを更新すると最新版で遊べるよ。</div>
+      <div class="st3d-update-actions">
+        <button id="st3dUpdateNow" type="button">今すぐ更新</button>
+        <button id="st3dUpdateLater" type="button">あとで</button>
+      </div>
+    </div>
+    <script id="st3dUpdateChecker">
+      (() => {
+        const notice = document.getElementById('st3dUpdateNotice');
+        const nowButton = document.getElementById('st3dUpdateNow');
+        const laterButton = document.getElementById('st3dUpdateLater');
+        if (!notice || !nowButton || !laterButton || !location.href.startsWith('http')) return;
+        let baseline = null;
+        let updateFound = false;
+        let dismissed = false;
+        const getPageSource = async () => {
+          const url = new URL(location.href);
+          url.searchParams.set('__st3d_update_check', String(Date.now()));
+          const response = await fetch(url.toString(), {
+            cache: 'no-store',
+            credentials: 'same-origin',
+            headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+          });
+          if (!response.ok) throw new Error('Update check failed');
+          return await response.text();
+        };
+        const showUpdateWhenSafe = () => {
+          if (!updateFound || dismissed) return;
+          // 試合中は表示せず、試合終了画面またはタイトル画面で表示
+          let safeToShow = false;
+          try {
+            safeToShow = state === 'over' || state === 'menu';
+          } catch (_) {
+            safeToShow = true;
+          }
+          if (safeToShow) notice.style.display = 'block';
+        };
+        const check = async () => {
+          showUpdateWhenSafe();
+          if (document.visibilityState !== 'visible' || updateFound) return;
+          try {
+            const source = await getPageSource();
+            if (baseline === null) {
+              baseline = source;
+              return;
+            }
+            if (source !== baseline) {
+              updateFound = true;
+              showUpdateWhenSafe();
+            }
+          } catch (_) {
+            // ネットワーク一時不調時は次回のチェックで再試行
+          }
+        };
+        nowButton.addEventListener('click', () => {
+          nowButton.disabled = true;
+          nowButton.textContent = '更新中…';
+          location.reload();
+        });
+        laterButton.addEventListener('click', () => {
+          dismissed = true;
+          notice.style.display = 'none';
+        });
+        check();
+        setInterval(check, 45000);
+      })();
+    </script>
+
   </body>
 </html>
