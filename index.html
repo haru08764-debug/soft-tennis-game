@@ -1020,7 +1020,7 @@
        };
        keepInside(cam.position);
        // 補間元も制限しないと、毎フレーム壁の外を目標に追い続けてしまう。
-       if(typeof cp!=='undefined')keepInside(cp);
+       keepInside(cp);
        lk.x=clamp(lk.x,-15.5,15.5);
        lk.z=clamp(lk.z,-zLimit,zLimit);
        lk.y=Math.min(lk.y,Math.max(1.5,roofAt(lk.x)-.35));
