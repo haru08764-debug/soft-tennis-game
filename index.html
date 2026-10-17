@@ -818,7 +818,7 @@
       function doublesAI(dt){if(!doublesMode||state!=='rally')return;
        // 後衛は自陣後方の担当。追いかけ移動そのものを後方ゾーンに制限する。
        const backLimit=6.2;
-       for(const [w,side,home] of [[P2,'p',7.2],[C2,'c',-7.2]]){const incoming=lastHit!==side;let gx=side==='p'?clamp(-P.x*.25,-2.2,2.2):clamp(-C.x*.25,-2.2,2.2),gz=home;
+       for(const [w,side,home] of [[P2,'p',7.2],[C2,'c',-7.2]]){const ballInBackZone=side==='p'?ball.z>=backLimit:ball.z<=-backLimit;const incoming=lastHit!==side&&ballInBackZone;let gx=side==='p'?clamp(-P.x*.25,-2.2,2.2):clamp(-C.x*.25,-2.2,2.2),gz=home;
         if(incoming){const t=clamp(Math.abs(ball.z-home)/Math.max(8,Math.abs(ball.vz)),0,.52),px=ball.x+ball.vx*t,pz=ball.z+ball.vz*t,ownSide=side==='p'?pz>.7:pz<-.7;
          if(ownSide){gx=clamp(px,-7.0,7.0);gz=side==='p'?clamp(pz,backLimit,HL):clamp(pz,-HL,-backLimit)}}
         const dx=gx-w.x,dz=gz-w.z,dist=Math.hypot(dx,dz),speed=D[diff].sp*.99,k=Math.min(1,(dist>.45?11:16)*dt),tvx=dist>.02?dx/dist*speed*Math.min(1,dist/.48):0,tvz=dist>.02?dz/dist*speed*Math.min(1,dist/.48):0;
