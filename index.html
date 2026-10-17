@@ -819,9 +819,12 @@
        // 後衛は自陣後方の担当。追いかけ移動そのものを後方ゾーンに制限する。
        const backLimit=6.2,backHome=HL+1.25,backMax=HL+3.2;
        for(const [w,side,home] of [[P2,'p',backHome],[C2,'c',-backHome]]){const ballInBackZone=side==='p'?ball.z>=backLimit:ball.z<=-backLimit;const incoming=lastHit!==side&&ballInBackZone;let gx=side==='p'?clamp(-P.x*.25,-2.2,2.2):clamp(-C.x*.25,-2.2,2.2),gz=home;
-        if(incoming){const t=clamp(Math.abs(ball.z-home)/Math.max(8,Math.abs(ball.vz)),0,.52),px=ball.x+ball.vx*t,pz=ball.z+ball.vz*t,ownSide=side==='p'?pz>.7:pz<-.7;
-         if(ownSide){gx=clamp(px,-7.0,7.0);gz=side==='p'?clamp(pz,backLimit,HL):clamp(pz,-HL,-backLimit)}}
-        const dx=gx-w.x,dz=gz-w.z,dist=Math.hypot(dx,dz),speed=D[diff].sp*.99,k=Math.min(1,(dist>.45?11:16)*dt),tvx=dist>.02?dx/dist*speed*Math.min(1,dist/.48):0,tvz=dist>.02?dz/dist*speed*Math.min(1,dist/.48):0;
+        if(incoming){
+         // ボールが速いほど先の位置を予測し、後衛が打点へ間に合うように追従を強化。
+         const t=clamp(Math.abs(ball.z-w.z)/Math.max(7,Math.abs(ball.vz)),0,.42),px=ball.x+ball.vx*t,pz=ball.z+ball.vz*t,ownSide=side==='p'?pz>.7:pz<-.7;
+         if(ownSide){gx=clamp(px,-7.0,7.0);gz=side==='p'?clamp(pz,backLimit,HL):clamp(pz,-HL,-backLimit)}
+        }
+        const dx=gx-w.x,dz=gz-w.z,dist=Math.hypot(dx,dz),ballSpeed=Math.hypot(ball.vx,ball.vz),speed=D[diff].sp*(incoming?1.45+Math.min(.45,ballSpeed*.035):1.05),k=Math.min(1,(dist>.45?20:24)*dt),tvx=dist>.02?dx/dist*speed*Math.min(1,dist/.3):0,tvz=dist>.02?dz/dist*speed*Math.min(1,dist/.3):0;
         w.vx+=(tvx-w.vx)*k;w.vz+=(tvz-w.vz)*k;
         const nextX=clamp(w.x+w.vx*dt,-7,7),nextZ=w.z+w.vz*dt;
         w.x=nextX;if(side==='p'){w.z=clamp(nextZ,backLimit,backMax);if(nextZ<backLimit&&w.vz<0)w.vz=0}else{w.z=clamp(nextZ,-backMax,-backLimit);if(nextZ>-backLimit&&w.vz>0)w.vz=0}
