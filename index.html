@@ -748,7 +748,9 @@
          const type=lob?'lob':(Math.random()<[.12,.24,.4][diff]?'sp':Math.random()<.24?'sl':Math.random()<.22?'top':'shot');
          startSwing(C,type,{ax:tx/3.5,dp:depth})}}
        const gx=clamp(g.x,-8,8),gz=clamp(g.z,-16,-1.3),dx=gx-C.x,dz=gz-C.z,dist=Math.hypot(dx,dz),spd=mine?d.sp:d.sp*.7;
-       if(dist>.02){const m=Math.min(1,dist/(spd*dt+1e-6));C.vx=dx/dist*spd*m;C.vz=dz/dist*spd*m}else C.vx=C.vz=0;C.x+=C.vx*dt;C.z+=C.vz*dt}
+       const pace=Math.min(1,dist/.65),tvx=dist>.02?dx/dist*spd*pace:0,tvz=dist>.02?dz/dist*spd*pace:0,k=Math.min(1,(dist>.5?9:15)*dt);
+       // CPUも目標地点で急停止せず、方向転換と減速を段階的に行う。
+       C.vx+=(tvx-C.vx)*k;C.vz+=(tvz-C.vz)*k;C.x=clamp(C.x+C.vx*dt,-8,8);C.z=clamp(C.z+C.vz*dt,-16,-1.3)}
       const AC=window.AudioContext||window.webkitAudioContext;let ac=null,nb=null,muted=false;
       function au(){if(!AC)return null;if(!ac){ac=new AC();const dec=(s,f)=>{try{const bin=atob(s),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);ac.decodeAudioData(u.buffer,f,()=>{})}catch(e){}};dec(HIT64,b=>{hitBuf=b});dec(BNC64,b=>{bncBuf=b});dec(BN2_64,b=>{bncB2=b});dec(SL64,b=>{slBuf=b});dec(SM64,b=>{smBuf=b});nb=ac.createBuffer(1,ac.sampleRate*.4|0,ac.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}if(ac.state!=='running')ac.resume();return ac}
       function tone(f,d,ty,v,f2,dl=0){const a=au();if(!a||muted)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+dl;o.type=ty;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.02)}
@@ -894,7 +896,10 @@
       window.addEventListener('pagehide',()=>jrest());
       if(matchMedia('(pointer:coarse)').matches||'ontouchstart' in window)$('tc').style.display='block';
       function move(dt){let ix=(keys.KeyD?1:0)-(keys.KeyA?1:0)+joy.x,iz=(keys.KeyS?1:0)-(keys.KeyW?1:0)+joy.y;const m=Math.hypot(ix,iz);if(m>1){ix/=m;iz/=m}
-       mv.x=ix;mv.z=iz;const dsh=keys.ShiftLeft||keys.ShiftRight||(jid!==null&&m>.92),s=dsh?8.4:5.5;mv.d=dsh;if(MP.role==='guest')return;P.vx=ix*s;P.vz=iz*s;P.x=clamp(P.x+P.vx*dt,-7,7);P.z=clamp(P.z+P.vz*dt,-1.2,21)}
+       mv.x=ix;mv.z=iz;const dsh=keys.ShiftLeft||keys.ShiftRight||(jid!==null&&m>.92),s=dsh?8.4:5.5;mv.d=dsh;if(MP.role==='guest')return;
+       // 急な方向転換を少し抑え、入力を離したときも自然に減速する。
+       const tvx=ix*s,tvz=iz*s,acc=m>.01?11:15,k=Math.min(1,acc*dt);P.vx+=(tvx-P.vx)*k;P.vz+=(tvz-P.vz)*k;
+       const nx=clamp(P.x+P.vx*dt,-7,7),nz=clamp(P.z+P.vz*dt,-1.2,21);if(nx!==P.x+P.vx*dt)P.vx=0;if(nz!==P.z+P.vz*dt)P.vz=0;P.x=nx;P.z=nz}
       function tick(dt){syncButtonMode();if(state==='paused'||state==='menu'||state==='over')return;const live=state==='ready'||state==='toss'||state==='rally';hitCool-=dt;if(msgT>0&&(msgT-=dt)<=0)$('msg').style.opacity=0;
        if(live){move(dt);if(state==='rally'&&P.z<.35)endPoint('c',P.z<0?'相手コート侵入':'タッチネット');if(pend){if(state==='ready'){if(server==='p'&&(pend==='shot'||pend==='sl')){servePick=pend;toss()}}else if(state==='toss'&&server==='p'&&P.sw<0){servePick=pend;startSwing(P,pend)}else if(state==='rally'&&P.sw<0)startSwing(P,pend);pend=null}(MP.role==='host'?mpCtl(dt):cpuAI(dt))}else{pend=null;P.vx=P.vz=C.vx=C.vz=0}
        if(state==='ready')carry();
