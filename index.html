@@ -778,7 +778,7 @@
        // CPUも目標地点で急停止せず、方向転換と減速を段階的に行う。
        C.vx+=(tvx-C.vx)*k;C.vz+=(tvz-C.vz)*k;C.x=clamp(C.x+C.vx*dt,-8,8);C.z=clamp(C.z+C.vz*dt,-16,-1.3)}
       function doublesAI(dt){if(!doublesMode||state!=='rally')return;
-       for(const [w,side,home] of [[P2,'p',4.2],[C2,'c',-4.2]]){const incoming=lastHit!==side;let gx=side==='p'?clamp(-P.x*.35,-2.5,2.5):clamp(-C.x*.35,-2.5,2.5),gz=home;
+       for(const [w,side,home] of [[P2,'p',(playerPosition==='front'?9.2:4.2)],[C2,'c',-4.2]]){const incoming=lastHit!==side;let gx=side==='p'?clamp(-P.x*.35,-2.5,2.5):clamp(-C.x*.35,-2.5,2.5),gz=home;
         if(incoming){const t=clamp(Math.abs(ball.z-home)/Math.max(7,Math.abs(ball.vz)),0,.45),px=ball.x+ball.vx*t,pz=ball.z+ball.vz*t;if(side==='p'?pz>.7:pz<-.7){gx=clamp(px,-7,7);gz=clamp(pz,side==='p'?1.1:-HL,side==='p'?HL:-1.1)}}
         const dx=gx-w.x,dz=gz-w.z,dist=Math.hypot(dx,dz),speed=D[diff].sp*.88,k=Math.min(1,(dist>.45?8:13)*dt),tvx=dist>.02?dx/dist*speed*Math.min(1,dist/.6):0,tvz=dist>.02?dz/dist*speed*Math.min(1,dist/.6):0;
         w.vx+=(tvx-w.vx)*k;w.vz+=(tvz-w.vz)*k;w.x=clamp(w.x+w.vx*dt,-7,7);w.z=clamp(w.z+w.vz*dt,side==='p'?1.1:-HL,side==='p'?HL:-1.1);
