@@ -989,7 +989,7 @@
        if(state==='toss'||state==='rally'||state==='wait')for(let i=0;i<2;i++)stepBall(dt/2);
        if(state==='rally'&&ball.y<R+.02&&Math.hypot(ball.vx,ball.vz)<.7){restT+=dt;if(restT>.8)endPoint(bn>0?(rallyHitter||lastHit):((rallyHitter||lastHit)==='p'?'c':'p'),'')}else restT=0;
        upd(P,dt);upd(C,dt);upd(P2,dt);upd(C2,dt);
-       if(state==='wait'){timer-=dt;if(timer<=0&&after){if(challengePending)hideChallengeButton();challengePending=null;const f=after;after=null;f()}}
+       if(state==='wait'){const dialogOpen=$('ov').style.display==='flex';if(!dialogOpen)timer-=dt;if(!dialogOpen&&timer<=0&&after){if(challengePending)hideChallengeButton();challengePending=null;const f=after;after=null;f()}}
        const o=th.pop();o.x=ball.x;o.y=ball.y;o.z=ball.z;th.unshift(o);const fast=Math.hypot(ball.vx,ball.vy,ball.vz)>6;const trailColor=ball.ty==="sm"?0xff5a36:ball.ty==="sl"||ball.ty==="sv"?0x36d9ff:ball.ty==="vol"?0xffd84a:ball.ty==="top"?0x65f28b:ball.ty==="lob"?0xb78aff:0xfaf7e8;
        tr.forEach((m,i)=>{m.visible=fast;m.material.color.setHex(trailColor);m.position.set(th[i].x,th[i].y,th[i].z)})}
       const lk=new THREE.Vector3(0,0,0),cp=new THREE.Vector3(0,8,24);
