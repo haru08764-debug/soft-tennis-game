@@ -629,7 +629,7 @@
       function integ(b,dt){
        // 回転による空中軌道：カットサーブの既存軌道は変えず、通常のスライスにはごく弱い横変化を付ける。
        if(b.cut)b.vx+=b.cut*0.18*dt;
-       if(b.top)b.vy-=2.8*dt;
+       if(b.top)b.vy-=2.2*dt;
        if(b.sl&&b.ty!=='sv')b.vx+=Math.sign(b.vz)*0.22*dt;
        b.vy-=G*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.z+=b.vz*dt;const d=1-.06*dt;b.vx*=d;b.vz*=d;
        if(b.y<R&&b.vy<0){const iv=-b.vy;b.y=R;b.vy=iv>1.2?iv*(b.sl?.48:.74):0;b.vx*=b.sl?.98:.87;b.vz*=b.sl?.95:(b.top?1.16:.87);if(b.cut){b.vx+=b.cut*2.0;b.cut=0}b.top=false;return iv>1.2}return false}
