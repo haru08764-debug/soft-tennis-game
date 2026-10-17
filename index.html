@@ -818,9 +818,9 @@
       function doublesAI(dt){if(!doublesMode||state!=='rally')return;
        // 後衛は自陣後方の担当。追いかけ移動そのものを後方ゾーンに制限する。
        const backLimit=6.2,backHome=HL+1.25,backMax=HL+3.2;
-       for(const [w,side,home] of [[P2,'p',backHome],[C2,'c',-backHome]]){const ballInBackZone=side==='p'?ball.z>=backLimit:ball.z<=-backLimit;const incoming=lastHit!==side&&ballInBackZone;let gx=side==='p'?clamp(-P.x*.25,-2.2,2.2):clamp(-C.x*.25,-2.2,2.2),gz=home;
+       for(const [w,side,home] of [[P2,'p',backHome],[C2,'c',-backHome]]){const towardSide=side==='p'?ball.vz>0:ball.vz<0;const predictT=clamp(Math.abs((side==='p'?backLimit:-backLimit)-ball.z)/Math.max(8,Math.abs(ball.vz)),0,.32),predZ=ball.z+ball.vz*predictT;const ballInBackZone=side==='p'?ball.z>=backLimit:ball.z<=-backLimit;const predictedBackZone=side==='p'?predZ>=backLimit:predZ<=-backLimit;const incoming=lastHit!==side&&(ballInBackZone||(towardSide&&predictedBackZone));let gx=side==='p'?clamp(-P.x*.25,-2.2,2.2):clamp(-C.x*.25,-2.2,2.2),gz=home;
         if(incoming){
-         // シングルスCPUと同じ考え方で少し先の到達位置を狙う。過剰な加速はしない。
+         // 早めに落下地点を予測して動き始め、シングルスCPUに近い反応をする。
          const t=clamp(Math.abs(ball.z-w.z)/Math.max(8,Math.abs(ball.vz)),0,.3),px=ball.x+ball.vx*t,pz=ball.z+ball.vz*t,ownSide=side==='p'?pz>.7:pz<-.7;
          if(ownSide){gx=clamp(px,-7.0,7.0);gz=side==='p'?clamp(pz,backLimit,HL):clamp(pz,-HL,-backLimit)}
         }
