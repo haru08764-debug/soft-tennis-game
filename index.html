@@ -611,7 +611,7 @@
        '<fieldset><legend>試合形式</legend><div class="rds">'+[[2,'3ゲーム（短時間）'],[3,'5ゲーム'],[4,'7ゲーム（公式標準）']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')+'</div></fieldset>'+
        '<div class="act"><button class="bt" data-a="set">操作の詳細設定</button><button class="bt go" data-a="settingsback">完了</button></div>');
       }
-      function tournamentMenu(){ov('<h1>🏆 トーナメント</h1><p>8チームのトーナメントで優勝を目指そう！</p><p class="hl">実装を安全に進めるため、トーナメント機能は段階的に追加しています。<br>次の段階で対戦進行・勝敗記録を追加します。<br><b>この画面ではまだ試合は開始されません。</b></p><div class="act"><button class="bt go" data-a="title">メインメニューへ戻る</button></div>');}
+      function tournamentMenu(){ov(`<h1>🏆 トーナメント</h1><p>8チーム・シングルエリミネーション</p><div class="hl" style="width:min(100%,560px);text-align:left"><b>準々決勝</b><p>第1試合：北海学園 vs 札幌南</p><p>第2試合：函館工業 vs 旭川北</p><p>第3試合：帯広東 vs 釧路西</p><p>第4試合：小樽中央 vs 室蘭工業</p><hr><b>準決勝</b><p>第5試合：第1試合の勝者 vs 第2試合の勝者</p><p>第6試合：第3試合の勝者 vs 第4試合の勝者</p><hr><b>決勝</b><p>第7試合：第5試合の勝者 vs 第6試合の勝者</p><p>🥇 決勝に勝つと優勝！</p></div><p class="hl">※ 今回は組み合わせ表の表示のみです。試合開始・勝敗の自動反映は次の段階で追加します。</p><div class="act"><button class="bt go" data-a="title">メインメニューへ戻る</button></div>`);}
       function menu(){stopCourtAmbience();mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
        ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.17.8</p><p>CPU対戦の形式を選び、設定を選んで試合を始めてください。</p>
       <fieldset><legend>試合形式</legend><div class="rds">${rd('format','singles','シングルス',!doublesMode)}${rd('format','doubles','ダブルス(2対2)',doublesMode)}</div></fieldset>
