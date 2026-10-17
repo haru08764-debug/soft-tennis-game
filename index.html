@@ -1007,18 +1007,8 @@
        tr.forEach((m,i)=>{m.visible=fast;m.material.color.setHex(trailColor);m.position.set(th[i].x,th[i].y,th[i].z)})}
       const lk=new THREE.Vector3(0,0,0),cp=new THREE.Vector3(0,8,24);
       let firstPerson=false,fovValue=null;
-      // ドーム内のカメラを側壁・妻壁・屋根の内側に制限する。
-      function constrainDomeCamera(){
-       if(courtStyle!=='dome')return;
-       const zLimit=domeHalfLength-1.25;
-       const roofAt=x=>.05+Math.sqrt(Math.max(0,domeRadius*domeRadius-(x/.9)*(x/.9)))*.9;
-       cam.position.x=clamp(cam.position.x,-15.5,15.5);
-       cam.position.z=clamp(cam.position.z,-zLimit,zLimit);
-       cam.position.y=Math.min(cam.position.y,Math.max(1.9,roofAt(cam.position.x)-.8));
-       lk.x=clamp(lk.x,-15.5,15.5);
-       lk.z=clamp(lk.z,-zLimit,zLimit);
-       lk.y=Math.min(lk.y,Math.max(1.5,roofAt(lk.x)-.35));
-      }
+      // 3D描画の復旧を優先し、カメラ制限処理を一時停止（描画確認後に安全な形で再実装）。
+      function constrainDomeCamera(){ return; }
       function camUpd(dt){P.g.visible=true;P.g.children.forEach(o=>{o.visible=!(firstPerson&&state!=='menu')||o===P.tor});P.tor.children.forEach(o=>{o.visible=!(firstPerson&&state!=='menu')||o===P.aL||o===P.aR});P.hd.visible=!(firstPerson&&state!=='menu');if(state==='menu'){ const t=performance.now()/5000;cam.position.set(Math.sin(t)*24,9,Math.cos(t)*24);cam.lookAt(0,.5,0);constrainDomeCamera();cam.lookAt(lk);return}
        if(replaying&&replayLanding){cam.fov=Math.min(replayFovSaved||52,38);cam.updateProjectionMatrix();const k=1-Math.exp(-4.5*dt);const tx=replayLanding.x, tz=replayLanding.z+(replayLanding.z>=0?5:-5);cam.position.x+=(tx-cam.position.x)*k;cam.position.y+=(7.5-cam.position.y)*k;cam.position.z+=(tz-cam.position.z)*k;lk.set(replayLanding.x,.15,replayLanding.z);cam.lookAt(lk);constrainDomeCamera();cam.lookAt(lk);return}
        if(firstPerson){cam.position.set(P.x,1.82,P.z-.38);const fx=P.x+clamp((ball.x-P.x)*.24,-3.5,3.5),fy=1.78+clamp((ball.y-1.5)*.14,-.15,.65);lk.set(fx,fy,P.z-10);cam.lookAt(lk);constrainDomeCamera();cam.lookAt(lk);return}
