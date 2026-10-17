@@ -748,7 +748,7 @@
        w.g.position.set(w.x,w.gy,w.z);w.sh.position.set(w.x,.13,w.z)}
       function cpuAI(dt){const d=D[diff];
        if(state==='ready'&&server==='c'){timer-=dt;if(timer<=0)toss()}
-       if(state==='toss'&&server==='c'&&C.sw<0&&ball.vy<0&&ball.y<2.5)startSwing(C,'shot',{ax:rnd()*.6,dp:rnd()*.5});
+       if(state==='toss'&&server==='c'&&C.sw<0&&ball.vy<0&&ball.y<2.7)startSwing(C,'shot',{ax:rnd()*.6,dp:rnd()*.5});
        if(state!=='rally'){C.vx=C.vz=0;return}
        const mine=lastHit==='p'&&state==='rally';let g={x:clamp(-P.x*.32,-2.8,2.8),z:P.z<6.5?-9.7:-10.8};if(!mine&&state==='rally'&&lastHit==='c'&&!isServe&&ball.vz>.1&&ball.z>-7.2)g={x:clamp(ball.x*.2,-2.3,2.3),z:-4.35};
        if(mine){cpuT-=dt;if(cpuT<=0){cpuT=d.rt;
@@ -786,7 +786,7 @@
       function startCourtAmbience(){if(ambActive)return;const a=au();if(!a||muted)return;stopCourtAmbience();ambActive=true;const b=a.createBuffer(1,a.sampleRate*3,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(.55+Math.random()*.45);const src=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();src.buffer=b;src.loop=true;f.type='lowpass';f.frequency.value=520;f.Q.value=.35;g.gain.value=.018;src.connect(f);f.connect(g);g.connect(a.destination);src.start();ambSource=src;ambGain=g;const chirp=()=>{if(!ambActive)return;if(!muted&&state!=='menu'&&state!=='over'&&state!=='paused'){const delay= Math.random()*.09;tone(2450,.11,'sine',.025,3100,delay);tone(3100,.1,'sine',.018,2250,delay+.13);if(Math.random()>.55)tone(2800,.08,'sine',.014,3400,delay+.3)}ambTimer=setTimeout(chirp,12000+Math.random()*13000)};ambTimer=setTimeout(chirp,5000+Math.random()*5000)}
       const SFX={hit:(s,sl,ty)=>{const p=clamp(s/30,.4,1);if(hitBuf&&!muted){const a=au(),o=a.createBufferSource(),g=a.createGain(),V={sm:[1.08,1],lob:[.8,.5],sl:[.82,.65],sv:[1,.9],fl:[.95,.35+p*.3]}[ty||'fl']||[.95,.8];const rs=(ty==='sl'&&slBuf)||(ty==='sm'&&smBuf);o.buffer=rs||hitBuf;o.playbackRate.value=rs?.97+p*.06:V[0]+(ty==='lob'||ty==='sl'?0:p*.15);g.gain.value=rs?(ty==='sm'?1:.6+p*.4):V[1];o.connect(g);g.connect(a.destination);o.start();if((ty==='sm'&&!rs)||ty==='sv')nz(.06,.5,3500,.9);return}nz(.05,.8*p,sl?1900:3200,.9);tone((sl?650:880)+p*250,.14,'sine',.8*p,sl?320:430);tone((sl?1300:1750)+p*300,.07,'triangle',.25*p,sl?700:900);tone(180,.06,'sine',.4*p,110)},bounce:()=>{if(bncBuf&&!muted){const a=au(),o=a.createBufferSource(),g=a.createGain();o.buffer=(bncB2&&Math.random()<.5)?bncB2:bncBuf;o.playbackRate.value=.95+Math.random()*.1;g.gain.value=.8;o.connect(g);g.connect(a.destination);o.start();return}nz(.04,.3,1200,1.2);tone(220,.09,'sine',.45,110)},net:()=>nz(.18,.45,450,.7),swing:()=>nz(.12,.12,2500,2),toss:()=>{const a=au();if(!a||muted)return;const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain(),t=a.currentTime;s.buffer=nb;f.type='bandpass';f.Q.value=1.2;f.frequency.setValueAtTime(500,t);f.frequency.exponentialRampToValueAtTime(2200,t+.28);g.gain.setValueAtTime(.001,t);g.gain.linearRampToValueAtTime(.2,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.3);s.connect(f);f.connect(g);g.connect(a.destination);s.start(t);s.stop(t+.32);tone(260,.05,'sine',.07,160)},win:()=>{tone(660,.14,'sine',.22);tone(880,.2,'sine',.22,0,.12)},lose:()=>{tone(300,.2,'triangle',.22,200);tone(220,.3,'triangle',.22,150,.15)},fault:()=>tone(200,.3,'sawtooth',.15,110),game:w=>{if(w){tone(523,.16,'sine',.2,659);tone(659,.18,'sine',.22,784, .15);tone(784,.28,'sine',.24,1047,.32)}else{tone(392,.18,'triangle',.18,330);tone(330,.22,'triangle',.2,262,.17)}},match:w=>{if(w){tone(523,.18,'sine',.24,659);tone(659,.18,'sine',.25,784,.17);tone(784,.18,'sine',.27,1047,.34);tone(1047,.45,'sine',.3,1318,.51)}else{tone(330,.25,'triangle',.22,262);tone(262,.3,'triangle',.2,196,.24);tone(196,.5,'sine',.18,147,.52)}}};
       ['pointerdown','keydown','touchend'].forEach(t=>addEventListener(t,()=>au(),{passive:true}));
-      function selfTest(){const out=[],od=diff,og=GM,om=muted;GM=4;muted=true;
+      function selfTest(){const out=[],od=diff,og=GM,om=muted,careerBefore=JSON.stringify(careerStats),matchBefore=matchStats,speedBefore=shotSpeedT;GM=4;muted=true;
        const T=(n,f)=>{let ok=false;try{startMatch();ok=!!f()}catch(e){ok=false}out.push((ok?'✅ ':'❌ ')+n)};
        const rl=(x,z,o={})=>{state='rally';isServe=!!o.s;lastHit='p';bn=0;netT=!!o.n;ball.x=x;ball.z=z;ball.y=R;ball.vx=ball.vy=ball.vz=0;timer=0;after=null},sum=()=>pts[0]+pts[1];
        T('正しいサーブが成功',()=>{rl(-2,-4,{s:1});judge();return state==='rally'&&!isServe&&serveNo===1&&!sum()});
@@ -811,7 +811,7 @@
        T('タッチネットで相手得点',()=>{rl(0,-5);P.x=0;P.z=.2;tick(.01);return pts[1]===1});
        T('相手コート侵入で相手得点',()=>{rl(0,-5);P.x=0;P.z=-.5;tick(.01);return pts[1]===1});
        T('CPUとのラリー継続',()=>{diff=2;let ok=0;for(let a=0;a<6&&!ok;a++){startMatch();state='rally';isServe=false;lastHit='c';bn=0;P.x=0;P.z=11;P.sw=-1;ball.x=P.x+.35;ball.z=P.z-.9;ball.y=1.1;ball.vx=ball.vy=ball.vz=0;mv.x=mv.z=0;P.type='shot';doHit(P);for(let i=0;i<600&&state==='rally'&&!ok;i++){tick(1/60);if(lastHit==='c')ok=1}}return ok});
-       diff=od;GM=og;muted=om;state='menu';hint('');console.log(out.join('\\n'));
+       careerStats=JSON.parse(careerBefore);matchStats=matchBefore;shotSpeedT=speedBefore;saveCareerStats();diff=od;GM=og;muted=om;state='menu';hint('');console.log(out.join('\\n'));
        ov('<h1>自己診断の結果</h1><ul class="tl">'+out.map(s=>'<li>'+s+'</li>').join('')+'</ul><div class="act"><button class="bt go" data-a="title">タイトルへ戻る</button></div>')}
       {let lt=0;document.addEventListener('touchend',e=>{const n=Date.now();if(n-lt<350)e.preventDefault();lt=n},{passive:false});
       ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
@@ -848,7 +848,7 @@
       function mpCtl(dt){const g=MP.gin;let ix=g.x,iz=g.z;const m=Math.hypot(ix,iz);if(m>1){ix/=m;iz/=m}const sp=g.d?8.4:5.5;
        C.vx=-ix*sp;C.vz=-iz*sp;C.x=clamp(C.x+C.vx*dt,-7,7);C.z=clamp(C.z+C.vz*dt,-16,1.2);C.aim={ax:-ix,dp:iz};
        const q=g.p;g.p=null;if(q){if(state==='ready'){if(server==='c')toss()}else if(C.sw<0)startSwing(C,q)}
-       if(state==='toss'&&server==='c'&&C.sw<0&&ball.vy<0&&ball.y<1.7)startSwing(C,'shot');
+       if(state==='toss'&&server==='c'&&C.sw<0&&ball.vy<0&&ball.y<2.7)startSwing(C,'shot',{ax:0,dp:0});
        if(state==='rally'&&C.z>-.35)endPoint('p',C.z>0?'相手コート侵入':'タッチネット')}
       const pk=w=>[w.x,w.z,w.vx,w.vz,w.sw,w.mode,w.hy,w.type,w.vol?1:0,w.ss];
       function mpSnap(){return{t:'s',st:state,b:[ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz],P:pk(P),C:pk(C),pts,games,sv:server,sn:serveNo,ov:over,gm:GM,ev:MP.evq.splice(0)}}
@@ -929,7 +929,7 @@
       function tick(dt){syncButtonMode();if(state==='paused'||state==='menu'||state==='over')return;const live=state==='ready'||state==='toss'||state==='rally';hitCool-=dt;if(shotSpeedT>0&&(shotSpeedT-=dt)<=0)$('shotSpeed').style.opacity=0;if(msgT>0&&(msgT-=dt)<=0)$('msg').style.opacity=0;
        if(live){move(dt);if(state==='rally'&&P.z<.35)endPoint('c',P.z<0?'相手コート侵入':'タッチネット');if(pend){if(state==='ready'){if(server==='p'&&(pend==='shot'||pend==='sl')){servePick=pend;toss()}}else if(state==='toss'&&server==='p'&&P.sw<0){servePick=pend;startSwing(P,pend)}else if(state==='rally'&&P.sw<0)startSwing(P,pend);pend=null}(MP.role==='host'?mpCtl(dt):cpuAI(dt));doublesAI(dt)}else{pend=null;P.vx=P.vz=C.vx=C.vz=P2.vx=P2.vz=C2.vx=C2.vz=0}
        if(state==='ready')carry();
-       if(state==='toss'&&server==='p'&&P.sw<0&&ball.vy<0&&ball.y<2.45)startSwing(P,servePick);
+       if(state==='toss'&&server==='p'&&P.sw<0&&ball.vy<0&&ball.y<2.7)startSwing(P,servePick);
        if(state==='toss'||state==='rally'||state==='wait')for(let i=0;i<2;i++)stepBall(dt/2);
        if(state==='rally'&&ball.y<R+.02&&Math.hypot(ball.vx,ball.vz)<.7){restT+=dt;if(restT>.8)endPoint(bn>0?(rallyHitter||lastHit):((rallyHitter||lastHit)==='p'?'c':'p'),'')}else restT=0;
        upd(P,dt);upd(C,dt);upd(P2,dt);upd(C2,dt);
