@@ -1007,20 +1007,14 @@
        tr.forEach((m,i)=>{m.visible=fast;m.material.color.setHex(trailColor);m.position.set(th[i].x,th[i].y,th[i].z)})}
       const lk=new THREE.Vector3(0,0,0),cp=new THREE.Vector3(0,8,24);
       let firstPerson=false,fovValue=null;
-      // ドームの側壁・妻壁を越えないよう、カメラと追従用の補間座標(cp)を同時に内側へ制限する。
+      // ドーム内のカメラを側壁・妻壁・屋根の内側に制限する。
       function constrainDomeCamera(){
        if(courtStyle!=='dome')return;
-       // 妻壁は z=±30.5。カメラの近クリップ面が壁を抜けないよう余裕を取る。
        const zLimit=domeHalfLength-1.25;
        const roofAt=x=>.05+Math.sqrt(Math.max(0,domeRadius*domeRadius-(x/.9)*(x/.9)))*.9;
-       const keepInside=v=>{
-        v.x=clamp(v.x,-15.5,15.5);
-        v.z=clamp(v.z,-zLimit,zLimit);
-        v.y=Math.min(v.y,Math.max(1.9,roofAt(v.x)-.8));
-       };
-       keepInside(cam.position);
-       // 補間元も制限しないと、毎フレーム壁の外を目標に追い続けてしまう。
-       keepInside(cp);
+       cam.position.x=clamp(cam.position.x,-15.5,15.5);
+       cam.position.z=clamp(cam.position.z,-zLimit,zLimit);
+       cam.position.y=Math.min(cam.position.y,Math.max(1.9,roofAt(cam.position.x)-.8));
        lk.x=clamp(lk.x,-15.5,15.5);
        lk.z=clamp(lk.z,-zLimit,zLimit);
        lk.y=Math.min(lk.y,Math.max(1.5,roofAt(lk.x)-.35));
