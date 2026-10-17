@@ -611,7 +611,8 @@
        '<fieldset><legend>試合形式</legend><div class="rds">'+[[2,'3ゲーム（短時間）'],[3,'5ゲーム'],[4,'7ゲーム（公式標準）']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')+'</div></fieldset>'+
        '<div class="act"><button class="bt" data-a="set">操作の詳細設定</button><button class="bt go" data-a="settingsback">完了</button></div>');
       }
-      function tournamentMenu(){ov('<h1>🏆 トーナメント</h1><p>8チームのトーナメントで優勝を目指そう！</p><p class="hl">実装を安全に進めるため、トーナメント機能は段階的に追加しています。<br>次の段階で対戦進行・勝敗記録を追加します。<br><b>この画面ではまだ試合は開始されません。</b></p><div class="act"><button class="bt go" data-a="title">メインメニューへ戻る</button></div>');}\n      function menu(){stopCourtAmbience();mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
+      function tournamentMenu(){ov('<h1>🏆 トーナメント</h1><p>8チームのトーナメントで優勝を目指そう！</p><p class="hl">実装を安全に進めるため、トーナメント機能は段階的に追加しています。<br>次の段階で対戦進行・勝敗記録を追加します。<br><b>この画面ではまだ試合は開始されません。</b></p><div class="act"><button class="bt go" data-a="title">メインメニューへ戻る</button></div>');}
+      function menu(){stopCourtAmbience();mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
        ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.17.8</p><p>CPU対戦の形式を選び、設定を選んで試合を始めてください。</p>
       <fieldset><legend>試合形式</legend><div class="rds">${rd('format','singles','シングルス',!doublesMode)}${rd('format','doubles','ダブルス(2対2)',doublesMode)}</div></fieldset>
        ${doublesMode?'<fieldset><legend>自分のポジション</legend><div class="rds">'+rd('position','back','後衛',playerPosition==='back')+rd('position','front','前衛（ボレー重視）',playerPosition==='front')+'</div><p>前衛を選ぶとネット寄りでプレイ。自分のサーブ時はサーブ後に前へ詰めます。</p></fieldset>':''}
