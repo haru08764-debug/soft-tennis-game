@@ -635,34 +635,35 @@
       function loadCareerStats(){const d={matches:0,wins:0,pointsWon:0,pointsLost:0,aces:0,acesAgainst:0,serveFaults:0,serveFaultsAgainst:0,shots:0,maxSpeed:0};try{const p=JSON.parse(localStorage.getItem('st3d.careerStats')||'{}');for(const k of Object.keys(d))if(Number.isFinite(p[k])&&p[k]>=0)d[k]=p[k]}catch(e){}return d}
       function saveCareerStats(){try{localStorage.setItem('st3d.careerStats',JSON.stringify(careerStats))}catch(e){}}
       let careerStats=loadCareerStats(),matchStats=freshMatchStats(),shotSpeedT=0,serveSpeedMeter=null,serveSpeedCanvas=null,serveSpeedCtx=null,lastServeSpeed='--';
-                  function makeServeSpeedMeter(){const group=new THREE.Group();group.name='serveSpeedDotMeter';const y0=.93;
-       // 観客席(最前列の段差)の前面全域(45m)に張る横長LEDバンド。帯パターンを3回繰り返してスタジアム全面に。
-       const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=104;const ctx=canvas.getContext('2d');const tex=new THREE.CanvasTexture(canvas);tex.wrapS=THREE.RepeatWrapping;tex.repeat.set(3,1);tex.anisotropy=Anime;
-       const frame=mesh(new THREE.BoxGeometry(45.3,1.3,.12),0x10131a,0,y0,-23.95,group);
-       const front=new THREE.Mesh(new THREE.PlaneGeometry(45,1.21),new THREE.MeshBasicMaterial({map:tex}));front.position.set(0,y0,-23.833);group.add(front);
+                        function makeServeSpeedMeter(){const group=new THREE.Group();group.name='serveSpeedDotMeter';const y0=.9;
+       // 観客席前面に1枚だけ張るLED帯(コート内の幅に収める)。反復なしの単一構図: 左ロゴ/中央速度/右ラベル。
+       const canvas=document.createElement('canvas');canvas.width=1664;canvas.height=104;const ctx=canvas.getContext('2d');const tex=new THREE.CanvasTexture(canvas);tex.anisotropy=Anime;
+       const frame=mesh(new THREE.BoxGeometry(19.9,1.32,.12),0x10131a,0,y0,-23.95,group);
+       const front=new THREE.Mesh(new THREE.PlaneGeometry(19.6,1.25),new THREE.MeshBasicMaterial({map:tex}));front.position.set(0,y0,-23.833);group.add(front);
        sc.add(group);serveSpeedMeter=group;serveSpeedCanvas=canvas;serveSpeedCtx=ctx;updateServeSpeedMeter('--')}
-      function updateServeSpeedMeter(value){lastServeSpeed=String(value);if(!serveSpeedCtx)return;const c=serveSpeedCtx,W=1024,H=104,now=performance.now();
-       // 大会仕様のLED帯: 左ロゴ/中央の黒窓に速度/右ラベル。速度はグローつき。
+      function updateServeSpeedMeter(value){lastServeSpeed=String(value);if(!serveSpeedCtx)return;const c=serveSpeedCtx,W=1664,H=104,now=performance.now();
+       // LED帯(反復なし): 左ロゴ → 中央の黒窓に速度(km/h) → 右ラベル。自然に引き伸ばした単一レイアウト。
        const bg=c.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#0d1470');bg.addColorStop(.5,'#1b24b0');bg.addColorStop(1,'#0a0f5a');
        c.fillStyle=bg;c.fillRect(0,0,W,H);
        c.fillStyle='rgba(2,5,44,.55)';for(let y=0;y<H;y+=6)c.fillRect(0,y,W,3);
        const shine=.16+.1*Math.sin(now*.0028);
        c.fillStyle='rgba(255,255,255,'+shine+')';c.fillRect(0,0,W,4);
-       c.fillStyle='#05070f';c.fillRect(196,6,W-392,H-12);
-       c.strokeStyle='rgba(140,190,255,.5)';c.lineWidth=2;c.strokeRect(199,9,W-398,H-18);
+       c.fillStyle='#05070f';c.fillRect(520,6,624,H-12);
+       c.strokeStyle='rgba(140,190,255,.5)';c.lineWidth=2;c.strokeRect(523,9,618,H-18);
        c.fillStyle='rgba(255,255,255,.96)';c.textBaseline='alphabetic';
-       c.textAlign='left';c.save();c.translate(30,66);c.font='bold 26px Arial,sans-serif';
-       c.fillStyle='#e7ecff';c.fillText('S O F T',0,0);
-       c.font='bold 26px Arial,sans-serif';c.fillStyle='#8fc5ff';c.fillText('T E N N I S',96,0);c.restore();
+       c.textAlign='left';c.font='bold 34px Arial,sans-serif';
+       c.fillStyle='#e7ecff';c.fillText('S O F T',44,68);
+       c.fillStyle='#8fc5ff';c.fillText('T E N N I S',180,68);
        const n=String(value);
-       if(n==='--'){c.textAlign='center';c.font='bold 60px Consolas,Menlo,monospace';c.fillStyle='rgba(255,255,255,.5)';c.fillText('--',W/2+6,76);c.textAlign='left';c.font='bold 26px Arial,sans-serif';c.fillStyle='rgba(255,255,255,.6)';c.fillText('km/h',W/2+28,76)}
+       if(n==='--'){c.textAlign='center';c.font='bold 60px Consolas,Menlo,monospace';c.fillStyle='rgba(255,255,255,.5)';c.fillText('--',826,76);c.font='bold 27px Arial,sans-serif';c.textAlign='left';c.fillStyle='rgba(255,255,255,.6)';c.fillText('km/h',850,76)}
        else{c.save();c.shadowColor='#8fd4ff';c.shadowBlur=22;
-        c.textAlign='right';c.font='bold 74px Consolas,Menlo,monospace';c.fillStyle='#eaf6ff';c.fillText(n,W/2-22,76);c.restore();
-        c.textAlign='left';c.font='bold 26px Arial,sans-serif';c.fillStyle='#b9d7f2';c.fillText('km/h',W/2-4,74)}
-       c.textAlign='center';c.font='bold 29px Arial,sans-serif';c.fillStyle='#ffe9b0';c.fillText('S E R V E   S P E E D',876,72);
-       c.save();c.translate(798,58);c.rotate(Math.PI/4);c.fillStyle='#ffd75e';c.fillRect(-6,-6,12,12);c.restore();
+        c.textAlign='right';c.font='bold 76px Consolas,Menlo,monospace';c.fillStyle='#eaf6ff';c.fillText(n,1008,78);c.restore();
+        c.textAlign='left';c.font='bold 27px Arial,sans-serif';c.fillStyle='#b9d7f2';c.fillText('km/h',1022,74)}
+       c.textAlign='center';c.font='bold 31px Arial,sans-serif';c.fillStyle='#ffe9b0';c.fillText('S E R V E   S P E E D',1430,72);
+       c.save();c.translate(1332,58);c.rotate(Math.PI/4);c.fillStyle='#ffd75e';c.fillRect(-6,-6,12,12);c.restore();
        if(serveSpeedMeter&&serveSpeedMeter.children[1]?.material.map)serveSpeedMeter.children[1].material.map.needsUpdate=true;
        if(domeGroup.visible)updateDomeScoreboard();}
+
 
 
 
