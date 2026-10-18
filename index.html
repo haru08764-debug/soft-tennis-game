@@ -640,20 +640,34 @@
        const frame=mesh(new THREE.BoxGeometry(12.3,1.3,.12),0x10131a,0,y0,-23.9,group);
        const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=104;const ctx=canvas.getContext('2d');const tex=new THREE.CanvasTexture(canvas);tex.anisotropy=Anime;
        const face=new THREE.Mesh(new THREE.PlaneGeometry(12,1.21),new THREE.MeshBasicMaterial({map:tex}));face.position.set(0,y0,-23.833);group.add(face);sc.add(group);serveSpeedMeter=group;serveSpeedCanvas=canvas;serveSpeedCtx=ctx;updateServeSpeedMeter('--')}
-      function updateServeSpeedMeter(value){lastServeSpeed=String(value);if(!serveSpeedCtx)return;const c=serveSpeedCtx,W=1024,H=104;
-       // 濃紺の蛍光帯板+中央の黒窓(実物のIBMボード風)。単位はkm/h。バンド型: 左ロゴ/中央速度/右ラベル。
-       c.fillStyle='#1117a8';c.fillRect(0,0,W,H);
-       c.fillStyle='rgba(3,7,52,.55)';for(let y=0;y<H;y+=6)c.fillRect(0,y,W,3);
-       c.fillStyle='#04070d';c.fillRect(212,10,W-424,H-20);
-       c.fillStyle='rgba(255,255,255,.95)';c.textBaseline='alphabetic';
-       c.textAlign='center';c.font='bold 25px Arial,sans-serif';c.fillText('S O F T   T E N N I S',114,66);
+            function updateServeSpeedMeter(value){lastServeSpeed=String(value);if(!serveSpeedCtx)return;const c=serveSpeedCtx,W=1024,H=104,now=performance.now();
+       // 大会仕様のLED帯: 左チーム帯/中央の黒窓に速度/右ラベル。得点後に光が走る。
+       const bg=c.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#0d1470');bg.addColorStop(.5,'#1b24b0');bg.addColorStop(1,'#0a0f5a');
+       c.fillStyle=bg;c.fillRect(0,0,W,H);
+       c.fillStyle='rgba(2,5,44,.55)';for(let y=0;y<H;y+=6)c.fillRect(0,y,W,3);
+       // 左端: 流れる蛍光ストripe(常時ゆらぎ)
+       const shine=.16+.1*Math.sin(now*.0028);
+       c.fillStyle='rgba(255,255,255,'+shine+')';c.fillRect(0,0,W,4);
+       // 中央の黒窓+端の台形カット
+       c.fillStyle='#05070f';c.fillRect(196,6,W-392,H-12);
+       c.strokeStyle='rgba(140,190,255,.5)';c.lineWidth=2;c.strokeRect(199,9,W-398,H-18);
+       c.fillStyle='rgba(255,255,255,.96)';c.textBaseline='alphabetic';
+       // 左ロゴ(斜めで区切り)
+       c.textAlign='left';c.save();c.translate(30,66);c.font='bold 26px Arial,sans-serif';
+       c.fillStyle='#e7ecff';c.fillText('S O F T',0,0);
+       c.translate(10,0);c.font='bold 26px Arial,sans-serif';c.fillStyle='#8fc5ff';c.fillText('T E N N I S',96,0);c.restore();
+       // 速度(グローつき大型数字)
        const n=String(value);
-       if(n==='--'){c.font='bold 62px Consolas,Menlo,monospace';c.fillText('--',438,74);c.font='bold 27px Arial,sans-serif';c.textAlign='left';c.fillText('km/h',474,74)}
-       else{c.textAlign='right';c.font='bold 76px Consolas,Menlo,monospace';c.fillText(n,452,76);c.textAlign='left';c.font='bold 27px Arial,sans-serif';c.fillText('km/h',462,74)}
-       c.textAlign='center';c.font='bold 31px Arial,sans-serif';c.fillText('S E R V E   S P E E D',894,72);
-       c.fillStyle='rgba(0,0,0,.5)';for(let y=14;y<H-14;y+=7)c.fillRect(218,y,W-436,3);
+       if(n==='--'){c.textAlign='center';c.font='bold 60px Consolas,Menlo,monospace';c.fillStyle='rgba(255,255,255,.5)';c.fillText('--',W/2+6,76);c.textAlign='left';c.font='bold 26px Arial,sans-serif';c.fillStyle='rgba(255,255,255,.6)';c.fillText('km/h',W/2+28,76)}
+       else{c.save();c.shadowColor='#8fd4ff';c.shadowBlur=22;
+        c.textAlign='right';c.font='bold 74px Consolas,Menlo,monospace';c.fillStyle='#eaf6ff';c.fillText(n,W/2-22,76);c.restore();
+        c.textAlign='left';c.font='bold 26px Arial,sans-serif';c.fillStyle='#b9d7f2';c.fillText('km/h',W/2-4,74)}
+       // 右ラベル+区切りダイヤ
+       c.textAlign='center';c.font='bold 29px Arial,sans-serif';c.fillStyle='#ffe9b0';c.fillText('S E R V E   S P E E D',894,72);
+       c.save();c.translate(816,58);c.rotate(Math.PI/4);c.fillStyle='#ffd75e';c.fillRect(-6,-6,12,12);c.restore();
        if(serveSpeedMeter&&serveSpeedMeter.children[1]?.material.map)serveSpeedMeter.children[1].material.map.needsUpdate=true;
        if(domeGroup.visible)updateDomeScoreboard();}
+
 
 
 
