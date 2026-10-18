@@ -338,7 +338,7 @@
 
       courtNetObjects.push(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(Array.from({length:13},(_,i)=>new THREE.Vector3(i-6,netY(i-6)-.02,0))),24,.022,6),0x292e2b,0,0,0));[-6,6].forEach(x=>{courtNetObjects.push(mesh(new THREE.CylinderGeometry(.13,.15,.06,10),0x222222,x,.03,0));courtNetObjects.push(mesh(new THREE.SphereGeometry(.075,8,6),0x333333,x,NH+.1,0))});[-6,6].forEach(x=>courtNetObjects.push(mesh(new THREE.CylinderGeometry(.06,.06,NH+.1,8),0x333333,x,(NH+.1)/2,0)));
       // 完全屋内のドーム型コート：体育館風の木床、閉じた屋根・妻壁、アーチ骨組み、天井照明。
-      let domeScoreCtx=null,domeScoreTex=null,domeBannerCtx=null,domeBannerTex=null,domeBannerNextDraw=0,domeGameHistory=[];
+      let domeScoreCtx=null,domeScoreTex=null,domeBannerCtx=null,domeBannerTex=null,domeBannerNextDraw=0,domeGameHistory=[],laverScoreCtx=null,laverScoreTex=null;
       const domeGroup=new THREE.Group();domeGroup.scale.x=.9;sc.add(domeGroup);domeGroup.visible=false;
       const domeRadius=18.5,domeHalfLength=30.5;
       // 体育館の木製スポーツフロア。床幅をドーム内側に合わせ、外壁の外へはみ出さないようにする。
@@ -611,11 +611,15 @@
        [-HL,HL].forEach(z=>bx(.08,.04,.22,0xffffff,0,.08,z>0?z-.11:z+.11).castShadow=false)}   // センターマーク
 
       // ---- Rod Laver Arena: 面テクスチャ(全豪ブルー) ----
-      {const aoCourt=mkTex('#2f6fae',{blot:36,bl:.05,grain:7000,ga:.045,cr:0,sh:3});aoCourt.repeat.set(10.97/3,23.77/3);
-       const aoRun=mkTex('#1b517e',{blot:45,bl:.07,grain:5000,ga:.09,cr:3,joint:1});aoRun.repeat.set(19.6/3,37/3);
+      {const aoCourt=mkTex('#225ea8',{blot:26,bl:.035,grain:7000,ga:.045,cr:0,sh:3});aoCourt.repeat.set(10.97/3,23.77/3);
+       const aoRun=mkTex('#174a75',{blot:45,bl:.07,grain:5000,ga:.09,cr:3,joint:1});aoRun.repeat.set(19.6/3,37/3);
        const mkSurf=(w,d,t,y)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshPhongMaterial({map:t,shininess:8,specular:0x111111}));m.rotation.x=-Math.PI/2;m.position.y=y;m.receiveShadow=true;laverGroup.add(m);return m};
        mkSurf(19.6,37,aoRun,.031);        // ランオフ(濃紺)
        mkSurf(10.97,23.77,aoCourt,.061);  // コート(全豪ブルー)
+       // ランオフにAUSTRALIAN OPENのペイント文字(ベースライン奥)。
+       {const aoT=document.createElement('canvas');aoT.width=1024;aoT.height=128;const g5=aoT.getContext('2d');g5.clearRect(0,0,1024,128);g5.fillStyle='rgba(255,255,255,.93)';g5.font='700 74px "Work Sans",Arial,sans-serif';g5.textAlign='center';g5.textBaseline='middle';g5.fillText('AUSTRALIAN OPEN',512,64);
+        const at=new THREE.CanvasTexture(aoT);at.anisotropy=Anime;
+        for(const z of [-15.8,15.8]){const m=new THREE.Mesh(new THREE.PlaneGeometry(7.8,.97),new THREE.MeshBasicMaterial({map:at,transparent:true,opacity:.9,side:THREE.DoubleSide}));m.rotation.x=-Math.PI/2;m.position.set(0,.034,z);laverGroup.add(m)}}
        // ---- 実物のRod Laver Arenaを参考にしたスタジアムボウル ----
        // 観客席は青い座席の連続した楕円形ボウル、上部はガラス・鋼材のリングとして構成。
        const lvSeatBase=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.9,metalness:.02});
@@ -701,7 +705,7 @@
        const lvRoofMat=new THREE.MeshStandardMaterial({color:0x202832,roughness:.94,metalness:.18,side:THREE.DoubleSide});
        const lvRoofRibMat=new THREE.MeshStandardMaterial({color:0x424d57,roughness:.82,metalness:.32});
        for(const side of [-1,1]){
-        const panel=new THREE.Mesh(new THREE.BoxGeometry(19,.46,75),lvRoofMat);panel.position.set(side*12.55,17.15,0);panel.castShadow=true;laverGroup.add(panel);
+        const panel=new THREE.Mesh(new THREE.BoxGeometry(19,.46,75),lvRoofMat);panel.position.set(side*12.55,17.15,0);panel.castShadow=false;laverGroup.add(panel);
         for(let z=-36;z<=36;z+=2.6){const rib=new THREE.Mesh(new THREE.BoxGeometry(18.7,.07,.085),lvRoofRibMat);rib.position.set(side*12.55,16.88,z);laverGroup.add(rib)}
         // 可動パネル内側の連続したLED照明。小さな光源の帯として見せる。
         for(let z=-34.5;z<=34.5;z+=2.8){const lamp=new THREE.Mesh(new THREE.BoxGeometry(.38,.085,.5),new THREE.MeshStandardMaterial({color:0xf7f8f4,emissive:0xdce8f4,emissiveIntensity:1.1,roughness:.3}));lamp.position.set(side*3.35,16.82,z);laverGroup.add(lamp)}
@@ -714,8 +718,8 @@
        // ---- 看板(全豪スポンサー) ----
        {const lvBnr=txt=>{const c=document.createElement('canvas');c.width=1024;c.height=112;const g=c.getContext('2d');g.fillStyle='#0b2b52';g.fillRect(0,0,1024,112);g.fillStyle='#fff';g.font='600 64px "Work Sans",Arial,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(txt,512,60);const t=new THREE.CanvasTexture(c);t.anisotropy=Anime;return t};
         const put=(txt,w,x,z,ry)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,.78),new THREE.MeshBasicMaterial({map:lvBnr(txt)}));m.position.set(x,.55,z);m.rotation.y=ry;laverGroup.add(m)};
-        put('KIA',6,5.8,-23.42,0);put('ROLEX',6,-5.8,-23.42,0);put('IBM',6,0,-23.42,0);
-        put('ANZ',6,0,23.42,Math.PI);put('KIA',6,-14.2,0,Math.PI/2);put('IBM',6,14.2,0,-Math.PI/2)}
+        put('KIA',5.6,6.6,-20.86,0);put('ROLEX',5.6,-6.6,-20.86,0);put('IBM',5.6,0,-20.86,0);
+        put('ANZ',5.6,0,20.86,Math.PI);put('KIA',5.6,-11.96,0,Math.PI/2);put('IBM',5.6,11.96,0,-Math.PI/2)}
        // ---- コート奥のLEDスコアボードと会場名表示 ----
        {const back=new THREE.Mesh(new THREE.BoxGeometry(12.4,3.4,.5),new THREE.MeshStandardMaterial({color:0x08111d,roughness:.78,metalness:.2}));back.position.set(0,10.45,-35.1);back.castShadow=true;laverGroup.add(back);
         const cv=document.createElement('canvas');cv.width=1280;cv.height=360;const g=cv.getContext('2d');
@@ -726,6 +730,14 @@
         g.fillStyle='#49b8ff';g.fillRect(0,350,1280,10);
         const tx=new THREE.CanvasTexture(cv);tx.anisotropy=Anime;
         const screen=new THREE.Mesh(new THREE.PlaneGeometry(11.9,3.05),new THREE.MeshBasicMaterial({map:tx}));screen.position.set(0,10.45,-34.83);laverGroup.add(screen)}
+       // ---- ライブ映像ビッグスクリーン(南北・スコア/速度をドームボードと同じ内容で描画) ----
+       {const scv=document.createElement('canvas');scv.width=1024;scv.height=360;const scg=scv.getContext('2d');
+        scg.fillStyle='#06121f';scg.fillRect(0,0,1024,360);
+        laverScoreCtx=scg;laverScoreTex=new THREE.CanvasTexture(scv);laverScoreTex.anisotropy=Anime;
+        const frame=new THREE.Mesh(new THREE.BoxGeometry(12.1,4.35,.3),new THREE.MeshStandardMaterial({color:0x0a1622,roughness:.7,metalness:.3}));frame.position.set(0,10.45,-34.95);laverGroup.add(frame);
+        const scr=new THREE.Mesh(new THREE.PlaneGeometry(11.4,4.0),new THREE.MeshBasicMaterial({map:laverScoreTex}));scr.position.set(0,10.45,-34.78);laverGroup.add(scr);
+        const frameN=frame.clone();frameN.position.z=34.95;laverGroup.add(frameN);
+        const scrN=scr.clone();scrN.position.z=34.78;scrN.rotation.y=Math.PI;laverGroup.add(scrN)}
       }
       const P=mkChar3({shirt:0xffffff,trim:0x1d3fa8,shorts:0x1a2a55,shoe:0x2a4fc0,skin:0xe8b890,hair:0x222222,cap:0x2255cc,rf:0x1d3fa8,ra:0xffd43d,hs:.35,fw:-1}),C=mkChar3({shirt:0xe23b2e,trim:0xffffff,shorts:0xf2f2f2,shoe:0xcc3322,skin:0xf0c8a0,hair:0x6b4a2b,cap:0,rf:0x222222,ra:0xe23b2e,hs:-.35,fw:1});
       const P2=mkChar3({shirt:0xffffff,trim:0x36d9ff,shorts:0x183a4b,shoe:0x2a4fc0,skin:0xc9916d,hair:0x1b2630,cap:0x2255cc,rf:0x1d3fa8,ra:0xffd43d,hs:-.3,fw:-1}),C2=mkChar3({shirt:0xeda7a2,trim:0xffffff,shorts:0x8b2222,shoe:0xcc3322,skin:0xd6a27f,hair:0x513e32,cap:0,rf:0x222222,ra:0xe23b2e,hs:.3,fw:1});P2.g.visible=C2.g.visible=false;P2.sh.visible=C2.sh.visible=false;P.g.rotation.y=Math.PI;[P,C,P2,C2].forEach(w=>{w.aR.rotation.order='YXZ';w.aL.rotation.order='YXZ'});
@@ -792,7 +804,7 @@
         c.textAlign='left';c.font='500 30px Work Sans,Arial,sans-serif';c.fillStyle='#b9d7f2';c.fillText('km/h',1022,76)}
        c.textAlign='center';c.font='600 34px Work Sans,Arial,sans-serif';c.fillStyle='#ffe9b0';c.fillText('S E R V E   S P E E D',1430,72);
        if(serveSpeedMeter&&serveSpeedMeter.children[1]?.material.map)serveSpeedMeter.children[1].material.map.needsUpdate=true;
-       if(domeGroup.visible)updateDomeScoreboard();}
+       if(domeGroup.visible||laverGroup.visible)updateDomeScoreboard();}
 
 
 
@@ -801,7 +813,7 @@
 
 
       loadImportedModels();applyAppearance();makeServeSpeedMeter();
-      function applyCourtStyle(){const park=courtStyle==='oomagari',tomo=courtStyle==='tomakomai',dome=courtStyle==='dome',laver=courtStyle==='laver',useImported=importedCourtReady&&!park&&!tomo&&!dome&&!laver;courtSurfaces.forEach((m,i)=>{m.visible=useImported?i===0:!tomo&&!dome&&!laver});courtLineObjects.forEach(m=>{m.visible=!useImported&&!tomo});courtNetObjects.forEach(m=>{m.visible=!useImported});venueObjects.forEach(o=>o.visible=!park&&!tomo&&!dome&&!laver);parkObjects.forEach(o=>o.visible=park);courtFenceObjects.forEach(o=>o.visible=!useImported&&!dome&&!park&&!tomo&&!laver);domeHiddenObjects.forEach(o=>o.visible=!dome&&!laver);parkGroup.visible=park;tomoGroup.visible=tomo;domeGroup.visible=dome;laverGroup.visible=laver;sc.fog=dome?null:domeFogOriginal;if(serveSpeedMeter)serveSpeedMeter.visible=!dome;importedCourtGroup.visible=useImported;if(dome)updateDomeScoreboard();}
+      function applyCourtStyle(){const park=courtStyle==='oomagari',tomo=courtStyle==='tomakomai',dome=courtStyle==='dome',laver=courtStyle==='laver',useImported=importedCourtReady&&!park&&!tomo&&!dome&&!laver;courtSurfaces.forEach((m,i)=>{m.visible=useImported?i===0:!tomo&&!dome&&!laver});courtLineObjects.forEach(m=>{m.visible=!useImported&&!tomo});courtNetObjects.forEach(m=>{m.visible=!useImported});venueObjects.forEach(o=>o.visible=!park&&!tomo&&!dome&&!laver);parkObjects.forEach(o=>o.visible=park);courtFenceObjects.forEach(o=>o.visible=!useImported&&!dome&&!park&&!tomo&&!laver);domeHiddenObjects.forEach(o=>o.visible=!dome&&!laver);parkGroup.visible=park;tomoGroup.visible=tomo;domeGroup.visible=dome;laverGroup.visible=laver;sc.fog=dome?null:domeFogOriginal;if(serveSpeedMeter)serveSpeedMeter.visible=!dome&&!laver;importedCourtGroup.visible=useImported;if(dome)updateDomeScoreboard();}
 
       function addRealisticImportedNet(){const group=new THREE.Group();group.name='realisticImportedNet';const width=12.9,bottom=.112,topCenter=1.079,topSide=.965,depth=0;const sag=x=>topSide+(topCenter-topSide)*(1-(x/(width/2))*(x/(width/2)));const netMat=new THREE.MeshStandardMaterial({color:0x202522,roughness:.96,metalness:0,side:THREE.DoubleSide});const tapeMat=new THREE.MeshStandardMaterial({color:0xe8e7df,roughness:.88,metalness:0});const makeCord=(points,r,mat,radial=5)=>{const curve=new THREE.CatmullRomCurve3(points);const cord=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.max(8,points.length*2),r,radial,false),mat);cord.castShadow=true;cord.receiveShadow=true;group.add(cord)};const cols=82;for(let i=0;i<=cols;i++){const x=-width/2+width*i/cols;makeCord([new THREE.Vector3(x,bottom,depth),new THREE.Vector3(x,bottom+(sag(x)-bottom)*.5,depth),new THREE.Vector3(x,sag(x),depth)],.0048,netMat,4)}const rows=13;for(let j=0;j<=rows;j++){const t=j/rows,pts=[];for(let i=0;i<=32;i++){const x=-width/2+width*i/32;pts.push(new THREE.Vector3(x,bottom+(sag(x)-bottom)*t,depth))}makeCord(pts,.0048,netMat,4)}const lowerPts=[];for(let i=0;i<=24;i++){const x=-width/2+width*i/24;lowerPts.push(new THREE.Vector3(x,bottom,depth))}makeCord(lowerPts,.009,netMat,5);importedCourtGroup.add(group)}
       function loadImportedModels(){if(!THREE.GLTFLoader){console.warn('GLTFLoader unavailable; using built-in court and racket');return}const loader=new THREE.GLTFLoader();/* コートは3Dモデル導入前の標準コートに戻す。ラケットモデルのみ読み込む。 */loader.load('./assets/tennis_racket.glb',g=>{externalRacketTemplate=g.scene;externalRacketMounts.forEach(m=>{while(m.children.length)m.remove(m.children[0]);const racket=externalRacketTemplate.clone(true);racket.scale.setScalar(.85);racket.rotation.z=Math.PI;m.add(racket);if(m===P.racketMount||m===P2.racketMount)applyRacketColor(m,appearanceColors.racket)})},undefined,e=>console.warn('Racket GLB could not be loaded; using built-in racket',e))}
@@ -890,7 +902,8 @@
   c.shadowBlur=10;c.fillStyle='rgba(255,255,255,.28)';c.font='600 66px Work Sans,Arial,sans-serif';c.fillText(domeScoreEffectText,0,0);c.restore()}
  // 走査線
  c.fillStyle='rgba(0,0,0,.12)';for(let sy=8;sy<h-10;sy+=4)c.fillRect(24,sy,w-48,1);
- domeScoreTex.needsUpdate=true}
+ domeScoreTex.needsUpdate=true;
+ if(laverScoreCtx){laverScoreCtx.drawImage(domeScoreCtx.canvas,0,0);laverScoreTex.needsUpdate=true}}
 
 
        function hud(){const th=fin()?6:3,l=i=>{const a=pts[i],b=pts[1-i];return a>=th&&b>=th?(a===b?'DEUCE':a>b?'ADV':'-'):a};$('sb').querySelectorAll('.r span')[1].textContent=MP.role?'相手':doublesMode?'CPUペア':'CPU';$('pz').style.display=MP.role?'none':'';const serverName=MP.role?(server==='p'?'あなた':'相手'):!doublesMode?(server==='p'?'あなた':'CPU'):(servingChar===P?'あなた':servingChar===P2?'味方CPU':(servingChar===C||servingChar===C2)?'相手ペア':'CPU');$('hh').textContent=(MP.role?'対人戦 ':doublesMode?'ダブルス ':'シングルス ')+(GM*2-1)+'ゲームマッチ'+(fin()?' FINAL':'')+' | '+serverName+'サーブ '+(serveNo>1?'2nd':'1st');
