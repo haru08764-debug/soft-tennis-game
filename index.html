@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-title" content="ソフトテニス3D" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="ソフトテニス3D" />
@@ -24,7 +24,7 @@
       :root{--ac:#ffd84a;--bg:#0b1d33;--tx:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
       html{scroll-padding-top:env(safe-area-inset-top,0px)}
       *{box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-      html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;touch-action:none}
+      html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:"Work Sans","Noto Sans JP",system-ui,-apple-system,"Hiragino Sans",sans-serif;touch-action:none}
       #app{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
       #sb{position:fixed;top:calc(6px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:rgba(8,20,40,.74);border-radius:10px;padding:5px 12px;font-size:clamp(12px,2.6vw,16px);pointer-events:none;min-width:210px}
       .r{display:grid;grid-template-columns:12px 1fr 34px 56px;align-items:center;gap:6px;line-height:1.5}
@@ -37,7 +37,7 @@
       #ov{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,15,30,.85);text-align:center;padding:16px;gap:12px;overflow:auto;z-index:9}
       #ov h1{margin:0;font-size:clamp(24px,6vw,44px)}
       #ov canvas{max-width:100%;border:2px solid rgba(255,255,255,.3)}
-      #challengeBtn{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:8;border:2px solid #f4d35e;border-radius:999px;padding:13px 24px;background:rgba(13,36,48,.96);color:#fff;font-size:clamp(15px,3.5vw,20px);font-weight:800;box-shadow:0 4px 20px #0008;white-space:nowrap;touch-action:manipulation}#challengeBtn[hidden]{display:none}#challengeBtn span{font-size:.8em;color:#f4d35e;margin-left:7px}
+      #challengeBtn{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:8;border:2px solid #f4d35e;border-radius:999px;padding:13px 24px;background:rgba(13,36,48,.9);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:#fff;font-size:clamp(15px,3.5vw,20px);font-weight:700;box-shadow:0 4px 20px #0008;white-space:nowrap;touch-action:manipulation}#challengeBtn[hidden]{display:none}#challengeBtn span{font-size:.8em;color:#f4d35e;margin-left:7px}
       #ov .hl{font-size:clamp(13px,2.5vw,17px)}
       .bt{padding:11px 24px;border:0;border-radius:12px;background:#2a4a78;color:#fff;font-size:16px;font-weight:700;margin:2px}
       .bt.on,.go{background:var(--ac);color:#222}
@@ -50,9 +50,9 @@
       .b{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.65);background:rgba(255,255,255,.2);color:#fff;font-weight:800;touch-action:none;font-size:14px}
       #b1{width:100px;height:100px;right:0;bottom:0;background:rgba(255,216,74,.35)}#b2{width:76px;height:76px;right:108px;bottom:6px}#b3{width:76px;height:76px;right:46px;bottom:106px}
       #sb,#pz,#hint{background:rgba(10,24,48,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);box-shadow:0 4px 16px rgba(0,0,0,.25)}
-      #sb{border-radius:14px;padding:6px 14px;min-width:230px;font-weight:700}
+      #sb{border-radius:16px;padding:6px 16px;min-width:230px;font-weight:600}
       #shotSpeed{display:none}
-      .r b{font-variant-numeric:tabular-nums}.r b:last-child{background:rgba(255,255,255,.14);border-radius:6px;font-size:1.2em}
+      .r b{font-variant-numeric:tabular-nums}.r b:last-child{background:rgba(255,255,255,.14);border-radius:8px;font-size:1.2em}
       .r i.on{box-shadow:0 0 8px var(--ac)}
       .b,#jb{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
       .b{background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.55);box-shadow:0 4px 14px rgba(0,0,0,.3);letter-spacing:.06em}
@@ -73,25 +73,27 @@
       @media(orientation:portrait){#b4{width:64px;height:64px;right:112px;bottom:78px}#b5{width:58px;height:58px;right:112px;bottom:144px}#b6{width:60px;height:60px;left:0;bottom:94px;font-size:10px}}
       /* ===== DADS準拠(色は変数。公式値が確認できたらここだけ差し替える) ===== */
       :root{--d-blue:#0017C1;--d-blue-h:#00118F;--d-blue-a:#000971;--d-tint:#E8F1FE;--d-tint-a:#C5D7FB;--d-text:#1A1A1A;--d-sub:#4D4D4D;--d-line:#767676;--d-yellow:#FFD43D}
-      body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Sans",sans-serif}
+      body{font-family:"Work Sans","Noto Sans JP",system-ui,-apple-system,"Hiragino Sans",sans-serif}
       :focus-visible{outline:4px solid var(--d-yellow);outline-offset:2px;box-shadow:0 0 0 2px #000}
       #ov{background:rgba(0,0,0,.6);-webkit-backdrop-filter:none;backdrop-filter:none;gap:0;padding:16px}
-      .dlg{background:#fff;color:var(--d-text);width:min(640px,100%);border-radius:12px;padding:24px;text-align:left;box-shadow:0 8px 32px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:16px;font-size:16px;line-height:1.7}
+      .dlg{background:#fff;color:var(--d-text);width:min(640px,100%);border-radius:20px;padding:28px;text-align:left;box-shadow:0 24px 64px rgba(2,10,60,.22),0 2px 8px rgba(2,10,60,.08);display:flex;flex-direction:column;gap:18px;font-size:16px;line-height:1.7}
       #ov h1{font-size:clamp(22px,4vw,28px);margin:0;color:var(--d-text);text-shadow:none;letter-spacing:0;line-height:1.4}
       #ov h1:focus-visible{outline:none;box-shadow:none}
       .lead,.dlg p{margin:0;color:var(--d-sub)}
-      fieldset{border:0;margin:0;padding:0;min-width:0}legend{font-weight:700;padding:0;margin-bottom:4px}
-      .rds{display:flex;flex-wrap:wrap;gap:4px 20px}
-      .rd{display:flex;align-items:center;gap:8px;min-height:44px;cursor:pointer}
-      .rd input{-webkit-appearance:none;appearance:none;width:24px;height:24px;margin:0;border:2px solid var(--d-line);border-radius:50%;background:#fff;flex:none}
-      .rd input:checked{border-color:var(--d-blue);background:radial-gradient(circle,var(--d-blue) 0 45%,#fff 50%)}
+      fieldset{border:0;margin:0;padding:0;min-width:0}legend{font-weight:600;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--d-sub);padding:0;margin-bottom:10px}
+      .rds{display:flex;flex-wrap:wrap;gap:0}
+      .rd{display:inline-flex;align-items:center;gap:9px;min-height:44px;cursor:pointer;padding:9px 20px 9px 15px;border:1.5px solid rgba(0,23,193,.22);border-radius:999px;background:#fff;color:var(--d-text);font-weight:500;transition:border-color .15s,background .15s,color .15s;margin:0 8px 8px 0}
+      .rd:hover{border-color:var(--d-blue);background:var(--d-tint)}
+      .rd input{-webkit-appearance:none;appearance:none;width:18px;height:18px;margin:0;border:2px solid var(--d-line);border-radius:50%;background:#fff;flex:none;transition:all .15s}
+      .rd input:checked{border-color:var(--d-blue);background:var(--d-blue);box-shadow:inset 0 0 0 3px #fff}
+      .rd:has(input:checked){border-color:var(--d-blue);background:var(--d-tint);color:var(--d-blue);font-weight:600;box-shadow:inset 0 0 0 1px var(--d-blue)}
       .act{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap}
-      .bt{min-height:48px;min-width:96px;padding:8px 24px;border:2px solid var(--d-blue);border-radius:8px;background:#fff;color:var(--d-blue);font-size:16px;font-weight:700;margin:0;-webkit-backdrop-filter:none;backdrop-filter:none}
-      .bt:hover{background:var(--d-tint);color:var(--d-blue-h);text-decoration:underline}.bt:active{background:var(--d-tint-a);color:var(--d-blue-a)}
-      .bt.go{background:var(--d-blue);color:#fff}.bt.go:hover{background:var(--d-blue-h);color:#fff}.bt.go:active{background:var(--d-blue-a);color:#fff}
+      .bt{min-height:48px;min-width:96px;padding:10px 24px;border:2px solid var(--d-blue);border-radius:12px;background:#fff;color:var(--d-blue);font-size:15.5px;font-weight:600;margin:0;-webkit-backdrop-filter:none;backdrop-filter:none;transition:transform .15s,box-shadow .15s,background .15s}
+      .bt:hover{background:var(--d-tint);color:var(--d-blue-h);text-decoration:none;transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,23,193,.18)}.bt:active{background:var(--d-tint-a);color:var(--d-blue-a);transform:none;box-shadow:none}
+      .bt.go{background:linear-gradient(180deg,#1c4fe8,var(--d-blue));color:#fff;border-color:transparent}.bt.go:hover{background:linear-gradient(180deg,#0f3fd0,var(--d-blue-h));color:#fff;box-shadow:0 8px 20px rgba(0,23,193,.35)}.bt.go:active{background:var(--d-blue-a);color:#fff}
       .bt.txt{border-color:transparent;background:transparent;text-decoration:underline}
       .hl{color:var(--d-sub);font-size:14px;line-height:1.8;max-width:none;text-align:left}
-      .hl summary{cursor:pointer;color:var(--d-blue);font-weight:700;min-height:44px;display:flex;align-items:center}
+      .hl summary{cursor:pointer;color:var(--d-blue);font-weight:600;min-height:44px;display:flex;align-items:center}
       .res{font-size:24px;font-weight:700}
       #btns{left:0;right:0;width:auto;height:0;transform:none!important;pointer-events:none}.b{pointer-events:auto}
       body.lh #jz{left:auto;right:0}body.lh #jb{left:auto;right:calc(28px + env(safe-area-inset-right,0px))}
@@ -398,7 +400,7 @@
          {const bCan=document.createElement('canvas');bCan.width=1024;bCan.height=80;const bCtx=bCan.getContext('2d');domeBannerCtx=bCtx;domeBannerTex=new THREE.CanvasTexture(bCan);domeBannerTex.anisotropy=4;const bMat=new THREE.MeshBasicMaterial({map:domeBannerTex});bMat.fog=false;for(const sgn of [-1,1]){const bMesh=new THREE.Mesh(new THREE.PlaneGeometry(11,.86),bMat);if(sgn>0)bMesh.rotation.y=Math.PI;bMesh.position.set(0,5.85,sgn*(domeHalfLength-.3));domeGroup.add(bMesh);const bMatT=new THREE.MeshBasicMaterial({color:0x73e0b2,transparent:true,opacity:.8});bMatT.fog=false;const bTrim=new THREE.Mesh(new THREE.BoxGeometry(11.3,.05,.06),bMatT);bTrim.position.set(0,6.35,sgn*(domeHalfLength-.3));domeGroup.add(bTrim)}}
         const faceCanvas=document.createElement('canvas');faceCanvas.width=1024;faceCanvas.height=360;const fc=faceCanvas.getContext('2d');
         fc.fillStyle='#14242b';fc.fillRect(0,0,1024,360);fc.strokeStyle='#d5e4e7';fc.lineWidth=10;fc.strokeRect(12,12,1000,336);
-        fc.fillStyle='#f0f5e8';fc.font='600 46px Oswald,sans-serif';fc.textAlign='center';fc.fillText('SOFT TENNIS',512,68);
+        fc.fillStyle='#f0f5e8';fc.font='600 46px Work Sans,sans-serif';fc.textAlign='center';fc.fillText('SOFT TENNIS',512,68);
         fc.fillStyle='#73e0b2';fc.font='bold 105px monospace';fc.fillText('0  -  0',512,205);
         fc.fillStyle='#d9e5e8';fc.font='bold 30px sans-serif';fc.fillText('HOME              GUEST',512,285);
         const faceTex=new THREE.CanvasTexture(faceCanvas);faceTex.anisotropy=4;domeScoreCtx=fc;domeScoreTex=faceTex;
@@ -654,14 +656,14 @@
        c.fillStyle='#05070f';c.fillRect(520,6,624,H-12);
        c.strokeStyle='rgba(140,190,255,.5)';c.lineWidth=2;c.strokeRect(523,9,618,H-18);
        c.fillStyle='rgba(255,255,255,.96)';c.textBaseline='alphabetic';
-       c.textAlign='left';c.font='600 40px Oswald,Arial,sans-serif';
+       c.textAlign='left';c.font='600 40px Work Sans,Arial,sans-serif';
        c.fillStyle='#e7ecff';c.fillText('S O F T',44,68);
-       c.fillStyle='#8fc5ff';c.fillText('T E N N I S',180,68);
+       c.fillStyle='#8fc5ff';c.fillText('T E N N I S',228,68);
        const n=String(value);
-       if(n==='--'){c.textAlign='center';c.font='600 64px Oswald,Arial,sans-serif';c.fillStyle='rgba(255,255,255,.5)';c.fillText('--',826,76);c.font='500 30px Oswald,Arial,sans-serif';c.textAlign='left';c.fillStyle='rgba(255,255,255,.6)';c.fillText('km/h',850,76)}
-       else{c.textAlign='right';c.font='600 80px Oswald,Arial,sans-serif';c.fillStyle='#eaf6ff';c.fillText(n,1008,80);
-        c.textAlign='left';c.font='500 30px Oswald,Arial,sans-serif';c.fillStyle='#b9d7f2';c.fillText('km/h',1022,76)}
-       c.textAlign='center';c.font='600 34px Oswald,Arial,sans-serif';c.fillStyle='#ffe9b0';c.fillText('S E R V E   S P E E D',1430,72);
+       if(n==='--'){c.textAlign='center';c.font='600 64px Work Sans,Arial,sans-serif';c.fillStyle='rgba(255,255,255,.5)';c.fillText('--',826,76);c.font='500 30px Work Sans,Arial,sans-serif';c.textAlign='left';c.fillStyle='rgba(255,255,255,.6)';c.fillText('km/h',850,76)}
+       else{c.textAlign='right';c.font='600 80px Work Sans,Arial,sans-serif';c.fillStyle='#eaf6ff';c.fillText(n,1008,80);
+        c.textAlign='left';c.font='500 30px Work Sans,Arial,sans-serif';c.fillStyle='#b9d7f2';c.fillText('km/h',1022,76)}
+       c.textAlign='center';c.font='600 34px Work Sans,Arial,sans-serif';c.fillStyle='#ffe9b0';c.fillText('S E R V E   S P E E D',1430,72);
        if(serveSpeedMeter&&serveSpeedMeter.children[1]?.material.map)serveSpeedMeter.children[1].material.map.needsUpdate=true;
        if(domeGroup.visible)updateDomeScoreboard();}
 
@@ -687,7 +689,7 @@
       const rch=w=>w===P||MP.role?2:[1.45,1.75,2.05][diff],hd=w=>Math.hypot(ball.x-(w.x+w.hs),ball.z-(w.z+w.fw*.9));
       const fin=()=>games[0]===GM-1&&games[1]===GM-1;
       let domeScoreEffectUntil=0,domeScoreEffectText='',domeScoreEffectActive=false;
-       function updateDomeBanner(){if(!domeBannerCtx||!domeBannerTex)return;const now=performance.now();if(now<domeBannerNextDraw)return;domeBannerNextDraw=now+55;const c=domeBannerCtx,w=1024,h=80;c.fillStyle='#07161d';c.fillRect(0,0,w,h);c.fillStyle='rgba(115,224,178,.13)';c.fillRect(0,0,w,3);c.fillRect(0,h-3,w,3);c.font='600 46px Oswald,Arial,sans-serif';c.textAlign='left';c.textBaseline='middle';c.fillStyle='#8ff5cf';const word='SOFT TENNIS DOME      GAME ON      SERVE SPEED  '+(lastServeSpeed==='--'?'--':lastServeSpeed)+' km/h      ';const ww=Math.max(c.measureText(word).width,320);for(let x=-((now*.026)%ww);x<w;x+=ww)c.fillText(word,x,h/2);domeBannerTex.needsUpdate=true}function updateDomeScoreboard(){
+       function updateDomeBanner(){if(!domeBannerCtx||!domeBannerTex)return;const now=performance.now();if(now<domeBannerNextDraw)return;domeBannerNextDraw=now+55;const c=domeBannerCtx,w=1024,h=80;c.fillStyle='#07161d';c.fillRect(0,0,w,h);c.fillStyle='rgba(115,224,178,.13)';c.fillRect(0,0,w,3);c.fillRect(0,h-3,w,3);c.font='600 46px Work Sans,Arial,sans-serif';c.textAlign='left';c.textBaseline='middle';c.fillStyle='#8ff5cf';const word='SOFT TENNIS DOME      GAME ON      SERVE SPEED  '+(lastServeSpeed==='--'?'--':lastServeSpeed)+' km/h      ';const ww=Math.max(c.measureText(word).width,320);for(let x=-((now*.026)%ww);x<w;x+=ww)c.fillText(word,x,h/2);domeBannerTex.needsUpdate=true}function updateDomeScoreboard(){
  if(domeBannerCtx)updateDomeBanner();
  if(!domeScoreCtx||!domeScoreTex)return;
  const c=domeScoreCtx,w=1024,h=360,now=performance.now();
@@ -707,21 +709,21 @@
  // ヘッダー: ボールアイコン+タイトル+形式/ゲーム番号
  c.strokeStyle='#e8f3f6';c.lineWidth=3;c.beginPath();c.arc(88,58,17,0,Math.PI*2);c.stroke();
  c.lineWidth=2;c.beginPath();c.arc(88,58,17,-.55,1.15);c.stroke();c.beginPath();c.arc(88,58,17,2.6,3.85);c.stroke();
- c.fillStyle='#eaf4f8';c.font='600 36px Oswald,Arial,sans-serif';c.textAlign='left';c.fillText('S O F T   T E N N I S',120,70);
- c.textAlign='right';c.fillStyle='#b8ccd4';c.font='500 22px Oswald,Arial,sans-serif';c.fillText(doublesMode?'DOUBLES':(MP.role?'ONLINE':'SINGLES'),926,50);
- c.fillStyle='#8fb0ba';c.font='500 18px Oswald,Arial,sans-serif';c.fillText(fin()?'FINAL SET':'GAME '+(gi+1),926,74);
+ c.fillStyle='#eaf4f8';c.font='600 36px Work Sans,Arial,sans-serif';c.textAlign='left';c.fillText('S O F T   T E N N I S',120,70);
+ c.textAlign='right';c.fillStyle='#b8ccd4';c.font='500 22px Work Sans,Arial,sans-serif';c.fillText(doublesMode?'DOUBLES':(MP.role?'ONLINE':'SINGLES'),926,50);
+ c.fillStyle='#8fb0ba';c.font='500 18px Work Sans,Arial,sans-serif';c.fillText(fin()?'FINAL SET':'GAME '+(gi+1),926,74);
  c.strokeStyle=cols[0];c.lineWidth=2;c.beginPath();c.moveTo(814,40);c.lineTo(798,80);c.stroke();
  c.fillStyle='rgba(255,255,255,.07)';c.fillRect(56,92,w-112,2);
  // ゲーム履歴グリッド
  const xG=470,colW=48,maxCol=Math.min(7,domeGameHistory.length+1),cur=games[0]+games[1]+1;
- c.fillStyle='#8fb0ba';c.font='500 17px Oswald,Arial,sans-serif';c.textAlign='center';
+ c.fillStyle='#8fb0ba';c.font='500 17px Work Sans,Arial,sans-serif';c.textAlign='center';
  for(let i=1;i<=maxCol;i++)c.fillText(String(i),xG+(i-1)*colW+colW/2,112);
  const rowY=[118,208],rowH=76;
  for(let r=0;r<2;r++){
   const col=cols[r],y=rowY[r],nm=r?cName:pName;
   c.fillStyle=col;c.globalAlpha=.9;c.fillRect(64,y+14,9,40);c.globalAlpha=1;
-  c.fillStyle=rowCol[r];c.font='600 34px Oswald,Arial,sans-serif';c.textAlign='left';c.fillText(nm,90,y+42);
-  c.fillStyle='#7f9aa4';c.font='500 15px Oswald,Arial,sans-serif';c.fillText((r?server!=='p':server==='p')?'SERVING':'RECEIVING',90,y+62);
+  c.fillStyle=rowCol[r];c.font='600 34px Work Sans,Arial,sans-serif';c.textAlign='left';c.fillText(nm,90,y+42);
+  c.fillStyle='#7f9aa4';c.font='500 15px Work Sans,Arial,sans-serif';c.fillText((r?server!=='p':server==='p')?'SERVING':'RECEIVING',90,y+62);
  }
  for(let r=0;r<2;r++){
   const y=rowY[r];
@@ -730,17 +732,17 @@
    c.strokeStyle='rgba(255,255,255,.12)';c.lineWidth=1.5;c.strokeRect(cx+.5,y+.5,colW-1,rowH-1);
    if(i<=domeGameHistory.length){const win=r===0?(domeGameHistory[i-1]===0):(domeGameHistory[i-1]===1);
     if(win){c.fillStyle=cols[r];c.globalAlpha=.95;c.fillRect(cx+8,y+rowH-13,colW-16,5);c.globalAlpha=1}
-    else{c.fillStyle='rgba(150,172,182,.5)';c.font='600 24px Oswald,Arial,sans-serif';c.textAlign='center';c.fillText('-',cx+colW/2,y+44)}}
+    else{c.fillStyle='rgba(150,172,182,.5)';c.font='600 24px Work Sans,Arial,sans-serif';c.textAlign='center';c.fillText('-',cx+colW/2,y+44)}}
   }
  }
  // ポイント列
  const xP=872,pw2=w-58-xP;
- c.fillStyle='#8fb0ba';c.font='500 17px Oswald,Arial,sans-serif';c.textAlign='center';c.fillText('POINTS',xP+pw2/2,112);
+ c.fillStyle='#8fb0ba';c.font='500 17px Work Sans,Arial,sans-serif';c.textAlign='center';c.fillText('POINTS',xP+pw2/2,112);
  c.strokeStyle='rgba(255,255,255,.10)';c.lineWidth=1.5;c.strokeRect(xP+.5,rowY[0]+.5,pw2-1,rowH-1);c.strokeRect(xP+.5,rowY[1]+.5,pw2-1,rowH-1);
  for(let r=0;r<2;r++){
   const tx=pointText(r),yy=rowY[r]+50;
   c.save();c.shadowColor=cols[r];c.shadowBlur=16;
-  c.fillStyle=rowCol[r];c.font=tx.length>2?'600 30px Oswald,Arial,sans-serif':'600 62px Oswald,Arial,sans-serif';
+  c.fillStyle=rowCol[r];c.font=tx.length>2?'600 26px Work Sans,Arial,sans-serif':'600 56px Work Sans,Arial,sans-serif';
   c.fillText(tx,xP+pw2/2,yy);c.restore();
  }
  // 進捗バー
@@ -751,13 +753,13 @@
  c.fillStyle=cols[1];c.fillRect(706+barW*(1-Math.min(1,pts[1]/(th2-.5))),by2,Math.min(1,pts[1]/(th2-.5))*barW,6);
  c.save();c.translate((470+barW+706)/2+13,by2+3);c.rotate(Math.PI/4);c.fillStyle='rgba(147,170,179,.75)';c.fillRect(-5,-5,10,10);c.restore();
  // 右下ワード
- c.fillStyle='#6f8892';c.textAlign='right';c.font='500 16px Oswald,Arial,sans-serif';c.fillText('F U L L Y   I N D O O R   A R E N A',952,342);
+ c.fillStyle='#6f8892';c.textAlign='right';c.font='500 16px Work Sans,Arial,sans-serif';c.fillText('F U L L Y   I N D O O R   A R E N A',952,342);
  // 得点演出
  if(effect){c.globalAlpha=.22;c.fillStyle='#052430';c.fillRect(0,0,w,h);c.globalAlpha=1;
   c.save();c.translate(512,158);c.scale(1+(1-pulse)*.05,1+(1-pulse)*.05);
   const ec=pulse>.5?'#f4d35e':'#73e0b2';
-  c.shadowColor=ec;c.shadowBlur=36;c.fillStyle=ec;c.font='600 66px Oswald,Arial,sans-serif';c.textAlign='center';c.fillText(domeScoreEffectText,0,0);
-  c.shadowBlur=10;c.fillStyle='rgba(255,255,255,.28)';c.font='600 66px Oswald,Arial,sans-serif';c.fillText(domeScoreEffectText,0,0);c.restore()}
+  c.shadowColor=ec;c.shadowBlur=36;c.fillStyle=ec;c.font='600 66px Work Sans,Arial,sans-serif';c.textAlign='center';c.fillText(domeScoreEffectText,0,0);
+  c.shadowBlur=10;c.fillStyle='rgba(255,255,255,.28)';c.font='600 66px Work Sans,Arial,sans-serif';c.fillText(domeScoreEffectText,0,0);c.restore()}
  // 走査線
  c.fillStyle='rgba(0,0,0,.12)';for(let sy=8;sy<h-10;sy+=4)c.fillRect(24,sy,w-48,1);
  domeScoreTex.needsUpdate=true}
@@ -792,7 +794,7 @@
       function tournamentMenu(){ov(`<h1>🏆 トーナメント</h1><p>8チーム・シングルエリミネーション</p><div class="hl" style="width:min(100%,560px);text-align:left"><b>準々決勝</b><p>第1試合：北海学園 vs 札幌南</p><p>第2試合：函館工業 vs 旭川北</p><p>第3試合：帯広東 vs 釧路西</p><p>第4試合：小樽中央 vs 室蘭工業</p><hr><b>準決勝</b><p>第5試合：第1試合の勝者 vs 第2試合の勝者</p><p>第6試合：第3試合の勝者 vs 第4試合の勝者</p><hr><b>決勝</b><p>第7試合：第5試合の勝者 vs 第6試合の勝者</p><p>🥇 決勝に勝つと優勝！</p></div><p class="hl">※ 今回は組み合わせ表の表示のみです。試合開始・勝敗の自動反映は次の段階で追加します。</p><div class="act"><button class="bt go" data-a="title">メインメニューへ戻る</button></div>`);}
       function homeScreenGuide(){if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)return '';if(navigator.standalone===true)return '';const ua=navigator.userAgent||'',ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),android=/Android/i.test(ua);const steps=ios?'Safariの共有ボタン（□↑）を押す →「ホーム画面に追加」→「追加」':android?'ブラウザ右上の「⋮」メニューを押す →「ホーム画面に追加」または「アプリをインストール」':'ブラウザのメニューから「ホーム画面に追加」または「アプリをインストール」を選択';return '<div class="hl" style="width:100%;max-width:620px;padding:12px 14px;border:1px solid #6b8db7;border-radius:12px;background:rgba(38,70,108,.65);color:#fff;text-align:left;line-height:1.65"><b>📲 ソフトテニス3Dをホーム画面に追加</b><br>次回からアイコンをタップしてすぐ遊べます。<br>'+steps+'</div>'}
       function menu(){stopCourtAmbience();mpClose();state='menu';hint('');$('msg').style.opacity=0;const rd=(n,v,l,c)=>`<label class="rd"><input type="radio" name="${n}" value="${v}" ${c?'checked':''}>${l}</label>`;
-       ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.18.3</p>
+       ov(`<h1>ソフトテニス3D</h1><p class="ver">VERSION 1.18.4</p>
       ${homeScreenGuide()}<p>CPU対戦の形式を選び、設定を選んで試合を始めてください。</p>
       <fieldset><legend>試合形式</legend><div class="rds">${rd('format','singles','シングルス',!doublesMode)}${rd('format','doubles','ダブルス(2対2)',doublesMode)}</div></fieldset>
        ${doublesMode?'<fieldset><legend>自分のポジション</legend><div class="rds">'+rd('position','back','後衛',playerPosition==='back')+rd('position','front','前衛（ボレー重視）',playerPosition==='front')+'</div><p>前衛を選ぶとネット寄りでプレイ。自分のサーブ時はサーブ後に前へ詰めます。</p></fieldset>':''}
@@ -801,7 +803,7 @@
       <fieldset><legend>画質</legend><div class="rds">${rd('quality','high','くわしい',quality==='high')}${rd('quality','std','標準',quality==='std')}${rd('quality','lite','軽量',quality==='lite')}</div><p>くわしい=Bloom+高解像度 / 標準 / 軽量=重い端末向け</p></fieldset>
       <fieldset><legend>試合形式(日本ソフトテニス連盟の公式はゲームマッチ制)</legend><div class="rds">${[[2,'3ゲーム(短時間)'],[3,'5ゲーム'],[4,'7ゲーム(公式標準)']].map(([n,t])=>rd('gm',n,t,n===GM)).join('')}</div></fieldset>
       <div class="act"><button class="bt txt" data-a="test">自己診断テスト</button><button class="bt txt" data-a="stats">通算戦績</button><button class="bt" data-a="tournament">🏆 トーナメント</button><button class="bt" data-a="mp">対人戦(コードで対戦)</button><button class="bt" data-a="settings">設定</button><button class="bt" data-a="appearance">選手・ラケット</button><button class="bt go" data-a="start">試合開始</button></div>
-      <details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / R トップスピン / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → SHOTで通常サーブ / SLICEでカットサーブ(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details><details class="hl"><summary>パッチノート</summary><b>v1.18.3</b><br>・サイドの風よけスクリーンを撤去し、観客席と干渉しないように。サイドフェンスを後方の支柱列まで延長して角を自然に接続。観客席の手前に浮いていた支柱の列を削除。<br><b>v1.18.2</b><br>・いつものコートの周辺をリアル化。観客席を段差・座席・階段・屋根フレーム付きのスタジアム構造に刷新し、高マスト式ナイター照明・スポンサー看板を追加。コート面テクスチャの解像度を引き上げ。<br><b>v1.18.1</b><br>・サーブ速度計を背面観客席の前面に埋め込み。大型のLEDボード風デザインに刷新し、単位をkm/h表記に統一。<br><b>v1.18.0</b><br>・ホーム画面に追加していないユーザーには、端末に合わせた追加手順をタイトル画面に案内。ホーム画面から起動した場合は案内を非表示。<br><b>v1.17.9</b><br>・トップスピン時の追加落下加速度をネット越え予測にも反映し、ネットにかかりやすい問題を修正。トップスピンの落ちやすさとバウンド後の前進は維持。<br><b>v1.16.0</b><br>・ダブルスで自分が前衛ならCPUを後衛寄りに配置。CPU前衛のスマッシュ・ボレー選択率を上昇。サーブ速度のみをコート脇のドット表示計に表示し、中央の速度表示を廃止。<br><b>v1.15.2</b><br>・シングルスではポジション選択を非表示にし、後衛固定に変更。ダブルスでは引き続き選択可能。<br><b>v1.15.1</b><br>・VOLLEYボタンも操作設定のドラッグ移動・位置保存・リセットの対象に追加。<br><b>v1.15.0</b><br>・自分のポジションに「前衛／後衛」を追加。前衛はネット寄りでレシーブし、サーブ時は打ったあと前へ詰める。<br><b>v1.14.0</b><br>・前衛向けの新ショット「VOLLEY」を追加。ボレー専用の低く速い弾道と短いスイングを実装。<br><b>v1.13.0</b><br>・サーブのトスを見やすく調整し、打点を逃してトスミスになりやすい問題を改善。2本目のサーブも維持し、サーブ速度表示を追加。<br>・CPUが前に詰めてボレーを狙う動き、トップスピンの沈みとスライスの横変化、走行中の上体の傾きを改善。<br>・試合ごとのポイント・エース・サーブフォルト・最速ショットを記録し、通算戦績を端末に保存。<br><b>v1.12.0</b><br>・あなた側のシャツ・差し色・ショーツ・ラケットを色変更できるカスタマイズ画面を追加。設定は自動保存。オンライン対戦の再接続時に入力状態が残らないよう通信状態のリセットも強化。<br><b>v1.11.0</b><br>・CPU対戦にダブルス(2対2)モードを追加。前衛パートナー2人がラリー中に位置取りし、届くボールを自動で返球。対人戦は従来どおり1対1。<br><b>v1.10.9</b><br>・通常のフォア／バックのフォロースルーを強化。インパクト後の上体の回旋と腕の振り抜きを伸ばし、打球ごとの動きを分かりやすく調整。<br><b>v1.10.8</b><br>・ロブ専用のスイングを追加。ラケットを後方・下側から振り上げ、打球後に高く振り抜く動きと反対腕のバランス動作を調整。<br><b>v1.10.7</b><br>・スライスショット専用のスイングを追加。高めに引いてから斜め下へ振り抜く動きと、インパクト後のフォロースルーを調整。<br><b>v1.10.6</b><br>・1バウンド後にボールがフェンスへ当たっても、打球者のアウトとして誤判定しないよう修正。バウンド前のフェンス接触は引き続きアウト判定。<br><b>v1.10.5</b><br>・スマッシュが当たりにくくなる問題を修正。スイング中に打球判定を受け付ける時間を広げ、モーション中でもボールを捉えやすく調整。<br><b>v1.10.4</b><br>・スマッシュ動作をサーブ動作から分離。高い打点で上体をひねって振りかぶり、インパクト後に腕を前方へ振り抜く専用モーションを追加。<br><b>v1.10.3</b><br>・コート面を落ち着いた青緑系に調整し、人工的なひび・目地を削減して細かな表面粒子を追加。ネット上端の白い帯状パーツを暗色の細いコードに変更。<br><b>v1.10.2</b><br>・打球者を独立して記録し、ツーバウンドやボール停止時の得点が直前の判定状態に左右されないよう修正。<br><b>v1.10.0</b><br>・GLB形式のコートとラケットモデルの読み込みに対応。読み込めない場合は従来の表示に自動で戻る。<br><b>v1.9.0</b><br>・通常ショットのカメラシェイクを大幅に弱め、ラケットで打った瞬間に発生するよう変更。スマッシュは強めの揺れを維持。<br><b>v1.8.9</b><br>・着弾リングと火花を明るく大型化。スマッシュ時のカメラシェイクを強化し、強打でも揺れが分かるように調整。<br><b>v1.8.8</b><br>・スマッシュや強打の着弾に専用カラーの衝撃リングと火花を追加。強い着弾では控えめなカメラシェイクも発生。<br><b>v1.8.7</b><br>・ショットの着弾時に多重リング、発光フラッシュ、火花パーティクルを表示。球速に応じて演出の強さを調整。<br><b>v1.8.6</b><br>・UI全体をGlassmorphismに刷新。半透明ガラス、背景ぼかし、繊細な縁取りと奥行きのある影を追加。<br><b>v1.8.5</b><br>・直前のポイントを再生するリプレイ機能を追加。CPUのコース選択・ロブ判断・回復位置・反応を調整。<br><b>v1.8.4 BETA</b><br>・ドーム型コートで「3D COURT」などの広告看板、ナイター照明の柱・灯具、木立を非表示にし、屋外オブジェクトが屋内に見える問題を改善。<br><b>v1.8.3 BETA</b><br>・ドーム型コートでは周辺環境の緑色ウィンドスクリーンとフェンス支柱を非表示にし、屋内に緑の柵が残る問題を修正。<br><b>v1.8.2 BETA</b><br>・ドーム型コートでカメラ位置と注視点を壁・屋根の内側に制限し、カメラが壁を突き抜ける問題を軽減。<br><b>v1.8.1 BETA</b><br>・体育館ドームの屋根と妻壁の接合部に押さえ材を追加し、妻壁を立体化して端の隙間を改善。<br>・木床に板ごとの色むら・木目テクスチャと控えめな光沢を追加。床の幅をドーム内側に合わせ、側壁の巾木と補助ラインも調整。<br><b>v1.8.0 BETA</b><br>・緑ケ丘公園庭球場の20面構成を参考に、周辺コート群をInstancedMeshで追加。スタンド・休憩設備・公園の木々を軽量化して配置。<br><b>v1.7.8 BETA</b><br>・コート設定に「緑ケ丘公園庭球場風（苫小牧）」を追加。<br><b>v1.7.7 BETA</b><br>・設定でオン/オフできるドパガキモードを追加。打球・得点時に派手な文字演出、フラッシュ、画面揺れを表示<br><b>v1.7.6</b><br>・説明されたカットサーブのフォームに合わせ、半身の構え・後ろ足荷重・低めのトスを調整<br>・ラケットを肩より高く引き、斜め下への擦り振りと左脇方向へのフォロースルーを強調<br>・トス側の腕の動きも調整<br><b>v1.7.5</b><br>・参考動画をもとにサーブのテイクバック、上体の回転、打点後の振り抜きを改善<br>・トス側の腕の動きも調整<br><b>v1.7.4</b><br>・弱くなりすぎたカットサーブの横変化を中間の強さに調整<br>・低い弾道とネットとの距離は維持<br><b>v1.7.3</b><br>・カットサーブの横変化が強すぎる問題を調整し、バウンド後の変化量を抑制<br><b>v1.7.2</b><br>・カットサーブを低く速い軌道に変更し、ネット付近を通るよう調整<br>・飛行中の横曲がりを抑え、バウンド時に強い横変化が出るよう変更<br><b>v1.7.1</b><br>・参考動画に合わせてカットサーブの横変化を強め、バウンド後に外へ逃げる軌道へ調整<br><b>v1.7.0</b><br>・ボール本体をソフトテニスらしい白に戻し、通常時の残像も白系に変更<br>・コートの青を自然な明るさに調整し、周囲の緑や照明との色の差を改善<br><b>v1.6.9</b><br>・ベースライン後方へさらに移動可能にし、追従カメラの範囲も拡張<br><b>v1.6.8</b><br>・白飛びを抑え、露出・照明・空と霧の色を調整<br><b>v1.6.7</b><br>・高解像度描画、ACESトーンマッピング、影・照明・テクスチャの品質を強化<br><b>v1.6.6</b><br>・カットサーブ専用フォームを追加し、横回転とバウンド後の横変化を調整<br><b>v1.6.5</b><br>・サーブ中は「上から」「カット」の2ボタンだけに切り替え、サーブ後は通常操作ボタンへ復帰<br><b>v1.6.4</b><br>・一人称視点のカメラを少し高くし、目線の低さを改善<br><b>v1.6.3</b><br>・一人称視点で胴体や頭は隠し、両腕とラケットを表示するよう調整<br><b>v1.6.2</b><br>・一人称視点では自キャラを非表示にし、頭や胴体がカメラにめり込む問題を改善<br><b>v1.6.1</b><br>・三人称視点でカメラがボールを自然に追うよう、注視点をなめらかに調整<br><b>v1.6.0</b><br>・メインメニューに設定画面を追加。視野角・視点・効果音・CPU難易度・試合形式・操作設定を一括変更可能に変更<br><b>v1.5.9</b><br>・FOVスライダーで視野角を40〜110度に調整可能に変更<br><b>v1.5.8</b><br>・視点切り替えで一人称・三人称を選択可能に変更<br>・拍手の合成音を取りやめ、従来の得点効果音に復帰<br><b>v1.5.5</b><br>・CPUがトスを開始できずサーブしない不具合を修正<br><b>v1.5.4</b><br>・予測軌道の色をボール残像と同じ打球タイプ別カラーに連動<br><b>v1.5.3</b><br>・CPU戦でも打球タイプに応じて残像の色が切り替わるよう修正<br><b>v1.5.2</b><br>・ボール残像の透明度と大きさを適度に強調し、色を見やすく調整<br><b>v1.5.1</b><br>・打球タイプごとにボールの残像色を変更（スマッシュ・スライス・トップスピン・ロブ）<br><b>v1.5.0</b><br>・飛行中のボールの予測軌道を表示<br>・最初の着地点をリングで表示し、コート内外を色分け<br><b>v1.4.8</b><br>・残っていたTOPボタン専用の緑色CSSを削除し、共通スタイルを適用<br><b>v1.4.7</b><br>・TOPボタン固有の色指定を削除し、他の操作ボタンと共通の色スタイルを適用<br><b>v1.4.6</b><br>・TOPボタンを白背景・青枠線・青文字に統一<br><b>v1.4.5</b><br>・TOPボタンの枠線と文字色を他のボタンと統一<br><b>v1.4.4</b><br>・TOPボタンを白色に変更<br><b>v1.4.3</b><br>・TOPボタンの色指定を調整<br><b>v1.4.2</b><br>・TOPボタンを明るい緑の単色に変更し、透明化するスタイルを無効化<br><b>v1.4.1</b><br>・TOPボタンの背景色を不透明に固定<br><b>v1.4.0</b><br>・トップスピンボタンの見た目を調整<br><b>v1.3.9</b><br>・スイング時の体のひねりとフォロースルーを調整<br><b>v1.3.8</b><br>・トップスピンショットを追加<br><b>v1.3.7</b><br>・対人戦の接続タイムアウト処理と再接続案内を改善</details>`) }
+      <details class="hl"><summary>操作方法とルール</summary><b>PC</b> WASD移動 / Shift ダッシュ / 左クリック ショット / 右クリック ロブ / Space 強打・スマッシュ / E スライス / R トップスピン / P ポーズ<br>狙い: 打つ時の移動キー(A/D 左右、W 短く、S 深く)<br><b>スマホ</b> 左: スティック移動(強く倒すとダッシュ) 右: SHOT / LOB / SMASH / SLICE<br><b>サーブ</b> SHOTでトス → SHOTで通常サーブ / SLICEでカットサーブ(高い位置ほど正確・2本まで)。ベースライン後方・センターの手前から打つ<br><b>ルール</b> 4ポイント先取(3-3でデュース・2点差)/ 7ゲームは4ゲーム先取、3-3はファイナルゲーム(7ポイント先取・2点差) / 2ポイントごとにサーブ交代 / サーバーは左右交互 / ネットに触れて入ったサーブはレット / フットフォルト・タッチネット・相手コート侵入は失点</details><details class="hl"><summary>パッチノート</summary><b>v1.18.4</b><br>・UIフォントをWork Sansに変更し、メニュー・ボタン・ラジオボタン・スコア表示をモダンなデザインに刷新(チップ式セレクター・柔らかい角丸・ホバー演出)。<br><b>v1.18.3</b><br>・サイドの風よけスクリーンを撤去し、観客席と干渉しないように。サイドフェンスを後方の支柱列まで延長して角を自然に接続。観客席の手前に浮いていた支柱の列を削除。<br><b>v1.18.2</b><br>・いつものコートの周辺をリアル化。観客席を段差・座席・階段・屋根フレーム付きのスタジアム構造に刷新し、高マスト式ナイター照明・スポンサー看板を追加。コート面テクスチャの解像度を引き上げ。<br><b>v1.18.1</b><br>・サーブ速度計を背面観客席の前面に埋め込み。大型のLEDボード風デザインに刷新し、単位をkm/h表記に統一。<br><b>v1.18.0</b><br>・ホーム画面に追加していないユーザーには、端末に合わせた追加手順をタイトル画面に案内。ホーム画面から起動した場合は案内を非表示。<br><b>v1.17.9</b><br>・トップスピン時の追加落下加速度をネット越え予測にも反映し、ネットにかかりやすい問題を修正。トップスピンの落ちやすさとバウンド後の前進は維持。<br><b>v1.16.0</b><br>・ダブルスで自分が前衛ならCPUを後衛寄りに配置。CPU前衛のスマッシュ・ボレー選択率を上昇。サーブ速度のみをコート脇のドット表示計に表示し、中央の速度表示を廃止。<br><b>v1.15.2</b><br>・シングルスではポジション選択を非表示にし、後衛固定に変更。ダブルスでは引き続き選択可能。<br><b>v1.15.1</b><br>・VOLLEYボタンも操作設定のドラッグ移動・位置保存・リセットの対象に追加。<br><b>v1.15.0</b><br>・自分のポジションに「前衛／後衛」を追加。前衛はネット寄りでレシーブし、サーブ時は打ったあと前へ詰める。<br><b>v1.14.0</b><br>・前衛向けの新ショット「VOLLEY」を追加。ボレー専用の低く速い弾道と短いスイングを実装。<br><b>v1.13.0</b><br>・サーブのトスを見やすく調整し、打点を逃してトスミスになりやすい問題を改善。2本目のサーブも維持し、サーブ速度表示を追加。<br>・CPUが前に詰めてボレーを狙う動き、トップスピンの沈みとスライスの横変化、走行中の上体の傾きを改善。<br>・試合ごとのポイント・エース・サーブフォルト・最速ショットを記録し、通算戦績を端末に保存。<br><b>v1.12.0</b><br>・あなた側のシャツ・差し色・ショーツ・ラケットを色変更できるカスタマイズ画面を追加。設定は自動保存。オンライン対戦の再接続時に入力状態が残らないよう通信状態のリセットも強化。<br><b>v1.11.0</b><br>・CPU対戦にダブルス(2対2)モードを追加。前衛パートナー2人がラリー中に位置取りし、届くボールを自動で返球。対人戦は従来どおり1対1。<br><b>v1.10.9</b><br>・通常のフォア／バックのフォロースルーを強化。インパクト後の上体の回旋と腕の振り抜きを伸ばし、打球ごとの動きを分かりやすく調整。<br><b>v1.10.8</b><br>・ロブ専用のスイングを追加。ラケットを後方・下側から振り上げ、打球後に高く振り抜く動きと反対腕のバランス動作を調整。<br><b>v1.10.7</b><br>・スライスショット専用のスイングを追加。高めに引いてから斜め下へ振り抜く動きと、インパクト後のフォロースルーを調整。<br><b>v1.10.6</b><br>・1バウンド後にボールがフェンスへ当たっても、打球者のアウトとして誤判定しないよう修正。バウンド前のフェンス接触は引き続きアウト判定。<br><b>v1.10.5</b><br>・スマッシュが当たりにくくなる問題を修正。スイング中に打球判定を受け付ける時間を広げ、モーション中でもボールを捉えやすく調整。<br><b>v1.10.4</b><br>・スマッシュ動作をサーブ動作から分離。高い打点で上体をひねって振りかぶり、インパクト後に腕を前方へ振り抜く専用モーションを追加。<br><b>v1.10.3</b><br>・コート面を落ち着いた青緑系に調整し、人工的なひび・目地を削減して細かな表面粒子を追加。ネット上端の白い帯状パーツを暗色の細いコードに変更。<br><b>v1.10.2</b><br>・打球者を独立して記録し、ツーバウンドやボール停止時の得点が直前の判定状態に左右されないよう修正。<br><b>v1.10.0</b><br>・GLB形式のコートとラケットモデルの読み込みに対応。読み込めない場合は従来の表示に自動で戻る。<br><b>v1.9.0</b><br>・通常ショットのカメラシェイクを大幅に弱め、ラケットで打った瞬間に発生するよう変更。スマッシュは強めの揺れを維持。<br><b>v1.8.9</b><br>・着弾リングと火花を明るく大型化。スマッシュ時のカメラシェイクを強化し、強打でも揺れが分かるように調整。<br><b>v1.8.8</b><br>・スマッシュや強打の着弾に専用カラーの衝撃リングと火花を追加。強い着弾では控えめなカメラシェイクも発生。<br><b>v1.8.7</b><br>・ショットの着弾時に多重リング、発光フラッシュ、火花パーティクルを表示。球速に応じて演出の強さを調整。<br><b>v1.8.6</b><br>・UI全体をGlassmorphismに刷新。半透明ガラス、背景ぼかし、繊細な縁取りと奥行きのある影を追加。<br><b>v1.8.5</b><br>・直前のポイントを再生するリプレイ機能を追加。CPUのコース選択・ロブ判断・回復位置・反応を調整。<br><b>v1.8.4 BETA</b><br>・ドーム型コートで「3D COURT」などの広告看板、ナイター照明の柱・灯具、木立を非表示にし、屋外オブジェクトが屋内に見える問題を改善。<br><b>v1.8.3 BETA</b><br>・ドーム型コートでは周辺環境の緑色ウィンドスクリーンとフェンス支柱を非表示にし、屋内に緑の柵が残る問題を修正。<br><b>v1.8.2 BETA</b><br>・ドーム型コートでカメラ位置と注視点を壁・屋根の内側に制限し、カメラが壁を突き抜ける問題を軽減。<br><b>v1.8.1 BETA</b><br>・体育館ドームの屋根と妻壁の接合部に押さえ材を追加し、妻壁を立体化して端の隙間を改善。<br>・木床に板ごとの色むら・木目テクスチャと控えめな光沢を追加。床の幅をドーム内側に合わせ、側壁の巾木と補助ラインも調整。<br><b>v1.8.0 BETA</b><br>・緑ケ丘公園庭球場の20面構成を参考に、周辺コート群をInstancedMeshで追加。スタンド・休憩設備・公園の木々を軽量化して配置。<br><b>v1.7.8 BETA</b><br>・コート設定に「緑ケ丘公園庭球場風（苫小牧）」を追加。<br><b>v1.7.7 BETA</b><br>・設定でオン/オフできるドパガキモードを追加。打球・得点時に派手な文字演出、フラッシュ、画面揺れを表示<br><b>v1.7.6</b><br>・説明されたカットサーブのフォームに合わせ、半身の構え・後ろ足荷重・低めのトスを調整<br>・ラケットを肩より高く引き、斜め下への擦り振りと左脇方向へのフォロースルーを強調<br>・トス側の腕の動きも調整<br><b>v1.7.5</b><br>・参考動画をもとにサーブのテイクバック、上体の回転、打点後の振り抜きを改善<br>・トス側の腕の動きも調整<br><b>v1.7.4</b><br>・弱くなりすぎたカットサーブの横変化を中間の強さに調整<br>・低い弾道とネットとの距離は維持<br><b>v1.7.3</b><br>・カットサーブの横変化が強すぎる問題を調整し、バウンド後の変化量を抑制<br><b>v1.7.2</b><br>・カットサーブを低く速い軌道に変更し、ネット付近を通るよう調整<br>・飛行中の横曲がりを抑え、バウンド時に強い横変化が出るよう変更<br><b>v1.7.1</b><br>・参考動画に合わせてカットサーブの横変化を強め、バウンド後に外へ逃げる軌道へ調整<br><b>v1.7.0</b><br>・ボール本体をソフトテニスらしい白に戻し、通常時の残像も白系に変更<br>・コートの青を自然な明るさに調整し、周囲の緑や照明との色の差を改善<br><b>v1.6.9</b><br>・ベースライン後方へさらに移動可能にし、追従カメラの範囲も拡張<br><b>v1.6.8</b><br>・白飛びを抑え、露出・照明・空と霧の色を調整<br><b>v1.6.7</b><br>・高解像度描画、ACESトーンマッピング、影・照明・テクスチャの品質を強化<br><b>v1.6.6</b><br>・カットサーブ専用フォームを追加し、横回転とバウンド後の横変化を調整<br><b>v1.6.5</b><br>・サーブ中は「上から」「カット」の2ボタンだけに切り替え、サーブ後は通常操作ボタンへ復帰<br><b>v1.6.4</b><br>・一人称視点のカメラを少し高くし、目線の低さを改善<br><b>v1.6.3</b><br>・一人称視点で胴体や頭は隠し、両腕とラケットを表示するよう調整<br><b>v1.6.2</b><br>・一人称視点では自キャラを非表示にし、頭や胴体がカメラにめり込む問題を改善<br><b>v1.6.1</b><br>・三人称視点でカメラがボールを自然に追うよう、注視点をなめらかに調整<br><b>v1.6.0</b><br>・メインメニューに設定画面を追加。視野角・視点・効果音・CPU難易度・試合形式・操作設定を一括変更可能に変更<br><b>v1.5.9</b><br>・FOVスライダーで視野角を40〜110度に調整可能に変更<br><b>v1.5.8</b><br>・視点切り替えで一人称・三人称を選択可能に変更<br>・拍手の合成音を取りやめ、従来の得点効果音に復帰<br><b>v1.5.5</b><br>・CPUがトスを開始できずサーブしない不具合を修正<br><b>v1.5.4</b><br>・予測軌道の色をボール残像と同じ打球タイプ別カラーに連動<br><b>v1.5.3</b><br>・CPU戦でも打球タイプに応じて残像の色が切り替わるよう修正<br><b>v1.5.2</b><br>・ボール残像の透明度と大きさを適度に強調し、色を見やすく調整<br><b>v1.5.1</b><br>・打球タイプごとにボールの残像色を変更（スマッシュ・スライス・トップスピン・ロブ）<br><b>v1.5.0</b><br>・飛行中のボールの予測軌道を表示<br>・最初の着地点をリングで表示し、コート内外を色分け<br><b>v1.4.8</b><br>・残っていたTOPボタン専用の緑色CSSを削除し、共通スタイルを適用<br><b>v1.4.7</b><br>・TOPボタン固有の色指定を削除し、他の操作ボタンと共通の色スタイルを適用<br><b>v1.4.6</b><br>・TOPボタンを白背景・青枠線・青文字に統一<br><b>v1.4.5</b><br>・TOPボタンの枠線と文字色を他のボタンと統一<br><b>v1.4.4</b><br>・TOPボタンを白色に変更<br><b>v1.4.3</b><br>・TOPボタンの色指定を調整<br><b>v1.4.2</b><br>・TOPボタンを明るい緑の単色に変更し、透明化するスタイルを無効化<br><b>v1.4.1</b><br>・TOPボタンの背景色を不透明に固定<br><b>v1.4.0</b><br>・トップスピンボタンの見た目を調整<br><b>v1.3.9</b><br>・スイング時の体のひねりとフォロースルーを調整<br><b>v1.3.8</b><br>・トップスピンショットを追加<br><b>v1.3.7</b><br>・対人戦の接続タイムアウト処理と再接続案内を改善</details>`) }
       function pause(){if(MP.role)return;pend=null;if(state==='paused'){state=pst;ov('')}else if(['ready','toss','rally','wait'].includes(state)){pst=state;state='paused';ov(PAUSE_HTML)}}
       addEventListener('change',e=>{const t=e.target;if(t&&t.name==='court'){courtStyle=t.value;applyCourtStyle();menu();}else if(t&&t.name==='quality'){quality=t.value;applyQuality();menu();}else if(t&&t.name==='position'){playerPosition=t.value;menu();}else if(t&&t.name==='format'){doublesMode=t.value==='doubles';if(!doublesMode)playerPosition='back';menu();}});
       addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-d],[data-g]');if(!t)return;if(t.dataset.d!==undefined){diff=+t.dataset.d;menu();return}if(t.dataset.g!==undefined){GM=+t.dataset.g;menu();return}
@@ -1227,8 +1229,8 @@
        if(fxaaPass)fxaaPass.enabled=quality!=='lite';
        rs()}
       applyQuality();P.x=0;P.z=HL+.9;C.x=0;C.z=-HL-.9;upd(P,0);upd(C,0);menu();
-      // 放送スコア系フォント(Oswald)の読み込み完了後にパネルを再描画。
-      if(document.fonts&&document.fonts.load){['600 40px Oswald','500 30px Oswald','600 80px Oswald','600 66px Oswald'].forEach(f=>document.fonts.load(f));document.fonts.ready.then(()=>{updateServeSpeedMeter(lastServeSpeed);if(domeScoreCtx)updateDomeScoreboard();if(domeBannerCtx)updateDomeBanner()}).catch(()=>{})}
+      // 放送スコア系フォント(Work Sans)の読み込み完了後にパネルを再描画。
+      if(document.fonts&&document.fonts.load){['600 40px Work Sans','500 30px Work Sans','600 80px Work Sans','600 66px Work Sans'].forEach(f=>document.fonts.load(f));document.fonts.ready.then(()=>{updateServeSpeedMeter(lastServeSpeed);if(domeScoreCtx)updateDomeScoreboard();if(domeBannerCtx)updateDomeBanner()}).catch(()=>{})}
       let last=performance.now();
       (function lp(n){requestAnimationFrame(lp);const dt=Math.min(.033,(n-last)/1000);last=n;
        if(MP.role==='guest'&&!replaying)gtick(dt);else if(replaying){replayClock+=dt*.12;const ri=Math.min(replayLast.length-1,replayClock/replayStep),i0=Math.floor(ri),i1=Math.min(replayLast.length-1,i0+1),a=ri-i0,f0=replayLast[i0],f1=replayLast[i1];if(f0&&f1){const mix=(k)=>f0[k]+(f1[k]-f0[k])*a;ball.x=mix('bx');ball.y=mix('by');ball.z=mix('bz');P.x=mix('px');P.z=mix('pz');C.x=mix('cx');C.z=mix('cz');P.g.position.set(P.x,P.gy,P.z);C.g.position.set(C.x,C.gy,C.z);P.g.rotation.y=mix('py');C.g.rotation.y=mix('cy');}if(replayClock>=replayLast.length*replayStep+.5){replaying=false;replayPath.visible=false;replayMark.visible=false;if(replayFovSaved!==null){cam.fov=replayFovSaved;cam.updateProjectionMatrix();replayFovSaved=null}if(replaySaved){ball.x=replaySaved.ball.x;ball.y=replaySaved.ball.y;ball.z=replaySaved.ball.z;ball.vx=replaySaved.ball.vx;ball.vy=replaySaved.ball.vy;ball.vz=replaySaved.ball.vz;P.x=replaySaved.P.x;P.z=replaySaved.P.z;P.g.position.set(P.x,P.gy,P.z);P.g.rotation.y=replaySaved.P.yaw;C.x=replaySaved.C.x;C.z=replaySaved.C.z;C.g.position.set(C.x,C.gy,C.z);C.g.rotation.y=replaySaved.C.yaw;replaySaved=null;}if(challengeAnimReady){replayLanding=null;runChallenge();}}}else if(state!=='menu'&&state!=='paused'&&state!=='over')tick(dt);if((!MP.role||MP.role==='host'||MP.role==='guest')&&!replaying&&(state==='toss'||state==='rally')){replayAccum+=dt;if(replayAccum>=replayStep){replayAccum=0;replayLive.push({bx:ball.x,by:ball.y,bz:ball.z,px:P.x,pz:P.z,cx:C.x,cz:C.z,py:P.g.rotation.y,cy:C.g.rotation.y});if(replayLive.length>500){replayLive.shift();replayShotStart=Math.max(0,replayShotStart-1);}}}if(MP.role==='host')mpSend(n);
