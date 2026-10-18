@@ -656,8 +656,7 @@
        c.fillStyle='#8fc5ff';c.fillText('T E N N I S',180,68);
        const n=String(value);
        if(n==='--'){c.textAlign='center';c.font='bold 60px Consolas,Menlo,monospace';c.fillStyle='rgba(255,255,255,.5)';c.fillText('--',826,76);c.font='bold 27px Arial,sans-serif';c.textAlign='left';c.fillStyle='rgba(255,255,255,.6)';c.fillText('km/h',850,76)}
-       else{c.save();c.shadowColor='#8fd4ff';c.shadowBlur=22;
-        c.textAlign='right';c.font='bold 76px Consolas,Menlo,monospace';c.fillStyle='#eaf6ff';c.fillText(n,1008,78);c.restore();
+       else{c.textAlign='right';c.font='bold 76px Consolas,Menlo,monospace';c.fillStyle='#eaf6ff';c.fillText(n,1008,78);
         c.textAlign='left';c.font='bold 27px Arial,sans-serif';c.fillStyle='#b9d7f2';c.fillText('km/h',1022,74)}
        c.textAlign='center';c.font='bold 31px Arial,sans-serif';c.fillStyle='#ffe9b0';c.fillText('S E R V E   S P E E D',1430,72);
        if(serveSpeedMeter&&serveSpeedMeter.children[1]?.material.map)serveSpeedMeter.children[1].material.map.needsUpdate=true;
