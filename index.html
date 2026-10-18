@@ -616,13 +616,20 @@
        const mkSurf=(w,d,t,y)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshPhongMaterial({map:t,shininess:8,specular:0x111111}));m.rotation.x=-Math.PI/2;m.position.y=y;m.receiveShadow=true;laverGroup.add(m);return m};
 
        mkSurf(10.97,23.77,aoCourt,.061);  // コート(全豪ブルー)
-       // ランオフにAOロゴペイント(イタリックAO+スウッシュ+年号)。公式の幾何学サンセリフ(Jost)で再現。
+       // ランオフにAO公式ロゴの白ペイント(切欠きのあるA+ドーナツのO+年号)。
        {const aoC=document.createElement('canvas');aoC.width=1024;aoC.height=256;const g5=aoC.getContext('2d');
-        g5.fillStyle='rgba(255,255,255,.95)';g5.textAlign='center';g5.textBaseline='alphabetic';
-        g5.font='italic 800 168px Jost,Arial,sans-serif';g5.fillText('AO',430,158);
-        g5.strokeStyle='rgba(255,255,255,.95)';g5.lineWidth=8;
-        g5.beginPath();g5.arc(500,34,172,Math.PI*.34,Math.PI*.66);g5.stroke();
-        g5.font='600 66px Jost,Arial,sans-serif';g5.fillText('2027',690,158);
+        const paint='rgba(255,255,255,.95)';
+        g5.save();g5.translate(252,28);g5.fillStyle=paint;
+        // A: 足の太いΛ。右脚の内側に切欠き。
+        g5.beginPath();g5.moveTo(0,200);g5.lineTo(88,0);g5.lineTo(112,0);g5.lineTo(200,200);g5.lineTo(142,200);g5.lineTo(100,110);g5.lineTo(58,200);g5.closePath();g5.fill();
+        g5.globalCompositeOperation='destination-out';g5.fillRect(116,102,16,18);
+        g5.globalCompositeOperation='source-over';g5.restore();
+        // O: ドーナツリング
+        g5.fillStyle=paint;g5.beginPath();g5.arc(612,128,100,0,Math.PI*2);g5.fill();
+        g5.globalCompositeOperation='destination-out';g5.beginPath();g5.arc(612,128,46,0,Math.PI*2);g5.fill();
+        g5.globalCompositeOperation='source-over';
+        // 年号
+        g5.fillStyle=paint;g5.font='600 64px Jost,Arial,sans-serif';g5.fillText('2027',790,158);
         const at=new THREE.CanvasTexture(aoC);at.anisotropy=Anime;
         for(const z of [-15.8,15.8]){const m=new THREE.Mesh(new THREE.PlaneGeometry(7.6,1.9),new THREE.MeshBasicMaterial({map:at,transparent:true,opacity:.92,side:THREE.DoubleSide}));m.rotation.x=-Math.PI/2;m.position.set(0,.034,z);laverGroup.add(m)}}
        // ---- 実物のRod Laver Arenaを参考にしたスタジアムボウル ----
