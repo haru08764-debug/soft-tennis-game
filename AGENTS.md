@@ -25,6 +25,6 @@ Co-authored-by: OpenCode <noreply@opencode.ai>
 
 ## 同時編集の運用
 
-- ChatGPT は GitHub API 経由で main に直接pushする。ローカルで編集するエージェント(OpenCode / Codebuff)は編集開始時と push 前に必ず pull する。
+- ChatGPT は GitHub API 経由で main に直接pushする。ローカルで編集するエージェント(OpenCode)は編集開始時と push 前に必ず pull する。Codebuffはたいていクラウドだがローカルの場合があるため気をつけること
 - 1コミットは1テーマに絞り、大きな差分は細かく分ける(後続の pull 競合を減らすため)。
 - 変更の競合・誤上書きを発見したら、どちらか一方に寄せるのではなく、両側の意図を確認して統合する。
