@@ -1213,7 +1213,7 @@ const lvRows=[],lvSpectators=[];
        if(state==='toss')return w===servingChar&&server===me&&ball.y>.5&&ball.y<3.2&&hd(w)<rch(w)+.3;
        if(state!=='rally'||ballWallHit||lastHit===me||hitCool>0||(isServe&&bn===0))return false;
        if(doublesMode&&!MP.role&&!matchStats.serveReturned&&bn>0&&lastHit===(me==='p'?'c':'p')){const n=pts[0]+pts[1],swap=fin()&&finalSideSwaps(n)%2?-1:1,fixedSide=(me==='p'?receiveSideP:receiveSideC)*swap,onMainSide=fixedSide===tsx;if((w===(me==='p'?P:C))!==onMainSide)return false;}
-       if(me==='p'?ball.z<.5:ball.z>-.5)return false;const sliceReach=ball.sl&&ball.ty==='sl'&&(w===C||w===C2)&&!MP.role?.55:0;return ball.y>.12&&ball.y<3.1&&hd(w)<rch(w)+sliceReach}
+       if(me==='p'?ball.z<.5:ball.z>-.5)return false;const sliceReach=(ball.sl&&ball.ty==='sl'&&(w===C||w===C2)&&!MP.role)?0.55:0;return ball.y>.12&&ball.y<3.1&&hd(w)<rch(w)+sliceReach}
       function doHit(w){ballWallHit=false;const me=sideOf(w);if(state==='toss'&&(Math.abs(w.z)<HL-.05||w.x*(me==='p'?sx:-sx)<0||Math.abs(w.x)>HW)){fault('フットフォルト');return}const sg=me==='p'?-1:1,A=w===P?{type:w.type,ax:mv.x,dp:mv.z}:{type:w.type,ax:w.aim.ax,dp:w.aim.dp},d=Math.min(1,hd(w)/rch(w)),serve=state==='toss';
        let tx,tz,t,E=me==='p'?.4:D[diff].E;
        if(serve){const cut=A.type==='sl',q=clamp(1-Math.abs(ball.y-2.7)/1.5,0,1);E=E*(me==='c'?.45:.7)+(1-q)*(me==='c'?.8:1.4)+.1;const course=w===P?serveCourse:'auto';const base=course==='wide'?tsx*3.15:course==='center'?tsx*1.05:tsx*2.35;const b=base+(cut?tsx*.15:0);tx=tsx>0?clamp(b,.5,3.8):clamp(b,-3.8,-.5);tz=sg*((cut?4.05:4.6)+A.dp*.8);t=(serveNo===1?.98:1.12)+(cut?.06:0)}
